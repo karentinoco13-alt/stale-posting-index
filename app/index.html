@@ -420,6 +420,20 @@ header.top {
 .toast { background: linear-gradient(90deg, #3b6fe0, #7a52e0); }
 .lens-note { border-left-color: var(--c8); background: var(--t8); }
 #btn-copy { background: linear-gradient(90deg, var(--c4), var(--c5)); }
+
+/* ===== Feedback welcome: floating button, welcome card, quick reactions, email route ===== */
+.fb-fab { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: inline-flex; gap: 8px; align-items: center; padding: 11px 18px; border-radius: 999px; border: 0; color: #fff; font-size: 15px; background: linear-gradient(90deg, #3b6fe0, #7a52e0 60%, #c447bd); box-shadow: 0 10px 26px -8px rgba(60, 30, 140, .6); }
+.fb-fab:hover { filter: brightness(1.08); }
+.fb-welcome { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 31; width: min(360px, calc(100vw - 36px)); padding: 16px 18px; border-radius: 16px; background: var(--surface); color: var(--ink); border: 2px solid var(--c7); box-shadow: 0 18px 40px -16px rgba(40, 20, 100, .55); display: grid; gap: 10px; }
+.fb-welcome h3 { font-size: 18px; color: var(--c7); }
+.fb-welcome p { font-size: 14.5px; }
+.react { display: inline-flex; gap: 6px; align-items: center; }
+.react button { padding: 4px 12px; font-size: 16px; line-height: 1.2; }
+.mailbox { border-radius: 14px; padding: 14px 16px; background: var(--t6); border-left: 5px solid var(--c6); display: grid; gap: 8px; }
+.mailbox.urgent { background: var(--t2); border-left-color: var(--c2); }
+.mailbox .addr { font-family: var(--font-mono); font-size: 16px; font-weight: 500; user-select: all; overflow-wrap: anywhere; }
+.mailbox a { color: var(--accent); font-weight: 600; }
+.welcome-hd { font-size: 16px; max-width: 70ch; }
 </style>
 
 <div class="wrap" id="top">
@@ -515,7 +529,7 @@ header.top {
         <ol id="market-list"></ol>
       </section>
 
-      <div class="improve"><span data-i18n="improveQ">Something missing or wrong in this ranking?</span><button data-suggest="data" data-i18n="improveBtn">Tell us so we can fix it</button></div>
+      <div class="improve"><span data-i18n="reactQ">Is this ranking useful?</span><span class="react"><button data-react="ranking:up" aria-label="Yes, useful">👍</button><button data-react="ranking:down" aria-label="Not useful">👎</button></span><span data-i18n="improveQ">Something missing or wrong in this ranking?</span><button data-suggest="data" data-i18n="improveBtn">Tell us so we can fix it</button></div>
       <section class="howto" id="how">
         <h2 data-i18n="howH">How it scores</h2>
         <ol>
@@ -592,6 +606,7 @@ header.top {
         </div>
         <div class="actions"><button class="primary" id="fr-check" data-i18n="frCheck">Check this email</button><span id="fr-msg" aria-live="polite"></span></div>
         <div id="fr-result" aria-live="polite"></div>
+        <div class="improve" id="fr-react" hidden><span data-i18n="reactQCheck">Was this check right?</span><span class="react"><button data-react="check:up" aria-label="Yes">👍</button><button data-react="check:down" aria-label="No">👎</button></span></div>
         <h3 data-i18n="frListH">Everything you've checked, highest risk first</h3>
         <div id="fr-list" class="fr-list"></div>
       </section>
@@ -634,13 +649,20 @@ header.top {
     <section class="panel" id="p-feedback" role="tabpanel" aria-labelledby="nav-feedback" hidden>
       <form class="fbform" id="fb-form" novalidate>
         <h2 data-i18n="fbH">Share feedback</h2>
+        <p class="welcome-hd" data-i18n="fbWelcome">This is an early version, and your feedback decides what changes next. Tell us what's confusing, what's missing, which companies or cities to cover, or what you'd love it to do. Every message is read.</p>
         <p class="fine" id="fb-window"></p>
         <div class="field"><label for="fb-kind" data-i18n="fbKind">What's it about?</label>
           <select id="fb-kind"><option value="idea" data-i18n="fbIdea">Idea or feature request</option><option value="bug" data-i18n="fbBug">Something's broken</option><option value="result" data-i18n="fbResult">Wrong or unfair result</option><option value="coverage" data-i18n="fbCoverage">Missing company, industry or area</option><option value="data" data-i18n="fbData">Data is wrong or out of date</option><option value="other" data-i18n="fbOther">Other</option></select></div>
         <div class="field"><label for="fb-text" data-i18n="fbText">Your feedback</label><textarea id="fb-text" maxlength="2000" data-i18n-ph="fbPh" placeholder="Tell us what would make this more useful."></textarea></div>
-        <p class="fine" data-i18n="fbNote">Feedback is sent only when you click Send feedback. It goes only to the app's owner and is used to improve future versions. Please don't include personal details.</p>
+        <p class="fine" id="fb-note" data-i18n="fbNote">Feedback is sent only when you click Send feedback. It goes only to the app's owner and is used to improve future versions. Please don't include personal details.</p>
         <p id="fb-msg" aria-live="polite"></p>
         <div class="actions"><button class="primary" id="fb-send" type="submit" data-i18n="fbSend">Send feedback</button></div>
+        <div class="mailbox" id="mailbox">
+          <strong id="mail-h" data-i18n="mailH">Prefer email? Write to us directly</strong>
+          <span class="addr" id="mail-addr">karentinoco13@gmail.com</span>
+          <div class="actions"><button type="button" id="mail-copy" data-i18n="mailCopy">Copy email address</button><button type="button" id="mail-copymsg" data-i18n="mailCopyMsg">Copy my message</button><a id="mail-open" href="mailto:karentinoco13@gmail.com?subject=Stale%20Posting%20Index%20feedback" data-i18n="mailOpen">Open in my email app</a></div>
+          <span class="fine" data-i18n="mailNote">If the email link doesn't open anything, copy the address and your message and send them from your usual email.</span>
+        </div>
       </form>
       <section class="inbox" id="inbox" hidden aria-labelledby="inbox-h">
         <h2 id="inbox-h" data-i18n="inboxH">Feedback inbox</h2>
@@ -681,7 +703,7 @@ header.top {
   </div>
   <div class="gate-body">
     <p class="fine" data-i18n="gateIntro">A summary of the Stale Posting Index terms of use and privacy notice. Please read it and accept to continue.</p>
-    <div class="gcard" style="--gc:#1a8f5c"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026.</p></div>
+    <div class="gcard" style="--gc:#1a8f5c"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026. You can also email karentinoco13@gmail.com.</p></div>
     <div class="gcard" style="--gc:#6a46cf"><h3 data-i18n="g2h">No guaranteed results</h3><p data-i18n="g2p">Stale Posting Index and its developer make no warranty of any outcome. Rankings, labels and fraud scores are automatic signals based on the data provided, and are only as good as that data. They are not facts about any company. A long-open or reposted job can have legitimate reasons, so always check with the employer.</p></div>
     <div class="gcard" style="--gc:#c97a10"><h3 data-i18n="g6h">Know the catch: not live data yet</h3><p data-i18n="g6p">The app doesn't pull jobs from the web on its own yet, and coverage is partial. Rankings use only postings people add, uploaded files and community reports, so a company that's missing isn't proof it hires fairly. Help make it better: tell us what's missing with Send feedback.</p></div>
     <div class="gcard" style="--gc:#2f62d0"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads, analytics or tracking. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
@@ -699,6 +721,12 @@ header.top {
   <h2 data-i18n="declinedH">You declined the terms</h2>
   <p data-i18n="declinedP">Stale Posting Index can only be used after you accept the Terms of use and the Privacy &amp; security notice. Nothing was saved.</p>
   <button class="primary" id="declined-review" data-i18n="declinedReview">Review the terms again</button>
+</div>
+<button class="fb-fab" id="fb-fab" hidden><span aria-hidden="true">💬</span> <span data-i18n="fabLabel">Feedback</span></button>
+<div class="fb-welcome" id="fb-welcome" role="dialog" aria-labelledby="fbw-h" hidden>
+  <h3 id="fbw-h" data-i18n="fbwH">Help shape this app</h3>
+  <p data-i18n="fbwP">You're using an early version. Tell us what to fix, add or change. It takes a minute and it really helps.</p>
+  <div class="actions"><button class="primary" id="fbw-go" data-i18n="fbwGo">Share feedback</button><button id="fbw-later" data-i18n="fbwLater">Maybe later</button></div>
 </div>
 <div id="toast" class="toast" hidden></div>
 
@@ -728,13 +756,13 @@ header.top {
   <section id="sec-content-removal">
     <h3>Content removal</h3>
     <p><strong>Your own content.</strong> You control everything you add. Delete one posting in Add postings, then My postings. Delete one checked email in Fraud check. Remove everything with "Delete all my data" in the footer. Deleted data is gone immediately and can't be recovered.</p>
-    <p><strong>Requests from companies and others.</strong> If you represent a company, or you believe something shown through or published from the App is inaccurate, out of date, infringing or includes personal information, ask for a correction or removal through Share feedback. Include who you are, exactly what the content is and where you saw it, what's wrong, and what you'd like done. We aim to reply within 10 business days. We'll correct or remove content that is inaccurate, unlawful or infringing. We can't reach data saved in another person's own browser, but we can correct anything we publish.</p>
+    <p><strong>Requests from companies and others.</strong> If you represent a company, or you believe something shown through or published from the App is inaccurate, out of date, infringing or includes personal information, ask for a correction or removal through Share feedback or by email to karentinoco13@gmail.com. Include who you are, exactly what the content is and where you saw it, what's wrong, and what you'd like done. We aim to reply within 10 business days. We'll correct or remove content that is inaccurate, unlawful or infringing. We can't reach data saved in another person's own browser, but we can correct anything we publish.</p>
   </section>
   <section id="sec-copyright">
     <h3>Copyright and licence</h3>
     <p>© 2026 Karen Tinoco. The App's design, code and text are licensed under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>: free to use, share and adapt for non-commercial purposes, with credit. Commercial use by permission only.</p>
     <p>Job titles, descriptions and links belong to the employers and websites that published them. Company names and trademarks, including Apple, Microsoft, NVIDIA, Amazon and its subsidiaries, Blue Origin and Tesla, belong to their owners. They are used only to identify postings and don't mean any company endorses or is affiliated with the App.</p>
-    <p><strong>Copyright complaints.</strong> If you believe something shown through the App infringes your copyright, send a notice through Share feedback that identifies the work, where the material appears, your contact details, a good-faith statement that the use isn't authorized, and a statement that your notice is accurate and that you are the owner or authorized to act for the owner. We'll review valid notices promptly and remove infringing material.</p>
+    <p><strong>Copyright complaints.</strong> If you believe something shown through the App infringes your copyright, send a notice by email to karentinoco13@gmail.com that identifies the work, where the material appears, your contact details, a good-faith statement that the use isn't authorized, and a statement that your notice is accurate and that you are the owner or authorized to act for the owner. We'll review valid notices promptly and remove infringing material.</p>
   </section>
   <h3>Changes</h3>
   <p>We may update these terms. The date at the top shows the latest version.</p>
@@ -766,13 +794,13 @@ header.top {
   <section id="sec-content-removal-es">
     <h3>Eliminación de contenido</h3>
     <p><strong>Tu propio contenido.</strong> Tú controlas todo lo que agregas. Borra una oferta en Agregar ofertas, luego Mis ofertas. Borra un correo revisado en Revisar fraude. Elimina todo con "Borrar todos mis datos" en el pie de página. Lo borrado desaparece de inmediato y no se puede recuperar.</p>
-    <p><strong>Solicitudes de empresas y otras personas.</strong> Si representas a una empresa, o crees que algo mostrado o publicado desde la App es inexacto, está desactualizado, infringe derechos o incluye datos personales, pide una corrección o eliminación mediante Enviar comentarios. Indica quién eres, cuál es el contenido exacto y dónde lo viste, qué está mal y qué deseas que hagamos. Intentamos responder en un plazo de 10 días hábiles. Corregiremos o eliminaremos el contenido inexacto, ilegal o que infrinja derechos. No podemos acceder a datos guardados en el navegador de otra persona, pero sí corregir lo que publiquemos.</p>
+    <p><strong>Solicitudes de empresas y otras personas.</strong> Si representas a una empresa, o crees que algo mostrado o publicado desde la App es inexacto, está desactualizado, infringe derechos o incluye datos personales, pide una corrección o eliminación mediante Enviar comentarios o por correo a karentinoco13@gmail.com. Indica quién eres, cuál es el contenido exacto y dónde lo viste, qué está mal y qué deseas que hagamos. Intentamos responder en un plazo de 10 días hábiles. Corregiremos o eliminaremos el contenido inexacto, ilegal o que infrinja derechos. No podemos acceder a datos guardados en el navegador de otra persona, pero sí corregir lo que publiquemos.</p>
   </section>
   <section id="sec-copyright-es">
     <h3>Derechos de autor y licencia</h3>
     <p>© 2026 Karen Tinoco. El diseño, el código y los textos de la App tienen licencia <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>: libre para usar, compartir y adaptar con fines no comerciales, dando crédito. El uso comercial requiere permiso.</p>
     <p>Los títulos, descripciones y enlaces de las ofertas pertenecen a los empleadores y sitios que los publicaron. Los nombres y marcas de empresas, incluidas Apple, Microsoft, NVIDIA, Amazon y sus filiales, Blue Origin y Tesla, pertenecen a sus dueños. Se usan solo para identificar ofertas y no implican respaldo ni afiliación con la App.</p>
-    <p><strong>Reclamos de derechos de autor.</strong> Si crees que algo mostrado en la App infringe tus derechos de autor, envía un aviso mediante Enviar comentarios que identifique la obra, dónde aparece el material, tus datos de contacto, una declaración de buena fe de que el uso no está autorizado y una declaración de que tu aviso es exacto y de que eres el titular o estás autorizado a actuar en su nombre. Revisaremos los avisos válidos con prontitud y retiraremos el material infractor.</p>
+    <p><strong>Reclamos de derechos de autor.</strong> Si crees que algo mostrado en la App infringe tus derechos de autor, envía un aviso por correo a karentinoco13@gmail.com que identifique la obra, dónde aparece el material, tus datos de contacto, una declaración de buena fe de que el uso no está autorizado y una declaración de que tu aviso es exacto y de que eres el titular o estás autorizado a actuar en su nombre. Revisaremos los avisos válidos con prontitud y retiraremos el material infractor.</p>
   </section>
   <h3>Cambios</h3>
   <p>Podemos actualizar estos términos. La fecha al inicio indica la versión más reciente.</p>
@@ -801,8 +829,10 @@ header.top {
   <p>"Delete all my data" in the footer permanently removes everything the App saved for you. You can also delete single postings and checked emails. This can't be undone.</p>
   <h3>Children</h3>
   <p>The App is for adults looking for work or hiring. It isn't directed at children under 16.</p>
+  <h3>Feedback by email</h3>
+  <p>If you email us at karentinoco13@gmail.com, your message and your email address go to the owner's Gmail inbox, where Google's privacy policy applies. We use them only to reply to you and to improve the App, and we delete them on request.</p>
   <h3>Questions</h3>
-  <p>Use Share feedback.</p>
+  <p>Use Share feedback, or email karentinoco13@gmail.com.</p>
 </template>
 
 <template id="tpl-privacy-es">
@@ -828,15 +858,17 @@ header.top {
   <p>"Borrar todos mis datos" en el pie de página elimina para siempre todo lo que la App guardó para ti. También puedes borrar ofertas o correos revisados uno por uno. No se puede deshacer.</p>
   <h3>Menores</h3>
   <p>La App es para adultos que buscan empleo o contratan. No está dirigida a menores de 16 años.</p>
+  <h3>Comentarios por correo</h3>
+  <p>Si nos escribes a karentinoco13@gmail.com, tu mensaje y tu dirección de correo llegan a la bandeja de Gmail de la dueña, donde aplica la política de privacidad de Google. Los usamos solo para responderte y mejorar la App, y los borramos si lo pides.</p>
   <h3>Preguntas</h3>
-  <p>Usa Enviar comentarios.</p>
+  <p>Usa Enviar comentarios o escribe a karentinoco13@gmail.com.</p>
 </template>
 
 <script>
 (function () {
   const DAY = 86400000;
   const $ = (id) => document.getElementById(id);
-  const K = { catchUi: "spi-catch", rows: "spi-postings-v2", fraud: "spi-fraud-v1", lens: "spi-lens", lang: "spi-lang", accepted: "spi-accepted-v1" };
+  const K = { fbWelcome: "spi-fb-welcome", catchUi: "spi-catch", rows: "spi-postings-v2", fraud: "spi-fraud-v1", lens: "spi-lens", lang: "spi-lang", accepted: "spi-accepted-v1" };
   const state = { rows: [], lens: "seeker", lang: "en", open: new Set(), tab: "ranking" };
   const rp = { state: "pending", db: null, user: null, me: "", owner: false, docs: [], byCo: {}, openComments: new Set(), queue: Promise.resolve() };
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
@@ -888,7 +920,7 @@ header.top {
     wipeQ: "¿Borrar para siempre todo lo que esta App guardó en este navegador: tus ofertas, correos revisados, ajustes, los comentarios que enviaste y tus reportes, marcas y comentarios de la comunidad? No se puede deshacer.", wipeYes: "Borrar todo", wipeNo: "Cancelar",
     footGuidance: "Solo orientación: los rankings y las puntuaciones de fraude son señales automáticas basadas en los datos ingresados, no hechos sobre ninguna empresa, y no garantizan resultados. Borrar datos es permanente y tu responsabilidad.",
     gateTitle: "Antes de empezar: Términos de uso", gateIntro: "Un resumen de los términos de uso y el aviso de privacidad de Stale Posting Index. Léelo y acéptalo para continuar.",
-    g1h: "Gratis, mientras está en pruebas", g1p: "Stale Posting Index es gratuita y se ofrece tal cual. Los comentarios se envían solo cuando haces clic en <strong>Enviar comentarios</strong>; van solo a la dueña de la App y se usan para mejorar futuras versiones. Los comentarios están abiertos hasta el 3 de diciembre de 2026.",
+    g1h: "Gratis, mientras está en pruebas", g1p: "Stale Posting Index es gratuita y se ofrece tal cual. Los comentarios se envían solo cuando haces clic en <strong>Enviar comentarios</strong>; van solo a la dueña de la App y se usan para mejorar futuras versiones. Los comentarios están abiertos hasta el 3 de diciembre de 2026. También puedes escribir a karentinoco13@gmail.com.",
     g2h: "Sin resultados garantizados", g2p: "Stale Posting Index y su desarrolladora no garantizan ningún resultado. Los rankings, etiquetas y puntuaciones de fraude son señales automáticas basadas en los datos ingresados, y solo son tan buenos como esos datos. No son hechos sobre ninguna empresa. Una oferta abierta mucho tiempo o republicada puede tener razones legítimas; verifica siempre con el empleador.",
     g3h: "Privada por diseño.", g3p1: "Todo lo que ingresas se queda en tu propio navegador. Tus ofertas y correos revisados nunca se envían a ningún lado, nunca se guardan en un servidor y no se rastrea nada. Puedes borrarlos cuando quieras.",
     g3p2: "Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios, analítica ni rastreo. Lo único que se guarda fuera de tu navegador son los comentarios que decidas enviar y los reportes, marcas y comentarios de la comunidad que decidas publicar. Otras personas ven los reportes, marcas y comentarios, sin tu nombre.",
@@ -899,6 +931,11 @@ header.top {
     gateAccept: "He leído y acepto los Términos de uso y el aviso de Privacidad y seguridad", gateDecline: "Rechazar", gateOk: "Aceptar y continuar",
     declinedH: "Rechazaste los términos", declinedP: "Stale Posting Index solo puede usarse después de aceptar los Términos de uso y el aviso de Privacidad y seguridad. No se guardó nada.", declinedReview: "Revisar los términos otra vez",
     viewAs: "Ver como",
+    fbWelcome: "Es una versión inicial y tus comentarios deciden qué cambia después. Cuéntanos qué es confuso, qué falta, qué empresas o ciudades cubrir o qué te encantaría que hiciera. Leemos cada mensaje.",
+    mailH: "¿Prefieres el correo? Escríbenos directamente", mailCopy: "Copiar dirección de correo", mailCopyMsg: "Copiar mi mensaje", mailOpen: "Abrir en mi correo",
+    mailNote: "Si el enlace no abre nada, copia la dirección y tu mensaje y envíalos desde tu correo habitual.",
+    reactQ: "¿Te sirve este ranking?", reactQCheck: "¿Acertó esta revisión?",
+    fabLabel: "Comentarios", fbwH: "Ayuda a mejorar esta app", fbwP: "Estás usando una versión inicial. Cuéntanos qué corregir, agregar o cambiar. Toma un minuto y ayuda muchísimo.", fbwGo: "Enviar comentarios", fbwLater: "Quizás después",
     catchH: "Conoce las limitaciones antes de confiar en esto",
     catch1: "<strong>Todavía no es en vivo.</strong> La App aún no obtiene ofertas de la web por sí sola. Los rankings usan solo las ofertas que agregas, los archivos que subes y los reportes de la comunidad, así que si una empresa no aparece aquí no es prueba de que contrate de forma justa.",
     catch2: "<strong>La cobertura es parcial.</strong> Muchas empresas grandes y la mayoría de los empleadores pequeños y locales aún no se rastrean, y sitios como Indeed y LinkedIn no comparten sus datos.",
@@ -958,6 +995,10 @@ header.top {
       rSending: "Posting…", rPosted: "Your report is posted. Thank you.", rFail: "Couldn't save that. Please try again in a moment.", rNoAccess: "You can view reports, but posting needs Contributor access. Ask the owner to share the app with you as a Contributor.", rFull: "You've reached the limit for your account. Remove an older report or comment first.",
       rOpen: "Open {n} days", rReportedBy: "Reported by member …{w} · {d}", rYou: "you", rReportedByYou: "Reported by you · {d}", cByYou: "You · {d}", rFlag: "I've seen this too", rFlagged: "Flagged", rFlags: "{n} flag", rFlagsPl: "{n} flags", rComment: "Comment", rAddMine: "Add to my ranking", rRemove: "Remove", rAddedMine: "Added to your ranking", rRemoved: "Removed",
       cPh: "Share your experience. No names or personal information.", cPost: "Post comment", cBy: "Member …{w} · {d}", cShort: "Write a few words first.",
+      fbPublic: "You're on the public version, so feedback can't be sent from this page. Email it instead: write your message above, then use Copy my message and send it to the address below.",
+      mailCopied: "Email address copied", msgCopied: "Your message is copied. Paste it into an email to us.", msgEmpty: "Write your message above first.",
+      reactUp: "👍 {w} is useful. ", reactDown: "👎 {w} needs work: ", wRanking: "The ranking", wCheck: "The job / email check",
+      fbClosedMail: "In-app feedback closed on Dec 3, 2026. You can still email us below.",
       wiped: "All your data was deleted", accepted: "Welcome. You can change language anytime with EN / ES.", mustAccept: "Accept the terms to continue."
     },
     es: {
@@ -994,6 +1035,10 @@ header.top {
       rSending: "Publicando…", rPosted: "Tu reporte está publicado. Gracias.", rFail: "No se pudo guardar. Inténtalo de nuevo en un momento.", rNoAccess: "Puedes ver los reportes, pero para publicar necesitas acceso de Colaborador. Pide a la dueña que te comparta la App como Colaborador.", rFull: "Llegaste al límite de tu cuenta. Quita un reporte o comentario anterior primero.",
       rOpen: "Abierta {n} días", rReportedBy: "Reportado por miembro …{w} · {d}", rYou: "tú", rReportedByYou: "Reportado por ti · {d}", cByYou: "Tú · {d}", rFlag: "Yo también lo vi", rFlagged: "Marcado", rFlags: "{n} marca", rFlagsPl: "{n} marcas", rComment: "Comentar", rAddMine: "Agregar a mi ranking", rRemove: "Quitar", rAddedMine: "Agregado a tu ranking", rRemoved: "Eliminado",
       cPh: "Comparte tu experiencia. Sin nombres ni datos personales.", cPost: "Publicar comentario", cBy: "Miembro …{w} · {d}", cShort: "Escribe unas palabras primero.",
+      fbPublic: "Estás en la versión pública, así que no se pueden enviar comentarios desde esta página. Envíalos por correo: escribe tu mensaje arriba, usa Copiar mi mensaje y envíalo a la dirección de abajo.",
+      mailCopied: "Dirección de correo copiada", msgCopied: "Tu mensaje está copiado. Pégalo en un correo para nosotros.", msgEmpty: "Primero escribe tu mensaje arriba.",
+      reactUp: "👍 {w} me sirve. ", reactDown: "👎 {w} necesita mejorar: ", wRanking: "El ranking", wCheck: "La revisión del anuncio / correo",
+      fbClosedMail: "Los comentarios dentro de la App cerraron el 3 de dic. de 2026. Aún puedes escribirnos por correo abajo.",
       wiped: "Se borraron todos tus datos", accepted: "Bienvenida. Puedes cambiar el idioma cuando quieras con EN / ES.", mustAccept: "Acepta los términos para continuar."
     }
   };
@@ -1390,7 +1435,7 @@ header.top {
     $("fr-result").innerHTML = `<div class="verdict ${cls}"><div><span class="score-big">${r.score}</span> / 100 · <strong>${esc(levelLabel({ kind, level: r.level }))}</strong></div>${r.flags.length ? `<ul>${r.flags.map((f) => `<li>${esc(flagText(f))}</li>`).join("")}</ul>` : `<p>${t(kind === "posting" ? "pNone" : "frNone")}</p>`}<p class="fine">${t(kind === "posting" ? "pNote" : "frNote")}</p></div>`;
     const subject = kind === "posting" ? text.split("\n")[0].trim() : ((text.match(/^\s*(subject|asunto):\s*(.*)$/im) || [])[2] || "");
     checks.push({ id: newId(), kind, at: Date.now(), score: r.score, level: r.level, company: r.company, domain: r.domain, subject: subject.slice(0, 120), flags: r.flags.slice(0, 6) });
-    saveChecks(); renderChecks(); msg.className = "ok"; msg.textContent = t("frAdded");
+    saveChecks(); renderChecks(); msg.className = "ok"; msg.textContent = t("frAdded"); $("fr-react").hidden = false;
   };
   $("fr-list").addEventListener("click", (e) => { const b = e.target.closest("[data-frdel]"); if (!b) return; checks = checks.filter((c) => c.id !== b.dataset.frdel); saveChecks(); renderChecks(); toast(t("frDeleted")); });
 
@@ -1499,9 +1544,43 @@ header.top {
     $("fb-send").disabled = !open || fb.state !== "ready";
     if (!open) $("fb-send").textContent = t("fbBtnClosed");
     const m = $("fb-msg");
-    if (open && fb.state !== "ready" && !m.dataset.sticky) { m.className = "fine"; m.textContent = fb.state === "pending" ? t("fbConnecting") : t("fbNoDb"); }
+    if (open && fb.state !== "ready" && !m.dataset.sticky) { m.className = "fine"; m.textContent = fb.state === "pending" ? t("fbConnecting") : t("fbPublic"); }
+    if (!open && !m.dataset.sticky) { m.className = "fine"; m.textContent = t("fbClosedMail"); }
+    // public visitors can't send in-app: keep the text box usable so they can write and copy their message
+    if (open) { $("fb-text").disabled = false; $("fb-kind").disabled = false; }
+    $("mailbox").classList.toggle("urgent", fb.state === "none" || !open);
+    $("fb-send").hidden = open && fb.state === "none";
+    $("fb-note").hidden = fb.state === "none" || !open;
     if (open && fb.state === "ready" && !m.dataset.sticky) m.textContent = "";
   }
+  // email route: copy address / copy message / mailto with the message prefilled
+  const fbMessage = () => { const k = $("fb-kind"); const kind = k.options[k.selectedIndex] ? k.options[k.selectedIndex].text : ""; const txt = $("fb-text").value.trim(); return txt ? "[" + kind + "]\n" + txt + "\n\n(Stale Posting Index · " + state.lang.toUpperCase() + ")" : ""; };
+  const updateMailto = () => { const msg = fbMessage(); $("mail-open").href = "mailto:" + $("mail-addr").textContent.trim() + "?subject=" + encodeURIComponent("Stale Posting Index feedback") + (msg ? "&body=" + encodeURIComponent(msg) : ""); };
+  $("fb-text").addEventListener("input", updateMailto); $("fb-kind").addEventListener("change", updateMailto);
+  const copyOrSelect = (text, okKey, el) => navigator.clipboard.writeText(text).then(() => toast(t(okKey)), () => { if (el) { const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); } else { $("fb-text").select(); } toast(t(okKey)); });
+  $("mail-copy").onclick = () => copyOrSelect($("mail-addr").textContent.trim(), "mailCopied", $("mail-addr"));
+  $("mail-copymsg").onclick = () => { const msg = fbMessage(); if (!msg) { toast(t("msgEmpty")); $("fb-text").focus(); return; } copyOrSelect(msg, "msgCopied", null); };
+
+  // quick thumbs up / down reactions open the feedback form with context filled in
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-react]"); if (!b) return;
+    const [where, dir] = b.dataset.react.split(":");
+    $("fb-kind").value = dir === "up" ? "idea" : (where === "check" ? "result" : "data"); fbPlaceholder();
+    $("fb-text").value = t(dir === "up" ? "reactUp" : "reactDown", { w: t(where === "check" ? "wCheck" : "wRanking") });
+    updateMailto(); location.hash = "feedback"; route();
+    setTimeout(() => { const ta = $("fb-text"); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }, 80);
+  });
+
+  // floating button + one-time welcome card
+  const fab = $("fb-fab"), welcome = $("fb-welcome");
+  const fabSync = () => { fab.hidden = state.tab === "feedback" || !welcome.hidden || !store.get(K.accepted, null); };
+  fab.onclick = () => { location.hash = "feedback"; route(); setTimeout(() => $("fb-text").focus(), 80); };
+  const closeWelcome = () => { welcome.hidden = true; store.set(K.fbWelcome, 1); fabSync(); };
+  $("fbw-go").onclick = () => { closeWelcome(); fab.onclick(); };
+  $("fbw-later").onclick = closeWelcome;
+  window.addEventListener("hashchange", () => setTimeout(fabSync, 0));
+  setInterval(fabSync, 800);
+
   $("fb-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const m = $("fb-msg"); const text = $("fb-text").value.trim(); m.dataset.sticky = "1";
@@ -1571,7 +1650,7 @@ header.top {
   const gate = $("gate");
   function showGate() { $("gate-accept").checked = false; $("gate-ok").disabled = true; $("declined").hidden = true; document.querySelector(".wrap").hidden = false; document.querySelector(".site-foot").hidden = false; if (!gate.open) gate.showModal(); }
   $("gate-accept").onchange = () => ($("gate-ok").disabled = !$("gate-accept").checked);
-  $("gate-ok").onclick = () => { if (!$("gate-accept").checked) return; store.set(K.accepted, { v: 1, at: new Date().toISOString() }); store.set(K.lang, state.lang); gate.close(); toast(t("accepted")); };
+  $("gate-ok").onclick = () => { if (!$("gate-accept").checked) return; store.set(K.accepted, { v: 1, at: new Date().toISOString() }); store.set(K.lang, state.lang); gate.close(); toast(t("accepted")); if (!store.get(K.fbWelcome, null)) setTimeout(() => { $("fb-welcome").hidden = false; }, 4000); };
   $("gate-decline").onclick = () => { gate.close(); document.querySelector(".wrap").hidden = true; document.querySelector(".site-foot").hidden = true; $("declined").hidden = false; };
   $("declined-review").onclick = showGate;
   gate.addEventListener("cancel", (e) => { e.preventDefault(); toast(t("mustAccept")); });
@@ -1591,6 +1670,7 @@ header.top {
   applyLang();
   route();
   if (!store.get(K.accepted, null)) showGate();
+  else if (!store.get(K.fbWelcome, null)) setTimeout(() => { $("fb-welcome").hidden = false; }, 4000);
 })();
 </script>
 
