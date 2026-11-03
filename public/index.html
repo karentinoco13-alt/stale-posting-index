@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Real Jobs Finder</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>Real Jobs Finder</h1>
+      <p class="tag">Live openings pulled straight from each company's own job board. No reposts, no ghost ads.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form id="search" class="search" autocomplete="off">
+      <input name="q" type="search" placeholder="Job title or keyword (e.g. designer, nurse, python)" aria-label="Keyword">
+      <input name="location" type="search" placeholder="Location (e.g. London, New York)" aria-label="Location">
+      <select name="days" aria-label="Posted within">
+        <option value="0">Any time</option>
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <label class="check"><input name="remote" type="checkbox" value="1"> Remote only</label>
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="layout">
+      <section>
+        <div class="results-head">
+          <span id="count">Loading…</span>
+          <button id="refresh" class="link" type="button">Refresh from company sites</button>
+        </div>
+        <ul id="jobs" class="jobs"></ul>
+      </section>
+
+      <aside>
+        <div class="card">
+          <h2>Add a company</h2>
+          <p class="muted">Enter a company's website. We scan its pages for an official careers board and add its live openings.</p>
+          <form id="add" class="add">
+            <input name="website" placeholder="company.com" required aria-label="Company website">
+            <button type="submit">Scan website</button>
+          </form>
+          <div id="addMsg" class="msg" role="status"></div>
+        </div>
+
+        <div class="card">
+          <h2>Companies</h2>
+          <ul id="companies" class="companies"></ul>
+        </div>
+
+        <div class="card tips">
+          <h2>Staying safe</h2>
+          <ul>
+            <li>Real employers never ask you to pay for training, equipment or "processing".</li>
+            <li>Apply only through the company's own link. Every job here links to one.</li>
+            <li>Be wary of interviews held only over chat apps, or offers made without an interview.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "real-jobs-finder",
+  "version": "1.0.0",
+  "description": "Find real, current job openings by scanning company websites for their official job boards.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
