@@ -1,2 +1,5 @@
 node_modules/
 *.log
+*.zip
+data/checks.json
+data/ratings.json

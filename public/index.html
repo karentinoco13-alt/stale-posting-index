@@ -11,10 +11,43 @@
     <div class="wrap">
       <h1>Real Jobs Finder</h1>
       <p class="tag">Live openings pulled straight from each company's own job board. No reposts, no ghost ads.</p>
+      <nav class="tabs" role="tablist">
+        <button type="button" role="tab" data-view="jobs" aria-selected="true">Find jobs</button>
+        <button type="button" role="tab" data-view="check" aria-selected="false">Company check</button>
+        <button type="button" role="tab" data-view="review" aria-selected="false">Employer review <span id="staleBadge" class="pill" hidden></span></button>
+      </nav>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" id="view-check" hidden>
+    <div class="check-intro">
+      <h2>Is this company or job real?</h2>
+      <p class="muted">Search a company name, its website, or paste a job link someone sent you. We check the company's own website and official job listings and flag anything that doesn't add up. Results are saved, so everyone who searches this company sees the warnings.</p>
+      <form id="checkForm" class="add">
+        <input name="query" placeholder="e.g. acme.com, Acme, or https://… job link" required aria-label="Company or job link">
+        <button type="submit">Check</button>
+      </form>
+    </div>
+    <div id="checkResult"></div>
+  </main>
+
+  <main class="wrap" id="view-review" hidden>
+    <div class="review-head">
+      <div>
+        <h2>Job posts open too long</h2>
+        <p class="muted">Every company is held to the same standard, whatever its size. When a role has been posted for more than
+          <select id="staleDays" aria-label="Days open">
+            <option value="60">60</option><option value="90" selected>90</option><option value="120">120</option><option value="180">180</option>
+          </select>
+          days, we draft a friendly note asking the company to take it down if it's filled, or refresh it if they're still looking.
+          Notes open in your own email app; nothing is sent automatically.</p>
+      </div>
+      <div id="reviewSummary" class="summary"></div>
+    </div>
+    <ul id="reviewList" class="review-list"></ul>
+  </main>
+
+  <main class="wrap" id="view-jobs">
     <form id="search" class="search" autocomplete="off">
       <input name="q" type="search" placeholder="Job title or keyword (e.g. designer, nurse, python)" aria-label="Keyword">
       <input name="location" type="search" placeholder="Location (e.g. London, New York)" aria-label="Location">
@@ -28,6 +61,7 @@
       <button type="submit">Search</button>
     </form>
 
+    <div id="alert"></div>
     <div class="layout">
       <section>
         <div class="results-head">

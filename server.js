@@ -6,6 +6,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { fetchBoard } = require('./lib/sources');
 const { scanCompany } = require('./lib/scan');
+const { staleReport } = require('./lib/stale');
+const { checkCompany, checkJobLink } = require('./lib/check');
+const ratingsStore = require('./lib/ratings');
 
 const PORT = Number(process.env.PORT) || 3000;
 const DATA_FILE = process.env.COMPANIES_FILE || path.join(__dirname, 'data', 'companies.json');
@@ -22,6 +25,55 @@ function saveCompanies(list) {
 }
 let companies = loadCompanies();
 
+const DATA_DIR = path.dirname(DATA_FILE);
+const ratings = ratingsStore.createStore(process.env.RATINGS_FILE || path.join(DATA_DIR, 'ratings.json'));
+
+// Results of "Is this real?" checks, saved so anyone searching the company later sees the flags.
+const CHECKS_FILE = process.env.CHECKS_FILE || path.join(DATA_DIR, 'checks.json');
+let checks = {};
+try { checks = JSON.parse(fs.readFileSync(CHECKS_FILE, 'utf8')); } catch { /* none yet */ }
+function saveCheck(domain, entry) {
+  checks[domain] = { ...(checks[domain] || {}), ...entry };
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(CHECKS_FILE, JSON.stringify(checks, null, 2));
+}
+
+// Find a company by name or domain among saved companies and past checks.
+function findByName(q) {
+  const n = q.toLowerCase().trim();
+  if (!n) return null;
+  const pool = [
+    ...companies.filter((c) => c.domain).map((c) => ({ name: c.name, domain: c.domain })),
+    ...Object.values(checks).map((c) => ({ name: c.name, domain: c.domain })),
+  ];
+  return pool.find((c) => c.name?.toLowerCase() === n || c.domain === n || c.domain.split('.')[0] === n)
+    || pool.find((c) => c.name?.toLowerCase().includes(n) && n.length >= 3) || null;
+}
+
+function companyProfile(domain) {
+  const c = checks[domain] || null;
+  const known = companies.find((x) => x.domain === domain);
+  return {
+    domain,
+    name: c?.name || known?.name || domain,
+    check: c,
+    inList: !!known?.boards,
+    csat: ratings.summary(domain),
+    lastNudge: known?.nudges?.at(-1) || null,
+  };
+}
+
+// Simple per-IP rate limit for write endpoints.
+const hits = new Map();
+function rateLimited(req, max = 20) {
+  const ip = req.socket.remoteAddress;
+  const now = Date.now();
+  const list = (hits.get(ip) || []).filter((t) => now - t < 3600e3);
+  list.push(now);
+  hits.set(ip, list);
+  return list.length > max;
+}
+
 // Entries that are just { website } have not been scanned yet. Scan the real
 // company website and keep only job boards that the site itself links to.
 const scanState = new Map(); // website -> 'scanning' | error message
@@ -32,7 +84,7 @@ async function verifyPending() {
     try {
       const scan = await scanCompany(c.website);
       if (!scan.boards.length) throw new Error('No careers board or job listings found on the website');
-      Object.assign(c, { name: c.name || scan.name, domain: scan.domain, verified: true, boards: scan.boards, addedAt: new Date().toISOString() });
+      Object.assign(c, { name: c.name || scan.name, domain: scan.domain, verified: true, boards: scan.boards, contacts: scan.contacts, careersUrl: scan.careersUrl, addedAt: new Date().toISOString() });
       scanState.delete(c.website);
       saveCompanies(companies);
       console.log(`Verified ${c.name}: ${scan.boards.map((b) => b.ats).join(', ')}`);
@@ -117,8 +169,74 @@ const server = http.createServer(async (req, res) => {
   try {
     if (url.pathname === '/api/jobs' && req.method === 'GET') {
       const { jobs, status } = await allJobs(url.searchParams.get('refresh') === '1');
-      const filtered = filterJobs(jobs, url.searchParams);
-      return send(res, 200, { total: filtered.length, jobs: filtered.slice(0, 500), companies: status });
+      const nudged = new Map(companies.filter((c) => c.nudges?.length).map((c) => [c.domain, c.nudges.at(-1).at]));
+      const filtered = filterJobs(jobs, url.searchParams).map((j) => (nudged.has(j.companyDomain) ? { ...j, companyNudgedAt: nudged.get(j.companyDomain) } : j));
+      const named = findByName(url.searchParams.get('q') || '') || (url.searchParams.get('company') && { domain: url.searchParams.get('company') });
+      const alert = named ? companyProfile(named.domain) : null;
+      return send(res, 200, { total: filtered.length, jobs: filtered.slice(0, 500), companies: status.map((c) => ({ ...c, csat: c.domain && ratings.summary(c.domain) })), alert });
+    }
+
+    // Employer review: companies with postings open longer than `days` (default 90).
+    if (url.pathname === '/api/stale' && req.method === 'GET') {
+      const days = Math.max(1, Number(url.searchParams.get('days')) || 90);
+      const { jobs } = await allJobs(false);
+      const report = staleReport(companies.filter((c) => c.boards), jobs, days, Date.now(), (d) => ratings.summary(d));
+      return send(res, 200, { days, companies: report, staleJobs: report.reduce((n, c) => n + c.staleCount, 0) });
+    }
+
+    // Record that a note was sent to a company (the app never sends email itself).
+    const nudge = url.pathname.match(/^\/api\/companies\/([^/]+)\/nudge$/);
+    if (nudge && req.method === 'POST') {
+      const c = companies.find((x) => x.domain === decodeURIComponent(nudge[1]));
+      if (!c) return send(res, 404, { error: 'Company not found' });
+      const { jobIds = [], to = '' } = await readBody(req);
+      c.nudges = (c.nudges || []).concat({ at: new Date().toISOString(), jobIds: jobIds.slice(0, 200), to: String(to).slice(0, 200) });
+      saveCompanies(companies);
+      return send(res, 200, { ok: true, lastNudge: c.nudges.at(-1) });
+    }
+
+    // "Is this real?" check: a company website, a company name, or a job link.
+    if (url.pathname === '/api/check' && req.method === 'POST') {
+      if (rateLimited(req, 60)) return send(res, 429, { error: 'Too many checks. Try again in a little while.' });
+      const query = String((await readBody(req)).query || '').trim();
+      if (!query) return send(res, 400, { error: 'Enter a company name, website or job link' });
+
+      const isLink = /^https?:\/\//i.test(query) && new URL(query).pathname.length > 1;
+      if (isLink) {
+        const result = await checkJobLink(query, companies.filter((c) => c.boards));
+        if (result.company?.domain) {
+          const d = result.company.domain;
+          const prev = checks[d]?.linkFlags || [];
+          const flagged = result.verdict !== 'verified' ? [{ link: result.link, verdict: result.verdict, flags: result.flags.filter((f) => f.level !== 'info'), at: result.checkedAt }] : [];
+          saveCheck(d, { name: checks[d]?.name || result.company.name, domain: d, linkFlags: prev.filter((x) => x.link !== result.link).concat(flagged).slice(-20) });
+          result.profile = companyProfile(d);
+        }
+        return send(res, 200, { type: 'job', ...result });
+      }
+
+      let target = query;
+      if (!query.includes('.')) {
+        const found = findByName(query);
+        if (!found) return send(res, 404, { error: `We haven't checked "${query}" yet. Enter its website (e.g. ${query.toLowerCase().replace(/\s+/g, '')}.com) so we can scan it.` });
+        target = found.domain;
+      }
+      const result = await checkCompany(target);
+      saveCheck(result.domain, { name: result.name, domain: result.domain, verdict: result.verdict, flags: result.flags, jobCount: result.jobCount, staleCount: result.staleCount, checkedAt: result.checkedAt, domainRegisteredAt: result.domainRegisteredAt });
+      return send(res, 200, { type: 'company', ...result, profile: companyProfile(result.domain) });
+    }
+
+    // Company profile: last check + recruiting CSAT.
+    const prof = url.pathname.match(/^\/api\/company\/([^/]+)$/);
+    if (prof && req.method === 'GET') return send(res, 200, companyProfile(decodeURIComponent(prof[1]).toLowerCase()));
+
+    // Rate a company's recruiting team.
+    const rate = url.pathname.match(/^\/api\/company\/([^/]+)\/ratings$/);
+    if (rate && req.method === 'POST') {
+      if (rateLimited(req, 20)) return send(res, 429, { error: 'Too many ratings from this connection. Try again later.' });
+      const domain = decodeURIComponent(rate[1]).toLowerCase();
+      if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)) return send(res, 400, { error: 'Invalid company' });
+      if (!checks[domain] && !companies.some((c) => c.domain === domain)) return send(res, 404, { error: 'Check the company first, then rate it' });
+      return send(res, 200, ratings.add(domain, await readBody(req)));
     }
 
     if (url.pathname === '/api/scan' && req.method === 'POST') {
@@ -136,7 +254,7 @@ const server = http.createServer(async (req, res) => {
         if (!scan.boards.length) {
           return send(res, 422, { error: `No job listings found on ${scan.domain}. We checked its homepage and careers pages for an official job board or posted jobs.`, scan });
         }
-        entry = { name: body.name || scan.name, domain: scan.domain, verified: true, boards: scan.boards, addedAt: new Date().toISOString() };
+        entry = { name: body.name || scan.name, domain: scan.domain, verified: true, boards: scan.boards, contacts: scan.contacts, careersUrl: scan.careersUrl, addedAt: new Date().toISOString() };
       } else {
         return send(res, 400, { error: 'Provide a website to scan' });
       }

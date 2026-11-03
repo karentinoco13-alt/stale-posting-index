@@ -13,6 +13,43 @@ Most job sites are full of reposted, expired or fake listings. This app avoids t
 
 If the domain doesn't exist, the site is down, or the site doesn't list any jobs, the company isn't added.
 
+## Company check: "Is this real?"
+
+Anyone can search a **company name, website, or a job link** someone sent them. The app checks it and flags anything that doesn't add up:
+
+| Flag | Meaning |
+| --- | --- |
+| ⛔ Domain not found | The company's website doesn't exist |
+| ⛔ Brand-new domain | Website registered less than 6 months ago (checked through the public RDAP registry), a common sign of fake employers |
+| ⛔ Job not on official listings | A job link that isn't on the company's own site or official board, or is no longer listed |
+| ⚠️ No jobs on the company's site | Offers claiming the company is hiring can't be confirmed |
+| ⚠️ Website not loading | The site may be temporarily down; check again later |
+| ⚠️ Board not linked from a company site | The job board exists, but we can't confirm which company owns it |
+| ⚠️ / ℹ️ Posts open more than 90 days | May already be filled |
+
+Results are saved (`data/checks.json`). Anyone who later searches that company in **Find jobs** sees a warning banner.
+
+## Recruiting-team CSAT
+
+After dealing with a company's recruiters, candidates rate the experience 1 to 5 stars and can answer:
+did they reply, were you ghosted partway through, were they respectful of your time, and how far did you get.
+
+- **CSAT = % of ratings that are 4 or 5 stars** (the standard definition), shown once a company has 3 ratings
+- One rating per person per company (a new rating replaces your old one), with rate limiting
+- Shown on Company check results, on Employer review cards, in the job search banner, and in the note to the employer
+- Stored in `data/ratings.json`
+
+## Employer review: posts open more than 90 days
+
+The **Employer review** tab lists every company, big or small, with job posts open longer than 90 days (adjustable to 60/120/180).
+For each one it drafts a friendly note asking the company to remove the post if it's filled, or refresh it if they're still looking. The note includes the company's candidate CSAT.
+
+- The hiring email (careers@, jobs@, talent@ …) is taken from the company's own website when it's listed there
+- **Open in my email** opens the note in your email app for you to review and send; **Copy note** works for contact forms
+- **Mark as sent** records the date. The app waits 30 days before suggesting a follow-up, so companies aren't spammed
+- The app never sends email by itself
+- In job search, these posts show "⚠ Open N days, may be filled", plus "company notified" once a note has been sent
+
 ## Run it
 
 Requires [Node.js](https://nodejs.org) 18 or newer. No other installs needed.
@@ -65,5 +102,9 @@ The tests run offline against a local fake company website and job board.
 | `server.js` | Web server + API (`/api/jobs`, `/api/companies`, `/api/scan`) |
 | `lib/scan.js` | Scans a company website for its job board and on-page job postings |
 | `lib/sources.js` | Reads jobs from each job-board API and from careers pages |
+| `lib/check.js` | "Is this real?" checks for companies and job links |
+| `lib/stale.js` | Finds posts open more than 90 days and drafts the employer note |
+| `lib/ratings.js` | Recruiting-team CSAT ratings |
 | `public/` | The web page (HTML/CSS/JS) |
 | `data/companies.json` | Your list of companies (updated automatically) |
+| `data/checks.json`, `data/ratings.json` | Saved check results and candidate ratings (created automatically) |
