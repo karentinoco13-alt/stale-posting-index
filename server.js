@@ -14,6 +14,7 @@ const PORT = Number(process.env.PORT) || 3000;
 const DATA_FILE = process.env.COMPANIES_FILE || path.join(__dirname, 'data', 'companies.json');
 const PUBLIC = path.join(__dirname, 'public');
 const CACHE_MS = 30 * 60 * 1000;
+const TERMS_VERSION = '2026-11-03'; // keep in sync with public/app.js; bump to ask everyone to re-accept
 
 // ---------- company list (persisted to data/companies.json) ----------
 function loadCompanies() {
@@ -236,7 +237,40 @@ const server = http.createServer(async (req, res) => {
       const domain = decodeURIComponent(rate[1]).toLowerCase();
       if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)) return send(res, 400, { error: 'Invalid company' });
       if (!checks[domain] && !companies.some((c) => c.domain === domain)) return send(res, 404, { error: 'Check the company first, then rate it' });
-      return send(res, 200, ratings.add(domain, await readBody(req)));
+      const body = await readBody(req);
+      if (body.termsVersion !== TERMS_VERSION) return send(res, 403, { error: 'Please accept the Terms of use (reload the page) before rating.' });
+      return send(res, 200, ratings.add(domain, body));
+    }
+
+    // Feedback form (saved to data/feedback.json for the app owner to read).
+    if (url.pathname === '/api/feedback' && req.method === 'POST') {
+      if (rateLimited(req, 10)) return send(res, 429, { error: 'Too many messages. Try again later.' });
+      const b = await readBody(req);
+      const message = String(b.message || '').trim().slice(0, 2000);
+      if (message.length < 3) return send(res, 400, { error: 'Please write a message' });
+      const file = process.env.FEEDBACK_FILE || path.join(DATA_DIR, 'feedback.json');
+      let list = [];
+      try { list = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { /* first one */ }
+      list.push({ at: new Date().toISOString(), topic: String(b.topic || 'general').slice(0, 40), message, replyTo: String(b.replyTo || '').trim().slice(0, 200), clientId: String(b.clientId || '').slice(0, 64) });
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+      fs.writeFileSync(file, JSON.stringify(list, null, 2));
+      return send(res, 201, { ok: true });
+    }
+
+    // "Delete all my data": ratings and feedback tied to this browser's anonymous id.
+    if (url.pathname === '/api/my-data' && req.method === 'DELETE') {
+      const { clientId } = await readBody(req);
+      if (!/^[a-z0-9-]{8,64}$/i.test(String(clientId || ''))) return send(res, 400, { error: 'Missing id' });
+      const ratingsRemoved = ratings.removeByClient(clientId);
+      const file = process.env.FEEDBACK_FILE || path.join(DATA_DIR, 'feedback.json');
+      let feedbackRemoved = 0;
+      try {
+        const list = JSON.parse(fs.readFileSync(file, 'utf8'));
+        const kept = list.filter((f) => f.clientId !== clientId);
+        feedbackRemoved = list.length - kept.length;
+        if (feedbackRemoved) fs.writeFileSync(file, JSON.stringify(kept, null, 2));
+      } catch { /* no feedback file */ }
+      return send(res, 200, { ratingsRemoved, feedbackRemoved });
     }
 
     if (url.pathname === '/api/scan' && req.method === 'POST') {

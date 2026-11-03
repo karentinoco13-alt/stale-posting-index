@@ -108,3 +108,46 @@ button.secondary { background: var(--bg); color: var(--text); border: 1px solid 
 .banner { border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; border: 1px solid var(--line); background: var(--card); }
 .banner.caution { background: var(--warn-bg); border-color: transparent; }
 .banner.warning { background: color-mix(in srgb, var(--err) 14%, var(--card)); border-color: transparent; }
+
+/* Footer (matches Growth Compass) */
+.site-footer { background: #13234b; color: #e9ecf3; border-top: 4px solid #c9a227; margin-top: 40px; padding: 26px 0 30px; font-size: 15px; }
+.site-footer p { margin: 0 0 12px; line-height: 1.6; }
+.site-footer .fine { color: #c9cfdc; margin: 0; }
+.site-footer a { color: #f2c94c; }
+.site-footer a:hover { color: #ffe08a; }
+.site-footer strong { color: #fff; }
+dialog { border: 1px solid var(--line); border-radius: 12px; padding: 20px; max-width: 520px; width: calc(100% - 32px); background: var(--card); color: var(--text); }
+dialog::backdrop { background: rgb(0 0 0 / .45); }
+dialog h2 { margin-top: 0; }
+dialog label { display: block; margin: 10px 0; font-size: 14px; }
+dialog select, dialog input, dialog textarea { display: block; width: 100%; margin-top: 4px; font: inherit; }
+dialog textarea { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+button.danger { background: var(--err); color: #fff; }
+.prose { max-width: 760px; padding-top: 10px; padding-bottom: 20px; }
+.prose h1 { font-size: 26px; margin: 20px 0 4px; }
+.prose h2 { font-size: 18px; margin: 24px 0 6px; }
+.prose li { margin: 4px 0; }
+.prose a, a.home { color: var(--accent); }
+a.home { color: inherit; text-decoration: none; }
+
+/* Terms gate (matches Kaizen Workbench) */
+dialog.gate { padding: 0; max-width: 560px; border: 1px solid #b9a5f0; overflow: hidden; }
+.gate-top { display: flex; justify-content: space-between; align-items: center; background: #13234b; color: #fff; font-weight: 700; padding: 10px 16px; border-bottom: 3px solid #c9a227; }
+.lang { display: flex; background: #2a3a66; border-radius: 8px; padding: 3px; gap: 2px; }
+.lang button { background: none; color: #c9cfdc; padding: 3px 10px; font-size: 12px; border-radius: 6px; }
+.lang button[aria-pressed=true] { background: #fff; color: #13234b; }
+.gate-title { margin: 0; background: #6a2bd1; color: #fff; padding: 14px 18px; font-size: 20px; }
+.gate-body { padding: 14px 18px 18px; font-size: 14px; }
+.gate-list { max-height: 260px; overflow-y: auto; margin: 10px 0; padding: 10px 14px 10px 30px; border: 1px solid #b9a5f0; border-left: 4px solid #6a2bd1; border-radius: 6px; }
+.gate-list li { margin: 0 0 8px; }
+.gate-list li::marker { color: #6a2bd1; }
+.gate-list strong { color: #6a2bd1; }
+@media (prefers-color-scheme: dark) { .gate-list strong, .gate-list li::marker { color: #b49cff; } }
+.gate-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.gate-links a { font-size: 12px; border: 1px solid #b9a5f0; border-radius: 6px; padding: 3px 8px; color: #6a2bd1; text-decoration: none; }
+.gate-accept { display: flex; gap: 10px; align-items: center; margin: 14px 0 0; padding: 12px; background: var(--warn-bg); border: 1px solid #e0c56e; border-radius: 6px; font-weight: 600; cursor: pointer; }
+.gate-accept input { width: 18px; height: 18px; margin: 0; flex: none; }
+.gate-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.gate-actions button.secondary { border-color: #b9a5f0; color: #6a2bd1; }
+#gateOk { background: #6a2bd1; color: #fff; }
+#gateOk:disabled { background: #8c93a3; opacity: 1; cursor: not-allowed; }

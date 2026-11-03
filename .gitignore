@@ -3,3 +3,4 @@ node_modules/
 *.zip
 data/checks.json
 data/ratings.json
+data/feedback.json

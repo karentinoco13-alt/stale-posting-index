@@ -50,6 +50,13 @@ For each one it drafts a friendly note asking the company to remove the post if 
 - The app never sends email by itself
 - In job search, these posts show "⚠ Open N days, may be filled", plus "company notified" once a note has been sent
 
+## Terms, privacy and your data
+
+- **Terms gate**: on the first visit, people see a summary of the Terms of use (English or Spanish) and must tick "I have read and accept" before using the app. Ratings are refused unless the terms were accepted. To ask everyone to accept again after changing the terms, update `TERMS_VERSION` in both `server.js` and `public/app.js`.
+- **Footer** on every page: license, Privacy and security, Terms of use, Send feedback, Delete all my data.
+- **Send feedback** saves messages to `data/feedback.json` (no email address is shown publicly).
+- **Delete all my data** permanently removes the person's ratings, comments and feedback, and clears the app's storage in their browser.
+
 ## Run it
 
 Requires [Node.js](https://nodejs.org) 18 or newer. No other installs needed.

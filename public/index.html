@@ -99,6 +99,56 @@
     </div>
   </main>
 
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>Real Jobs Finder</strong> by Karen Tinoco · © 2026 Karen Tinoco. Licensed under PolyForm Noncommercial 1.0.0: free to view, run, and adapt for non-commercial use. Commercial use by permission only.
+        <a href="/LICENSE.txt">License</a> · <a href="/privacy.html">Privacy and security</a> · <a href="/terms.html">Terms of use</a> · <a href="/#feedback" data-open="feedback">Send feedback</a> · <a href="/#delete" data-open="delete">Delete all my data</a></p>
+      <p class="fine">Designed and directed by the author; implemented with Claude Code as an AI pair programmer. Job listings come from employers' own websites and official job boards. Not affiliated with, or endorsed by, the companies or job-board providers shown. Flags and ratings are automated checks and candidate opinions, not statements of fact about any employer.</p>
+    </div>
+  </footer>
+
+  <dialog id="dlg-feedback" aria-labelledby="fbTitle">
+    <form id="feedbackForm" method="dialog">
+      <h2 id="fbTitle">Send feedback</h2>
+      <p class="muted">Found a fake job we missed, a company we flagged by mistake, or have an idea? Tell us.</p>
+      <label>Topic
+        <select name="topic"><option value="general">General</option><option value="wrong-flag">A company was flagged by mistake</option><option value="missed-scam">A fake job we missed</option><option value="bug">Something isn't working</option><option value="idea">Idea</option></select>
+      </label>
+      <label>Message <textarea name="message" required maxlength="2000" rows="5"></textarea></label>
+      <label>Email (optional, only if you want a reply) <input name="replyTo" type="email" maxlength="200"></label>
+      <div class="actions"><button type="submit" value="send">Send</button><button type="button" class="secondary" data-close>Cancel</button><span class="msg" id="fbMsg"></span></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-delete" aria-labelledby="delTitle">
+    <form id="deleteForm" method="dialog">
+      <h2 id="delTitle">Delete all my data</h2>
+      <p>This permanently deletes everything this browser has sent us: your recruiting ratings and comments, and any feedback. It also clears what this app stored in your browser. It can't be undone.</p>
+      <p class="muted">Company checks aren't linked to you and aren't affected.</p>
+      <div class="actions"><button type="submit" value="delete" class="danger">Delete my data</button><button type="button" class="secondary" data-close>Cancel</button><span class="msg" id="delMsg"></span></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-terms" class="gate" aria-labelledby="gateTitle">
+    <div class="gate-top"><span>Real Jobs Finder</span>
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="es" aria-pressed="false">ES</button></div>
+    </div>
+    <h2 id="gateTitle" class="gate-title" data-i18n="title"></h2>
+    <div class="gate-body">
+      <p data-i18n="intro"></p>
+      <ul class="gate-list" id="gateList"></ul>
+      <div class="gate-links">
+        <a href="/terms.html" target="_blank" rel="noopener" data-i18n="fullTerms"></a>
+        <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="privacy"></a>
+      </div>
+      <label class="gate-accept"><input type="checkbox" id="gateCheck"> <span data-i18n="accept"></span></label>
+      <p class="msg err" id="gateMsg" role="status"></p>
+      <div class="gate-actions">
+        <button type="button" class="secondary" id="gateDecline" data-i18n="decline"></button>
+        <button type="button" id="gateOk" disabled data-i18n="continue"></button>
+      </div>
+    </div>
+  </dialog>
   <script src="/app.js"></script>
 </body>
 </html>

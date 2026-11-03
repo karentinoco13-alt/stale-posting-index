@@ -304,7 +304,7 @@ $('#checkResult').addEventListener('submit', async (e) => {
   try {
     const res = await fetch(`/api/company/${encodeURIComponent(e.target.dataset.domain)}/ratings`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: Number(f.get('score')), stage: f.get('stage'), responded: tri('responded'), ghosted: tri('ghosted'), respectful: tri('respectful'), comment: f.get('comment'), clientId: clientId() }),
+      body: JSON.stringify({ score: Number(f.get('score')), stage: f.get('stage'), responded: tri('responded'), ghosted: tri('ghosted'), respectful: tri('respectful'), comment: f.get('comment'), clientId: clientId(), termsVersion: TERMS_VERSION }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
@@ -328,3 +328,121 @@ function renderAlert(a) {
     ${a.csat?.count ? `<div>${csatLine(a.csat).replace(/<\/?p[^>]*>/g, '')}</div>` : ''}
   </div>`;
 }
+
+// ---------- Footer: feedback + delete my data ----------
+function openDialog(name) {
+  const d = document.getElementById('dlg-' + name);
+  if (d && !d.open) d.showModal();
+}
+document.addEventListener('click', (e) => {
+  const o = e.target.closest('[data-open]');
+  if (o) { e.preventDefault(); openDialog(o.dataset.open); }
+  if (e.target.matches('[data-close]')) e.target.closest('dialog').close();
+});
+// Links like /#feedback from the Privacy and Terms pages.
+if (['#feedback', '#delete'].includes(location.hash)) openDialog(location.hash.slice(1));
+
+$('#feedbackForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = new FormData(e.target), msg = $('#fbMsg');
+  try {
+    const res = await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: f.get('topic'), message: f.get('message'), replyTo: f.get('replyTo'), clientId: clientId() }) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    msg.className = 'msg ok'; msg.textContent = 'Thank you, your feedback was sent.';
+    e.target.reset();
+    setTimeout(() => { $('#dlg-feedback').close(); msg.textContent = ''; }, 1500);
+  } catch (err) { msg.className = 'msg err'; msg.textContent = err.message; }
+});
+
+$('#deleteForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = $('#delMsg');
+  let id = null;
+  try { id = localStorage.getItem('rjf-id'); } catch { /* storage blocked */ }
+  try {
+    let text = 'There was nothing stored for this browser.';
+    if (id) {
+      const res = await fetch('/api/my-data', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clientId: id }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      text = `Deleted ${data.ratingsRemoved} rating${data.ratingsRemoved === 1 ? '' : 's'} and ${data.feedbackRemoved} feedback message${data.feedbackRemoved === 1 ? '' : 's'}.`;
+    }
+    try { localStorage.clear(); sessionStorage.clear(); } catch { /* ignore */ }
+    window._rid = undefined;
+    msg.className = 'msg ok'; msg.textContent = text + ' Browser storage cleared.';
+  } catch (err) { msg.className = 'msg err'; msg.textContent = err.message; }
+});
+
+// ---------- Terms gate (shown until accepted) ----------
+const TERMS_VERSION = '2026-11-03';
+const GATE_TEXT = {
+  en: {
+    title: 'Before you start: Terms of use',
+    intro: 'Please read this summary of the Terms of use. You need to accept them before you can use the app.',
+    items: [
+      ['Free and non-commercial.', 'Real Jobs Finder is a free tool. It is not a recruiter, an employer or a job board, and it does not handle applications.'],
+      ['Jobs come from employers.', "Listings are taken from each employer's own website and official job board. They can change or close at any time, so always confirm details on the employer's site before applying."],
+      ['Flags are signals, not verdicts.', '"Be careful" and "Warning" labels come from automated checks. A real company can be flagged by mistake and a fake one can be missed. A flag is not a finding that a company did anything wrong.'],
+      ['Ratings are opinions.', "Only rate companies whose hiring process you actually took part in, once per company. Keep comments honest and respectful, and don't include names or personal details."],
+      ['You send the notes.', 'Notes to employers open in your own email app. You decide whether to send them and you are responsible for what you send.'],
+      ['Your data, your choice.', 'No accounts or tracking. Your ratings use an anonymous ID kept in this browser. You can permanently delete them at any time with "Delete all my data".'],
+      ['Never pay for a job.', 'Real employers do not charge candidates for training, equipment or "processing". If anyone asks, stop and report it.'],
+      ['Provided as is.', 'The app is provided "as is" and "as available", without warranties of any kind. To the extent the law allows, its developer is not liable for any loss arising from its use.'],
+    ],
+    fullTerms: 'Read the full Terms of use', privacy: 'Privacy & security',
+    accept: 'I have read and accept the Terms of use and the Privacy & security notice',
+    decline: 'Decline', continue: 'Accept and continue',
+    declined: "You need to accept the Terms of use to use the app. You can read the full terms using the links above.",
+  },
+  es: {
+    title: 'Antes de empezar: Términos de uso',
+    intro: 'Lee este resumen de los Términos de uso. Debes aceptarlos antes de usar la aplicación.',
+    items: [
+      ['Gratuita y sin fines comerciales.', 'Real Jobs Finder es una herramienta gratuita. No es un reclutador, un empleador ni una bolsa de trabajo, y no gestiona postulaciones.'],
+      ['Las ofertas vienen de los empleadores.', 'Las ofertas se toman del sitio web y del portal de empleo oficial de cada empresa. Pueden cambiar o cerrarse en cualquier momento; confirma siempre los detalles en el sitio del empleador antes de postularte.'],
+      ['Las alertas son señales, no veredictos.', 'Las etiquetas "Ten cuidado" y "Advertencia" provienen de revisiones automáticas. Una empresa real puede marcarse por error y una falsa puede pasar desapercibida. Una alerta no significa que la empresa haya hecho algo indebido.'],
+      ['Las calificaciones son opiniones.', 'Califica solo empresas en cuyo proceso de selección participaste, una vez por empresa. Mantén tus comentarios honestos y respetuosos, sin nombres ni datos personales.'],
+      ['Tú envías los mensajes.', 'Los mensajes a los empleadores se abren en tu propio correo. Tú decides si enviarlos y eres responsable de lo que envías.'],
+      ['Tus datos, tu decisión.', 'Sin cuentas ni rastreo. Tus calificaciones usan un identificador anónimo guardado en este navegador. Puedes borrarlas permanentemente cuando quieras con "Borrar todos mis datos".'],
+      ['Nunca pagues por un empleo.', 'Los empleadores reales no cobran a los candidatos por capacitación, equipo ni "trámites". Si alguien te lo pide, detente y denúncialo.'],
+      ['Se ofrece tal cual.', 'La aplicación se ofrece "tal cual" y "según disponibilidad", sin garantías de ningún tipo. En la medida en que la ley lo permita, su desarrolladora no es responsable de ninguna pérdida derivada de su uso.'],
+    ],
+    fullTerms: 'Leer los Términos de uso completos', privacy: 'Privacidad y seguridad',
+    accept: 'He leído y acepto los Términos de uso y el aviso de Privacidad y seguridad',
+    decline: 'Rechazar', continue: 'Aceptar y continuar',
+    declined: 'Debes aceptar los Términos de uso para usar la aplicación. Puedes leerlos completos con los enlaces de arriba.',
+  },
+};
+
+function termsAccepted() {
+  try { return localStorage.getItem('rjf-terms') === TERMS_VERSION; } catch { return !!window._termsOk; }
+}
+
+function setGateLang(lang) {
+  const t = GATE_TEXT[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll('#dlg-terms [data-i18n]').forEach((el) => { el.textContent = t[el.dataset.i18n]; });
+  $('#gateList').innerHTML = t.items.map(([h, b]) => `<li><strong>${esc(h)}</strong> ${esc(b)}</li>`).join('');
+  document.querySelectorAll('.lang button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  if ($('#gateMsg').textContent) $('#gateMsg').textContent = t.declined;
+  try { localStorage.setItem('rjf-lang', lang); } catch { /* ignore */ }
+}
+
+(function initGate() {
+  const dlg = $('#dlg-terms');
+  let lang = 'en';
+  try { lang = localStorage.getItem('rjf-lang') || ((navigator.language || '').startsWith('es') ? 'es' : 'en'); } catch { /* ignore */ }
+  setGateLang(lang);
+  document.querySelectorAll('.lang button').forEach((b) => b.addEventListener('click', () => setGateLang(b.dataset.lang)));
+  $('#gateCheck').addEventListener('change', (e) => { $('#gateOk').disabled = !e.target.checked; $('#gateMsg').textContent = ''; });
+  $('#gateDecline').addEventListener('click', () => { $('#gateMsg').textContent = GATE_TEXT[document.documentElement.lang === 'es' ? 'es' : 'en'].declined; });
+  $('#gateOk').addEventListener('click', () => {
+    try { localStorage.setItem('rjf-terms', TERMS_VERSION); } catch { window._termsOk = true; }
+    dlg.close();
+    document.documentElement.lang = 'en'; // the rest of the app is in English for now
+  });
+  dlg.addEventListener('cancel', (e) => { if (!termsAccepted()) e.preventDefault(); }); // Esc can't skip it
+  if (!termsAccepted()) { document.querySelectorAll('dialog[open]').forEach((d) => d.close()); dlg.showModal(); }
+})();
