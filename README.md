@@ -32,4 +32,4 @@ Open `app/index.html` in a browser, or serve it with GitHub Pages. Rankings, upl
 ## Credits and license
 
 Designed and directed by Karen Tinoco; implemented with Claude Code as an AI pair programmer.
-© 2026 Karen Tinoco. Licensed under [PolyForm Noncommercial 1.0.0](LICENSE.md): free to use, share and adapt for non-commercial purposes, with credit. Commercial use by permission only.
+© 2026 Karen Tinoco. Licensed under [PolyForm Noncommercial 1.0.0](LICENSE): free to use, share and adapt for non-commercial purposes, with credit. Commercial use by permission only.
