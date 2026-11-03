@@ -9,7 +9,7 @@ Most job sites are full of reposted, expired or fake listings. This app avoids t
 3. **It uses only what the company itself publishes:**
    - the official hiring board the site links to (**Greenhouse, Lever, Ashby, SmartRecruiters, Workable**), read through that board's public API, and
    - jobs posted directly on the company's careers pages with standard `schema.org/JobPosting` data (the same data Google Jobs reads).
-4. Every job links to the company's own application page. Expired postings are dropped, and postings older than 60 days are flagged.
+4. Every job links to the company's own application page. Expired postings are dropped, and postings open more than 90 days are flagged.
 
 If the domain doesn't exist, the site is down, or the site doesn't list any jobs, the company isn't added.
 
