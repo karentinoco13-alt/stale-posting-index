@@ -376,6 +376,50 @@ header.top { background: linear-gradient(125deg, #1d2742 0%, #2b3760 45%, #43395
 .rank, .flagcount, .pill.t-repost, .rep-actions button[aria-pressed="true"], .gate-foot button.primary { color: var(--on-fill); text-shadow: none; }
 .nav button[aria-selected="true"]::before { background: var(--on-fill); }
 #btn-copy { background: var(--c4); }
+
+/* ===== Balanced palette: confident, not neon ===== */
+:root { --c1: #e0457b; --c2: #ec7a22; --c3: #d9a200; --c4: #1f9d66; --c5: #0b98b3; --c6: #3b6fe0; --c7: #7a52e0; --c8: #c447bd;
+  --t1: #fde8ef; --t2: #fdeedf; --t3: #fcf3d6; --t4: #e0f5ea; --t5: #dcf2f6; --t6: #e3ebfd; --t7: #ece6fd; --t8: #f8e6f6;
+  --bg: #f5f4fb; --surface: #ffffff; --ink: #1b1830; --muted: #5a5675; --line: #e0dcf0; --accent: #6644d6; --accent-soft: #ece6fd; --bar-track: #e8e4f5;
+  --watch: #946c00; --watch-bg: #fcf0c8; --stale: #b2530f; --stale-bg: #fde3cf; --ghost: #b8264a; --ghost-bg: #fcdbe3; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c1: #ff6f9c; --c2: #ff9b4d; --c3: #ffcb3d; --c4: #45cf8d; --c5: #3cc6de; --c6: #73a0ff; --c7: #a789ff; --c8: #e676da;
+    --t1: #3a1828; --t2: #3a2414; --t3: #362d12; --t4: #133225; --t5: #10303a; --t6: #18264a; --t7: #251d4a; --t8: #361a39;
+    --bg: #12111c; --surface: #1c1a2a; --ink: #ecebf6; --muted: #a7a3c0; --line: #332f4a; --accent: #b29cff; --accent-soft: #2a2350; --bar-track: #2b2840;
+    --watch: #ffcb3d; --watch-bg: #33290f; --stale: #ff9b4d; --stale-bg: #3a2414; --ghost: #ff7b9c; --ghost-bg: #3f1726; color-scheme: dark; } }
+:root[data-theme="dark"] { --c1: #ff6f9c; --c2: #ff9b4d; --c3: #ffcb3d; --c4: #45cf8d; --c5: #3cc6de; --c6: #73a0ff; --c7: #a789ff; --c8: #e676da;
+    --t1: #3a1828; --t2: #3a2414; --t3: #362d12; --t4: #133225; --t5: #10303a; --t6: #18264a; --t7: #251d4a; --t8: #361a39;
+    --bg: #12111c; --surface: #1c1a2a; --ink: #ecebf6; --muted: #a7a3c0; --line: #332f4a; --accent: #b29cff; --accent-soft: #2a2350; --bar-track: #2b2840;
+    --watch: #ffcb3d; --watch-bg: #33290f; --stale: #ff9b4d; --stale-bg: #3a2414; --ghost: #ff7b9c; --ghost-bg: #3f1726; color-scheme: dark; }
+body {
+  background:
+    radial-gradient(40rem 26rem at 0% 0%, color-mix(in srgb, var(--c8) 11%, transparent), transparent 70%),
+    radial-gradient(36rem 24rem at 100% 6%, color-mix(in srgb, var(--c5) 12%, transparent), transparent 70%),
+    radial-gradient(40rem 28rem at 50% 100%, color-mix(in srgb, var(--c3) 9%, transparent), transparent 70%),
+    var(--bg);
+}
+header.top {
+  background:
+    radial-gradient(30rem 18rem at 92% 0%, rgba(255, 110, 170, .35), transparent 70%),
+    radial-gradient(28rem 18rem at 70% 100%, rgba(60, 200, 230, .28), transparent 70%),
+    linear-gradient(125deg, #13203f 0%, #1d3270 50%, #3b2c78 100%);
+  box-shadow: 0 16px 36px -18px rgba(40, 30, 110, .65);
+}
+.hero h1 .hl { background: linear-gradient(90deg, #5ec8ff 0%, #a98bff 50%, #ff7ab6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hchip { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.38); }
+.hero-cta .solid { color: #1d3270; }
+.console::before, #gate::before { background: linear-gradient(90deg, var(--c5), var(--c6), var(--c7), var(--c8), var(--c1), var(--c2)); height: 5px; }
+.console-bar { background: linear-gradient(90deg, var(--t6), var(--t8), var(--t2)); }
+.s1 { background: linear-gradient(135deg, #d93d78, #a83cae); }
+.s2 { background: linear-gradient(135deg, #e8741f, #c95a12); }
+.s3 { background: linear-gradient(135deg, #0b98b3, #3b6fe0); }
+.s4 { background: linear-gradient(135deg, #7a52e0, #5236b8); }
+.cols { background: linear-gradient(90deg, #3b6fe0, #7a52e0); }
+.v-high { background: linear-gradient(135deg, #db335d, #b0244a); }
+.v-mid { background: linear-gradient(135deg, #e8741f, #c25a12); }
+.v-low { background: linear-gradient(135deg, #1f9d66, #167a50); }
+.toast { background: linear-gradient(90deg, #3b6fe0, #7a52e0); }
+.lens-note { border-left-color: var(--c8); background: var(--t8); }
+#btn-copy { background: linear-gradient(90deg, var(--c4), var(--c5)); }
 </style>
 
 <div class="wrap" id="top">
@@ -384,10 +428,10 @@ header.top { background: linear-gradient(125deg, #1d2742 0%, #2b3760 45%, #43395
     <h1>Stale <span class="hl">Posting</span> Index</h1>
     <p class="lede" data-i18n="heroLede">Spot the employers, from tech giants to local hospitals, clinics and contractors, that keep the same job posted for months or repost it so it looks new, and check job ads for signs a company takes advantage of workers. Job seekers learn where not to waste their time. Employers see which roles competitors can't fill.</p>
     <div class="chips">
-      <span class="hchip"><i style="background:#d9be7a"></i><span data-i18n="chipWatch">2 months · Watch</span></span>
-      <span class="hchip"><i style="background:#d9a074"></i><span data-i18n="chipStale">3 months · Stale</span></span>
-      <span class="hchip"><i style="background:#d68ea0"></i><span data-i18n="chipGhost">6 months · Likely ghost</span></span>
-      <span class="hchip"><i style="background:#a99bd4"></i><span data-i18n="chipRepost">3+ posts · Serial reposter</span></span>
+      <span class="hchip"><i style="background:#ffcb3d"></i><span data-i18n="chipWatch">2 months · Watch</span></span>
+      <span class="hchip"><i style="background:#ff9b4d"></i><span data-i18n="chipStale">3 months · Stale</span></span>
+      <span class="hchip"><i style="background:#ff6f9c"></i><span data-i18n="chipGhost">6 months · Likely ghost</span></span>
+      <span class="hchip"><i style="background:#a789ff"></i><span data-i18n="chipRepost">3+ posts · Serial reposter</span></span>
     </div>
     <div class="hero-cta">
       <button class="solid" id="cta-start" data-i18n="ctaStart">Start tracking</button>
@@ -637,12 +681,12 @@ header.top { background: linear-gradient(125deg, #1d2742 0%, #2b3760 45%, #43395
   </div>
   <div class="gate-body">
     <p class="fine" data-i18n="gateIntro">A summary of the Stale Posting Index terms of use and privacy notice. Please read it and accept to continue.</p>
-    <div class="gcard" style="--gc:#3f7a55"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026.</p></div>
-    <div class="gcard" style="--gc:#5b4d8f"><h3 data-i18n="g2h">No guaranteed results</h3><p data-i18n="g2p">Stale Posting Index and its developer make no warranty of any outcome. Rankings, labels and fraud scores are automatic signals based on the data provided, and are only as good as that data. They are not facts about any company. A long-open or reposted job can have legitimate reasons, so always check with the employer.</p></div>
-    <div class="gcard" style="--gc:#9a6a2a"><h3 data-i18n="g6h">Know the catch: not live data yet</h3><p data-i18n="g6p">The app doesn't pull jobs from the web on its own yet, and coverage is partial. Rankings use only postings people add, uploaded files and community reports, so a company that's missing isn't proof it hires fairly. Help make it better: tell us what's missing with Send feedback.</p></div>
-    <div class="gcard" style="--gc:#3e5a8c"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads, analytics or tracking. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
-    <div class="gcard" style="--gc:#9a4a3a"><h3 data-i18n="g4h">Deleting is permanent; your data is your responsibility</h3><p data-i18n="g4p1">Delete all my data permanently removes everything you entered. This can't be undone.</p><p data-i18n-html="g4p2">You're responsible for your data. Stale Posting Index and its developer aren't responsible for lost or deleted data, to the fullest extent the law allows. Keep your own copy of what matters. In <strong>Add postings</strong>, the <strong>My postings</strong> tab has a <strong>Copy all postings as CSV</strong> button.</p></div>
-    <div class="gcard" style="--gc:#4f7a45"><h3 data-i18n="g5h">Licence</h3><p data-i18n-html="g5p">© 2026 Karen Tinoco. Licensed under PolyForm Noncommercial 1.0.0: free to view, run, and adapt for non-commercial use. Commercial use by permission only. <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">License</a></p></div>
+    <div class="gcard" style="--gc:#1a8f5c"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026.</p></div>
+    <div class="gcard" style="--gc:#6a46cf"><h3 data-i18n="g2h">No guaranteed results</h3><p data-i18n="g2p">Stale Posting Index and its developer make no warranty of any outcome. Rankings, labels and fraud scores are automatic signals based on the data provided, and are only as good as that data. They are not facts about any company. A long-open or reposted job can have legitimate reasons, so always check with the employer.</p></div>
+    <div class="gcard" style="--gc:#c97a10"><h3 data-i18n="g6h">Know the catch: not live data yet</h3><p data-i18n="g6p">The app doesn't pull jobs from the web on its own yet, and coverage is partial. Rankings use only postings people add, uploaded files and community reports, so a company that's missing isn't proof it hires fairly. Help make it better: tell us what's missing with Send feedback.</p></div>
+    <div class="gcard" style="--gc:#2f62d0"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads, analytics or tracking. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
+    <div class="gcard" style="--gc:#cf4a2a"><h3 data-i18n="g4h">Deleting is permanent; your data is your responsibility</h3><p data-i18n="g4p1">Delete all my data permanently removes everything you entered. This can't be undone.</p><p data-i18n-html="g4p2">You're responsible for your data. Stale Posting Index and its developer aren't responsible for lost or deleted data, to the fullest extent the law allows. Keep your own copy of what matters. In <strong>Add postings</strong>, the <strong>My postings</strong> tab has a <strong>Copy all postings as CSV</strong> button.</p></div>
+    <div class="gcard" style="--gc:#3d8a36"><h3 data-i18n="g5h">Licence</h3><p data-i18n-html="g5p">© 2026 Karen Tinoco. Licensed under PolyForm Noncommercial 1.0.0: free to view, run, and adapt for non-commercial use. Commercial use by permission only. <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">License</a></p></div>
     <div class="gate-links"><button class="linkbtn" id="gate-terms" data-i18n="gateReadTerms">Read the full Terms of use</button><button class="linkbtn" id="gate-privacy" data-i18n="gateReadPrivacy">Read the Privacy &amp; security notice</button></div>
   </div>
   <div class="gate-foot">
@@ -1329,7 +1373,7 @@ header.top { background: linear-gradient(125deg, #1d2742 0%, #2b3760 45%, #43395
     $("fr-text").placeholder = p ? "Home Health Aide — Always hiring! Start tomorrow.\nPay: commission-based. Must use own vehicle. $75 uniform and background check fee.\n1099 independent contractor, 40 hours/week, mandatory weekends." : "From: Amazon HR <amazonhiring.team@gmail.com>\nSubject: Remote Data Entry Offer\n\nDear Candidate, you have been selected…";
   }
   $("fr-mode").addEventListener("change", () => { frModeUI(); $("fr-result").innerHTML = ""; $("fr-msg").textContent = ""; });
-  const LEVEL = { high: ["lvHigh", "v-high", "#9a3a4f"], mid: ["lvMid", "v-mid", "#9a5d33"], low: ["lvLow", "v-low", "#3f7a55"] };
+  const LEVEL = { high: ["lvHigh", "v-high", "#db335d"], mid: ["lvMid", "v-mid", "#e0701c"], low: ["lvLow", "v-low", "#1f9d66"] };
   const PLEVEL = { high: "pLvHigh", mid: "pLvMid", low: "pLvLow" };
   const levelLabel = (c) => t(c.kind === "posting" ? PLEVEL[c.level] : LEVEL[c.level][0]);
   const flagText = (f) => t(f[0], f[1] || undefined);
