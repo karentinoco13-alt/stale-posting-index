@@ -1,0 +1,5 @@
+# collector output (local data, not for the repo)
+*.db
+*.csv
+__pycache__/
+.env

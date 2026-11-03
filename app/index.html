@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Stale Posting Index</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: rainbow hero with two calls to action, then one app console (dot-tab menu, EN/ES, lens), About, and the author footer. A terms gate opens first. */
+:root {
+  --c1: #ff3d7f; --c2: #ff8a1f; --c3: #ffc800; --c4: #22c55e; --c5: #06b6d4; --c6: #3b6cff; --c7: #8b5cf6; --c8: #e040fb;
+  --t1: #ffe1ec; --t2: #ffe9d4; --t3: #fff5c7; --t4: #dcfce7; --t5: #d4f7fc; --t6: #dfe7ff; --t7: #ede5ff; --t8: #fbe0ff;
+  --bg: #f7f3ff; --surface: #ffffff; --ink: #1c1530; --muted: #615a78; --line: #e4d9ff;
+  --accent: #7c3aed; --accent-soft: #ede5ff; --on-color: #ffffff; --bar-track: #ece6fa;
+  --watch: #a86f00; --watch-bg: #fff2c2; --stale: #c2570c; --stale-bg: #ffe2cc; --ghost: #c0183a; --ghost-bg: #ffd9e1;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c1: #ff5c93; --c2: #ff9d45; --c3: #ffd43b; --c4: #4ade80; --c5: #22d3ee; --c6: #6b8cff; --c7: #a78bfa; --c8: #ea6bff;
+    --t1: #3d1424; --t2: #3d2412; --t3: #3a3210; --t4: #12341f; --t5: #0f3138; --t6: #17224a; --t7: #261a48; --t8: #391542;
+    --bg: #130f1f; --surface: #1d1830; --ink: #ece8f7; --muted: #a79fc0; --line: #3a2f5c;
+    --accent: #b794ff; --accent-soft: #2c2050; --bar-track: #2c2545;
+    --watch: #ffd43b; --watch-bg: #3a3112; --stale: #ff9d45; --stale-bg: #43261a; --ghost: #ff6b88; --ghost-bg: #4a1a26; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --c1: #ff5c93; --c2: #ff9d45; --c3: #ffd43b; --c4: #4ade80; --c5: #22d3ee; --c6: #6b8cff; --c7: #a78bfa; --c8: #ea6bff;
+  --t1: #3d1424; --t2: #3d2412; --t3: #3a3210; --t4: #12341f; --t5: #0f3138; --t6: #17224a; --t7: #261a48; --t8: #391542;
+  --bg: #130f1f; --surface: #1d1830; --ink: #ece8f7; --muted: #a79fc0; --line: #3a2f5c;
+  --accent: #b794ff; --accent-soft: #2c2050; --bar-track: #2c2545;
+  --watch: #ffd43b; --watch-bg: #3a3112; --stale: #ff9d45; --stale-bg: #43261a; --ghost: #ff6b88; --ghost-bg: #4a1a26; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5; color: var(--ink);
+  background:
+    radial-gradient(40rem 26rem at 0% 0%, color-mix(in srgb, var(--c1) 20%, transparent), transparent 70%),
+    radial-gradient(36rem 24rem at 100% 8%, color-mix(in srgb, var(--c5) 20%, transparent), transparent 70%),
+    radial-gradient(40rem 30rem at 50% 100%, color-mix(in srgb, var(--c3) 18%, transparent), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+h2 { font-size: 24px; font-weight: 800; background: linear-gradient(90deg, var(--c7), var(--c1), var(--c2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.fine { font-size: 13px; color: var(--muted); max-width: 80ch; }
+.fine strong { color: var(--c7); }
+code { font-family: var(--font-mono); font-size: 12.5px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+
+button { font: inherit; font-size: 14px; font-weight: 600; border-radius: 9px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); padding: 7px 14px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-color); }
+button.danger { color: var(--ghost); border-color: color-mix(in srgb, var(--ghost) 45%, transparent); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .row-head:focus-visible, a:focus-visible { outline: 3px solid var(--c8); outline-offset: 2px; }
+input[type="search"], input[type="text"], input[type="url"], input[type="date"], select, textarea { font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 9px; padding: 7px 10px; width: 100%; min-width: 0; }
+
+/* header */
+header.top {
+  display: grid; gap: 12px; border-radius: 22px; padding: 26px 22px; color: var(--on-color);
+  background: linear-gradient(120deg, var(--c1), var(--c2) 22%, var(--c3) 40%, var(--c4) 58%, var(--c5) 72%, var(--c6) 86%, var(--c7));
+  box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--c7) 60%, transparent);
+}
+header.top h1 { color: var(--on-color); text-shadow: 0 2px 0 rgba(0,0,0,.18); }
+header.top .eyebrow, header.top .lede, header.top .count { color: var(--on-color); text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.lede { font-weight: 500; max-width: 66ch; }
+.top-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 14px; }
+.lens { display: inline-flex; border: 1.5px solid rgba(255,255,255,.6); border-radius: 12px; padding: 3px; background: rgba(255,255,255,.22); gap: 2px; }
+.lens button { border: 0; border-radius: 9px; padding: 6px 14px; background: transparent; color: var(--on-color); text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.lens button[aria-pressed="true"] { background: #fff; color: #db2777; text-shadow: none; }
+#lens-employer[aria-pressed="true"] { color: #0e7490; }
+.count { font-size: 13.5px; font-weight: 600; }
+
+.lens-note { border-left: 6px solid var(--c8); background: var(--t8); border-radius: 0 12px 12px 0; padding: 12px 16px; }
+
+/* add data */
+.add { border-radius: 18px; padding: 18px; display: grid; gap: 14px; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--c4), var(--c5), var(--c6)) border-box; border: 2px solid transparent; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { border-width: 2px; }
+.tabs button[aria-selected="true"] { color: var(--on-color); border-color: transparent; }
+#tab-manual[aria-selected="true"] { background: var(--c4); }
+#tab-paste[aria-selected="true"] { background: var(--c5); }
+#tab-file[aria-selected="true"] { background: var(--c6); }
+#tab-mine[aria-selected="true"] { background: var(--c7); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 14px; }
+.field { display: grid; gap: 4px; min-width: 0; align-content: start; }
+.field > label, .field > .lab { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.req { color: var(--c1); }
+.inline { display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; color: var(--c7); }
+.inline input { accent-color: var(--c7); width: 18px; height: 18px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.err { color: var(--ghost); font-size: 14px; font-weight: 600; }
+.ok { color: var(--c4); font-size: 14px; font-weight: 600; }
+.drop { border: 2px dashed var(--c6); background: var(--t6); border-radius: 12px; padding: 22px; text-align: center; color: var(--ink); }
+.drop.over { border-style: solid; background: var(--t5); }
+.drop label { color: var(--c6); font-weight: 600; text-decoration: underline; cursor: pointer; }
+textarea { min-height: 150px; font-family: var(--font-mono); font-size: 12.5px; }
+.mine { display: grid; gap: 6px; max-height: 340px; overflow: auto; }
+.mine-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--t7); }
+.mine-row span { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.mine-row small { color: var(--muted); }
+.confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--ghost-bg); color: var(--ghost); font-weight: 600; }
+
+/* filters */
+.controls { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end; border-radius: 16px; padding: 14px 16px; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--c1), var(--c3), var(--c5), var(--c7)) border-box; border: 2px solid transparent; }
+.controls .grow { flex: 1 1 220px; }
+.f1 label { color: var(--c1) !important; } .f1 input { border-color: var(--c1); background: var(--t1); }
+.f2 label { color: var(--c2) !important; } .f2 select { border-color: var(--c2); background: var(--t2); }
+.f3 label { color: var(--c4) !important; } .f3 select { border-color: var(--c4); background: var(--t4); }
+.f4 label { color: var(--c5) !important; } .f4 select { border-color: var(--c5); background: var(--t5); }
+.f5 label { color: var(--c6) !important; } .f5 input { border-color: var(--c6); background: var(--t6); }
+.controls .inline { padding-bottom: 8px; }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.stat { border-radius: 14px; padding: 14px 16px; display: grid; gap: 2px; min-width: 0; color: var(--on-color); box-shadow: 0 10px 24px -14px rgba(40,10,80,.55); }
+.stat .eyebrow, .stat .sub { text-shadow: 0 1px 2px rgba(0,0,0,.28); }
+.stat .big { font-family: var(--font-display); font-weight: 800; font-size: 40px; line-height: 1.1; font-variant-numeric: tabular-nums; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.stat .sub { font-size: 13px; overflow-wrap: anywhere; }
+.s1 { background: linear-gradient(135deg, var(--c1), var(--c8)); }
+.s2 { background: linear-gradient(135deg, var(--c2), #e89400); }
+.s3 { background: linear-gradient(135deg, var(--c5), var(--c6)); }
+.s4 { background: linear-gradient(135deg, var(--c7), #5b21b6); }
+
+/* ledger */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); align-items: center; }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1.5px solid currentColor; vertical-align: 1px; }
+.t-watch { background: var(--watch-bg); color: var(--watch); }
+.t-stale { background: var(--stale-bg); color: var(--stale); }
+.t-ghost { background: var(--ghost-bg); color: var(--ghost); }
+.t-repost { background: var(--c7); color: #fff; border-color: var(--c7); }
+.ledger-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px; }
+#btn-copy { background: linear-gradient(90deg, var(--c4), var(--c5)); color: #fff; border: 0; }
+.ledger { background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: 0 14px 34px -18px rgba(60,20,120,.5); }
+.cols, .row-head { display: grid; grid-template-columns: 44px minmax(0, 1.7fr) 80px 84px minmax(150px, 1.3fr) 92px; gap: 12px; align-items: center; padding: 10px 16px; }
+.cols { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #fff; background: linear-gradient(90deg, var(--c7), var(--c6), var(--c5)); }
+.r { text-align: right; }
+.row { border-bottom: 1px solid var(--line); border-left: 6px solid var(--rc); }
+.row:last-child { border-bottom: 0; }
+.row-head { cursor: pointer; }
+.row:nth-child(even) .row-head { background: color-mix(in srgb, var(--rc) 7%, var(--surface)); }
+.row-head:hover, .row:nth-child(even) .row-head:hover { background: color-mix(in srgb, var(--rc) 16%, var(--surface)); }
+.rank { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--rc); color: #fff; font-family: var(--font-mono); font-weight: 600; font-size: 13px; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.co { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.co small { display: block; font-weight: 600; color: var(--rc); font-size: 12.5px; }
+.bar { position: relative; height: 14px; background: var(--bar-track); border-radius: 7px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; background: linear-gradient(90deg, var(--c4), var(--c3) 33%, var(--c2) 55%, var(--c1) 80%); background-size: var(--full, 100%) 100%; }
+.bar .tick { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--muted); opacity: .6; }
+.barcell { display: grid; gap: 3px; }
+.barcell span { font-size: 12px; color: var(--muted); }
+.score { font-family: var(--font-mono); font-weight: 600; font-size: 16px; color: var(--rc); }
+.detail { padding: 4px 16px 16px 72px; display: grid; gap: 8px; }
+.role { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--rc) 10%, var(--surface)); border: 1.5px solid color-mix(in srgb, var(--rc) 35%, transparent); }
+.role .t { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.role .meta { grid-column: 1 / -1; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; }
+.role a { color: var(--accent); font-weight: 600; }
+.empty { padding: 36px 20px; display: grid; gap: 10px; justify-items: center; text-align: center; }
+.empty p { color: var(--muted); max-width: 52ch; }
+.empty .steps { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+.market { border-radius: 14px; padding: 16px; display: grid; gap: 10px; background: linear-gradient(135deg, var(--t5), var(--t7)); }
+.market ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.market li { padding: 8px 12px; border-radius: 10px; background: var(--surface); border-left: 5px solid var(--mc); }
+.market li strong { color: var(--mc); }
+.market li span { color: var(--muted); font-size: 13px; }
+
+footer.legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; padding-top: 16px; border-top: 2px solid var(--line); font-size: 13.5px; color: var(--muted); }
+footer.legal nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+footer.legal a { color: var(--accent); font-weight: 600; }
+
+dialog { border: 3px solid var(--c7); border-radius: 16px; background: var(--surface); color: var(--ink); width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 22px; }
+dialog::backdrop { background: rgba(20, 8, 40, .5); }
+.doc { display: grid; gap: 12px; }
+.doc h2 { font-size: 26px; }
+.doc h3 { color: var(--c7); margin-top: 6px; }
+.doc p, .doc li { max-width: 68ch; }
+.doc ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.doc .updated { font-size: 13px; color: var(--muted); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(90deg, var(--c1), var(--c7)); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 20; }
+
+.fb { background: #fff; color: #db2777; border-color: transparent; }
+.fb:disabled { opacity: .75; cursor: not-allowed; }
+.inbox { border-radius: 16px; padding: 16px; display: grid; gap: 10px; background: linear-gradient(135deg, var(--t8), var(--t6)); }
+.fb-card { padding: 10px 12px; border-radius: 10px; background: var(--surface); border-left: 5px solid var(--c8); display: grid; gap: 4px; }
+.fb-card small { color: var(--muted); }
+.fb-card p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.fraud { border-radius: 18px; padding: 18px; display: grid; gap: 12px; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--ghost), var(--c2), var(--c8)) border-box; border: 2px solid transparent; }
+.fraud h2 { background: linear-gradient(90deg, var(--ghost), var(--c2)); -webkit-background-clip: text; background-clip: text; }
+.verdict { border-radius: 14px; padding: 14px 16px; display: grid; gap: 8px; color: #fff; }
+.v-high { background: linear-gradient(135deg, #e11d48, #be123c); }
+.v-mid { background: linear-gradient(135deg, var(--c2), #d97706); }
+.v-low { background: linear-gradient(135deg, var(--c4), #059669); }
+.verdict .score-big { font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.verdict ul { margin: 0; padding-left: 20px; display: grid; gap: 3px; }
+.verdict .fine { color: #fff; opacity: .95; }
+.fr-list { display: grid; gap: 6px; }
+.fr-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--bg); }
+.fr-row .sc { display: grid; place-items: center; height: 36px; border-radius: 9px; color: #fff; font-family: var(--font-mono); font-weight: 600; }
+.fr-row span { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.fr-row small { color: var(--muted); }
+@media (max-width: 720px) {
+  .cols { display: none; }
+  .row-head { grid-template-columns: 32px minmax(0, 1fr) auto; grid-template-areas: "rank co score" ". bar bar" ". stats stats"; row-gap: 8px; }
+  .row-head .rank { grid-area: rank; } .row-head .co { grid-area: co; } .row-head .score { grid-area: score; }
+  .row-head .barcell { grid-area: bar; }
+  .row-head .c-roles, .row-head .c-long { display: none; }
+  .row-head .mstats { grid-area: stats; display: block !important; font-size: 13px; color: var(--muted); }
+  .detail { padding-left: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+/* ===== Cadence layer: hero, console nav, gate, legal pages, footer ===== */
+[hidden] { display: none !important; }
+.hero { display: grid; gap: 16px; padding-block: 34px 30px; }
+.hero h1 { font-size: clamp(36px, 7vw, 68px); }
+.hero h1 .hl { background: linear-gradient(90deg, #fff 0%, #fff6a8 40%, #ffd1f0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.hchip { display: inline-flex; gap: 7px; align-items: center; padding: 5px 13px; border-radius: 999px; font-weight: 600; font-size: 13.5px; background: rgba(255,255,255,.22); border: 1.5px solid rgba(255,255,255,.55); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.hchip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; border: 1.5px solid #fff; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-cta .solid { background: #fff; color: #4c1d95; border-color: #fff; font-size: 15.5px; padding: 10px 20px; }
+.hero-cta .ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.85); font-size: 15.5px; padding: 10px 20px; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+
+.console { background: var(--surface); border-radius: 20px; overflow: hidden; box-shadow: 0 18px 44px -20px rgba(60,20,120,.55); }
+.console::before { content: ""; display: block; height: 5px; background: linear-gradient(90deg, var(--c5), var(--c6), var(--c7), var(--c8), var(--c1), var(--c2)); }
+.console-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between; padding: 12px 16px; background: linear-gradient(90deg, var(--t6), var(--t8), var(--t2)); border-bottom: 1px solid var(--line); }
+.brand { display: flex; gap: 8px; align-items: center; font-family: var(--font-display); font-weight: 800; font-size: 17px; }
+.brand svg { flex: none; }
+.nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface); border: 1.5px solid var(--line); }
+.nav button { border: 0; background: transparent; padding: 6px 11px; border-radius: 9px; display: inline-flex; gap: 7px; align-items: center; color: var(--dc); }
+.nav button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dc); }
+.nav button[aria-selected="true"] { background: var(--dc); color: #fff; }
+.nav button[aria-selected="true"]::before { background: #fff; }
+.nav button:hover { background: color-mix(in srgb, var(--dc) 14%, transparent); }
+.nav button[aria-selected="true"]:hover { background: var(--dc); }
+.toggles { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.seg { display: inline-flex; border-radius: 10px; border: 1.5px solid var(--line); overflow: hidden; background: var(--surface); }
+.seg button { border: 0; border-radius: 0; padding: 5px 12px; background: transparent; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--c6); color: #fff; }
+.seg.lensseg button[aria-pressed="true"] { background: var(--c1); }
+.seg.lensseg #lens-employer[aria-pressed="true"] { background: var(--c5); }
+.panel { padding: 20px 18px 24px; display: grid; gap: 20px; }
+.panel[hidden] { display: none !important; }
+
+.howto { border-radius: 16px; padding: 16px 18px; display: grid; gap: 10px; background: linear-gradient(135deg, var(--t4), var(--t5)); }
+.howto ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 80ch; }
+
+.about { display: grid; gap: 8px; padding-top: 6px; }
+.about p { max-width: 70ch; font-size: 16px; color: var(--ink); }
+.about .eyebrow { color: var(--muted); }
+
+.site-foot { margin-top: 10px; padding-block: 22px 30px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: linear-gradient(90deg, var(--t7), var(--t8), var(--t6)); }
+.site-foot .in { max-width: 1080px; margin: 0 auto; display: grid; gap: 10px; color: var(--muted); font-size: 14.5px; }
+.site-foot a, .linkbtn { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; cursor: pointer; }
+.site-foot .links { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.site-foot .links span[aria-hidden] { color: var(--muted); }
+
+/* legal pages inside the console */
+.legal-doc { display: grid; gap: 12px; max-width: 78ch; }
+.legal-doc h2 { font-size: 28px; }
+.legal-doc h3 { color: var(--c7); margin-top: 8px; font-size: 18px; }
+.legal-doc ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.legal-doc .updated { font-size: 13px; color: var(--muted); }
+.legal-doc section { display: grid; gap: 10px; scroll-margin-top: 20px; }
+
+/* terms gate */
+#gate { width: min(620px, calc(100vw - 24px)); padding: 0; border: 0; border-radius: 18px; overflow: hidden; }
+#gate::before { content: ""; display: block; height: 6px; background: linear-gradient(90deg, var(--c5), var(--c6), var(--c7), var(--c8), var(--c1), var(--c2)); }
+.gate-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 16px 22px 12px; border-bottom: 2px solid var(--c6); }
+.gate-head .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--t3); color: var(--watch); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+.gate-head h2 { font-size: 24px; background: none; color: var(--ink); -webkit-background-clip: border-box; background-clip: border-box; }
+.gate-body { padding: 14px 22px; display: grid; gap: 10px; max-height: min(60vh, 560px); overflow: auto; }
+.gcard { border-radius: 10px; padding: 12px 14px; border-left: 5px solid var(--gc); background: color-mix(in srgb, var(--gc) 10%, var(--surface)); display: grid; gap: 6px; }
+.gcard h3 { font-family: var(--font-body); font-size: 15.5px; font-weight: 600; color: var(--gc); }
+.gcard p { font-size: 14.5px; }
+.gcard a { color: var(--accent); font-weight: 600; }
+.gate-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.gate-foot { padding: 14px 22px 18px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+.gate-foot label { display: flex; gap: 10px; align-items: start; font-weight: 600; }
+.gate-foot input { width: 20px; height: 20px; accent-color: var(--c6); flex: none; margin-top: 1px; }
+.gate-foot .actions { justify-content: flex-end; }
+.gate-foot button { padding: 9px 18px; }
+.gate-foot button.primary:disabled { opacity: .45; cursor: not-allowed; }
+.declined { padding: 40px 20px; display: grid; gap: 12px; justify-items: center; text-align: center; }
+.declined p { max-width: 50ch; color: var(--muted); }
+.fbform { display: grid; gap: 12px; max-width: 640px; }
+.catch { border-radius: 16px; padding: 14px 18px; background: linear-gradient(135deg, var(--t3), var(--t2)); border: 2px solid color-mix(in srgb, var(--c2) 55%, transparent); display: grid; gap: 10px; }
+.catch summary { cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--stale); list-style: none; display: flex; gap: 10px; align-items: center; }
+.catch summary::-webkit-details-marker { display: none; }
+.catch summary::before { content: "!"; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--c2); color: #fff; font-size: 16px; flex: none; }
+.catch summary::after { content: "▾"; margin-left: auto; font-size: 16px; transition: transform .2s; }
+.catch:not([open]) summary::after { transform: rotate(-90deg); }
+.catch ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 90ch; }
+.catch .actions button { border-color: color-mix(in srgb, var(--c2) 55%, transparent); }
+.warn { display: flex; gap: 10px; align-items: start; padding: 10px 14px; border-radius: 12px; background: var(--t2); border-left: 5px solid var(--c2); font-size: 14px; }
+.warn::before { content: "!"; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--c2); color: #fff; font-weight: 700; flex: none; font-size: 13px; }
+.improve { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: center; padding: 12px; border-radius: 12px; background: var(--t8); font-weight: 600; }
+.reports { border-radius: 18px; padding: 18px; display: grid; gap: 14px; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--c5), var(--c6), var(--c8)) border-box; border: 2px solid transparent; }
+.rules { border-radius: 12px; padding: 10px 14px; background: var(--t5); border-left: 5px solid var(--c5); font-size: 14px; }
+.rep-tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.rep-tools .grow { flex: 1 1 220px; }
+.rep-list { display: grid; gap: 10px; }
+.rep { border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; background: color-mix(in srgb, var(--rc) 9%, var(--surface)); border: 1.5px solid color-mix(in srgb, var(--rc) 40%, transparent); border-left: 6px solid var(--rc); }
+.rep-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: start; }
+.rep-top h3 { font-size: 17px; min-width: 0; overflow-wrap: anywhere; }
+.rep-top h3 small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 14px; color: var(--muted); }
+.rep-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); align-items: center; }
+.rep-meta a { color: var(--accent); font-weight: 600; }
+.rep-note { white-space: pre-wrap; overflow-wrap: anywhere; }
+.rep-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.rep-actions button { padding: 5px 12px; font-size: 13.5px; }
+.rep-actions button[aria-pressed="true"] { background: var(--rc); color: #fff; border-color: var(--rc); }
+.flagcount { display: inline-grid; place-items: center; min-width: 30px; padding: 2px 8px; border-radius: 999px; background: var(--rc); color: #fff; font-weight: 600; font-size: 13px; }
+.comments { display: grid; gap: 6px; padding-left: 10px; border-left: 3px solid color-mix(in srgb, var(--rc) 45%, transparent); }
+.cmt { font-size: 14px; display: grid; gap: 2px; }
+.cmt small { color: var(--muted); }
+.cmt p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.cmt-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.cmt-form textarea { min-height: 64px; flex: 1 1 240px; font-family: var(--font-body); font-size: 14px; }
+</style>
+
+<div class="wrap" id="top">
+  <header class="top hero">
+    <div class="eyebrow" data-i18n="eyebrow">Hiring market watch · Tech giants to local employers</div>
+    <h1>Stale <span class="hl">Posting</span> Index</h1>
+    <p class="lede" data-i18n="heroLede">Spot the employers, from tech giants to local hospitals, clinics and contractors, that keep the same job posted for months or repost it so it looks new, and check job ads for signs a company takes advantage of workers. Job seekers learn where not to waste their time. Employers see which roles competitors can't fill.</p>
+    <div class="chips">
+      <span class="hchip"><i style="background:#ffc800"></i><span data-i18n="chipWatch">2 months · Watch</span></span>
+      <span class="hchip"><i style="background:#ff8a1f"></i><span data-i18n="chipStale">3 months · Stale</span></span>
+      <span class="hchip"><i style="background:#ff3d7f"></i><span data-i18n="chipGhost">6 months · Likely ghost</span></span>
+      <span class="hchip"><i style="background:#8b5cf6"></i><span data-i18n="chipRepost">3+ posts · Serial reposter</span></span>
+    </div>
+    <div class="hero-cta">
+      <button class="solid" id="cta-start" data-i18n="ctaStart">Start tracking</button>
+      <button class="ghost" id="cta-how" data-i18n="ctaHow">How it scores</button>
+    </div>
+    <p class="count" id="count"></p>
+  </header>
+
+  <div class="console" id="app">
+    <div class="console-bar">
+      <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="var(--c7)" stroke-width="2.6"/><path d="M15.5 15.5 21 21" stroke="var(--c1)" stroke-width="2.8" stroke-linecap="round"/><path d="M7.5 10.5h6M10.5 7.5v6" stroke="var(--c5)" stroke-width="2" stroke-linecap="round"/></svg>Stale Posting Index</div>
+      <nav class="nav" role="tablist" aria-label="Sections">
+        <button role="tab" id="nav-ranking" aria-controls="p-ranking" style="--dc:var(--c7)" data-i18n="navRanking">Ranking</button>
+        <button role="tab" id="nav-add" aria-controls="p-add" style="--dc:var(--c4)" data-i18n="navAdd">Add postings</button>
+        <button role="tab" id="nav-fraud" aria-controls="p-fraud" style="--dc:var(--c1)" data-i18n="navFraud">Fraud check</button>
+        <button role="tab" id="nav-reports" aria-controls="p-reports" style="--dc:var(--c5)" data-i18n="navReports">Community reports</button>
+        <button role="tab" id="nav-privacy" aria-controls="p-privacy" style="--dc:var(--c6)" data-i18n="navPrivacy">Privacy &amp; security</button>
+        <button role="tab" id="nav-terms" aria-controls="p-terms" style="--dc:var(--c2)" data-i18n="navTerms">Terms</button>
+        <button role="tab" id="nav-feedback" aria-controls="p-feedback" style="--dc:var(--c8)" data-i18n="navFeedback">Feedback</button>
+      </nav>
+      <div class="toggles">
+        <div class="seg lensseg" role="group" aria-label="View as" data-i18n-aria="viewAs">
+          <button id="lens-seeker" aria-pressed="true" data-i18n="lensSeeker">I'm job hunting</button>
+          <button id="lens-employer" aria-pressed="false" data-i18n="lensEmployer">I'm hiring</button>
+        </div>
+        <div class="seg" role="group" aria-label="Language">
+          <button id="lang-en" aria-pressed="true" lang="en">EN</button>
+          <button id="lang-es" aria-pressed="false" lang="es">ES</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANKING -->
+    <section class="panel" id="p-ranking" role="tabpanel" aria-labelledby="nav-ranking">
+      <details class="catch" id="catch" open>
+        <summary data-i18n="catchH">Know the catch before you rely on this</summary>
+        <ul>
+          <li data-i18n-html="catch1"><strong>Not live yet.</strong> The app doesn't pull jobs from the web on its own yet. Rankings use only the postings you add, files you upload and community reports, so a company missing from this list isn't proof it hires fairly.</li>
+          <li data-i18n-html="catch2"><strong>Coverage is partial.</strong> Many large companies and most small and local employers aren't tracked yet, and job sites like Indeed and LinkedIn don't share their data.</li>
+          <li data-i18n-html="catch3"><strong>Open a long time isn't always bad.</strong> Some roles are evergreen, seasonal, or have many openings under one title.</li>
+          <li data-i18n-html="catch4"><strong>Reports aren't verified.</strong> Community reports, flags and comments are people's own experiences.</li>
+          <li data-i18n-html="catch5"><strong>Checks can be wrong.</strong> The fraud and red-flag checks look for common patterns. They can miss a scam or flag a real job.</li>
+        </ul>
+        <div class="actions"><button class="primary" data-suggest="coverage" data-i18n="sugCoverage">Suggest a company or industry</button><button data-suggest="idea" data-i18n="sugIdea">Suggest an improvement</button></div>
+      </details>
+      <p id="lens-note" class="lens-note"></p>
+      <section class="controls" aria-label="Filters">
+        <div class="field grow f1"><label for="q" data-i18n="fSearch">Search company or job title</label><input id="q" type="search" data-i18n-ph="fSearchPh" placeholder="e.g. Engineer, NVIDIA"></div>
+        <div class="field f2"><label for="min-age" data-i18n="fOpen">Open at least</label>
+          <select id="min-age"><option value="0" selected data-i18n="oAll">All roles (any length)</option><option value="60" data-i18n="o60">2 months (60 days)</option><option value="90" data-i18n="o90">3 months (90 days)</option><option value="180" data-i18n="o180">6 months (180 days)</option><option value="270" data-i18n="o270">9 months (270 days)</option></select></div>
+        <div class="field f3"><label for="sort" data-i18n="fRank">Rank by</label>
+          <select id="sort"><option value="score" selected data-i18n="sScore">Total days past 3 months</option><option value="longest" data-i18n="sLongest">Longest single role</option><option value="count" data-i18n="sCount">Roles open past 3 months</option><option value="reposts" data-i18n="sReposts">Most reposts</option><option value="avg" data-i18n="sAvg">Average days open</option></select></div>
+        <div class="field f4"><label for="industry" data-i18n="fIndustry">Industry</label><select id="industry"></select></div>
+        <div class="field f4"><label for="size-f" data-i18n="fSize">Employer size</label><select id="size-f"><option value="" data-i18n="szAll">All employers</option><option value="big" data-i18n="szBig">Big names</option><option value="small" data-i18n="szSmall">Smaller &amp; local employers</option></select></div>
+        <div class="field f5"><label for="asof" data-i18n="fAsOf">As of</label><input id="asof" type="date"></div>
+        <label class="inline" for="only-repost"><input id="only-repost" type="checkbox"> <span data-i18n="fOnlyRepost">Only serial reposters</span></label>
+        <label class="inline" for="split-loc"><input id="split-loc" type="checkbox"> <span data-i18n="fSplit">Count each location separately</span></label>
+      </section>
+
+      <section class="stats" id="stats" aria-label="Summary"></section>
+
+      <section style="display:grid; gap:12px;">
+        <div class="ledger-head">
+          <div style="display:grid; gap:6px;">
+            <h2 data-i18n="rankingH">Company ranking</h2>
+            <div class="legend">
+              <span><span class="pill t-watch" data-i18n="tWatch">Watch</span> <span data-i18n="lgWatch">2–3 months</span></span>
+              <span><span class="pill t-stale" data-i18n="tStale">Stale</span> <span data-i18n="lgStale">3–6 months</span></span>
+              <span><span class="pill t-ghost" data-i18n="tGhost">Likely ghost</span> <span data-i18n="lgGhost">6+ months</span></span>
+              <span><span class="pill t-repost" data-i18n="tSerial">Serial reposter</span> <span data-i18n="lgSerial">same job posted 3+ times</span></span>
+            </div>
+          </div>
+          <button id="btn-copy" data-i18n="copyRanking">Copy ranking as CSV</button>
+        </div>
+        <div class="ledger" id="ledger" role="list"></div>
+      </section>
+
+      <section class="market" id="market" hidden>
+        <h2 data-i18n="marketH">Roles the market can't fill</h2>
+        <p class="fine" data-i18n="marketP">Job titles open past 3 months at more than one company. A faster process or a clearer offer here can win candidates your competitors keep losing.</p>
+        <ol id="market-list"></ol>
+      </section>
+
+      <div class="improve"><span data-i18n="improveQ">Something missing or wrong in this ranking?</span><button data-suggest="data" data-i18n="improveBtn">Tell us so we can fix it</button></div>
+      <section class="howto" id="how">
+        <h2 data-i18n="howH">How it scores</h2>
+        <ol>
+          <li data-i18n-html="how1"><strong>Same job.</strong> Postings are grouped into one role by company and a cleaned-up job title. Case, punctuation, requisition numbers and tags like "(Remote)" are ignored, and "Sr." counts as "Senior".</li>
+          <li data-i18n-html="how2"><strong>Days open.</strong> From the earliest posting of that role to its last-seen date, or to the as-of date if it's still posted. Reposting doesn't reset the clock.</li>
+          <li data-i18n-html="how3"><strong>Rank.</strong> By default, companies are ranked by the total days their roles have stayed open beyond 3 months.</li>
+          <li data-i18n-html="how4"><strong>Serial reposter.</strong> Flagged when any role has been posted 3 or more times, for example taken down and put back up under a new ID or with a refreshed date.</li>
+          <li data-i18n-html="how5"><strong>A signal, not proof.</strong> A long-open posting can also be an evergreen or high-volume role. Use the ranking as a reason to ask questions.</li>
+        </ol>
+      </section>
+    </section>
+
+    <!-- ADD -->
+    <section class="panel" id="p-add" role="tabpanel" aria-labelledby="nav-add" hidden>
+      <section class="add" aria-labelledby="add-h">
+        <h2 id="add-h" data-i18n="addH">Add postings</h2>
+        <div class="tabs" role="tablist">
+          <button id="tab-manual" role="tab" aria-selected="true" aria-controls="pane-manual" data-i18n="tabManual">Add one posting</button>
+          <button id="tab-paste" role="tab" aria-selected="false" aria-controls="pane-paste" data-i18n="tabPaste">Paste search results</button>
+          <button id="tab-file" role="tab" aria-selected="false" aria-controls="pane-file" data-i18n="tabFile">Upload a file</button>
+          <button id="tab-mine" role="tab" aria-selected="false" aria-controls="pane-mine" data-i18n="tabMine">My postings</button>
+        </div>
+
+        <form id="pane-manual" role="tabpanel" class="form-grid" novalidate>
+          <div class="field"><label for="m-company"><span data-i18n="mCompany">Company</span> <span class="req">*</span></label><input id="m-company" type="text" list="dl-companies" data-i18n-ph="mCompanyPh" placeholder="e.g. NVIDIA" autocomplete="off"></div>
+          <div class="field"><label for="m-title"><span data-i18n="mTitle">Job title</span> <span class="req">*</span></label><input id="m-title" type="text" data-i18n-ph="mTitlePh" placeholder="e.g. Senior Software Engineer" autocomplete="off"></div>
+          <div class="field"><label for="m-industry" data-i18n="mIndustry">Industry</label><input id="m-industry" type="text" list="dl-industries" data-i18n-ph="mIndustryPh" placeholder="e.g. Technology, Hospitals, Construction Trades" autocomplete="off"></div>
+          <div class="field"><label for="m-location" data-i18n="mLocation">Location</label><input id="m-location" type="text" data-i18n-ph="mLocationPh" placeholder="e.g. Santa Clara, CA" autocomplete="off"></div>
+          <div class="field"><label for="m-size" data-i18n="mSize">Company size</label><select id="m-size"><option value="" data-i18n="mSizeUnsure">Not sure</option><option value="large" data-i18n="mSizeLarge">Large or well-known</option><option value="small" data-i18n="mSizeSmall">Small or local business</option></select></div>
+          <div class="field"><label for="m-posted"><span data-i18n="mPosted">Date posted or first seen</span> <span class="req">*</span></label><input id="m-posted" type="date"></div>
+          <div class="field"><label for="m-last" data-i18n="mLast">Last seen</label><input id="m-last" type="date" disabled><label class="inline" for="m-open" style="text-transform:none; letter-spacing:0"><input id="m-open" type="checkbox" checked> <span data-i18n="mOpen">Still posted</span></label></div>
+          <div class="field"><label for="m-url" data-i18n="mUrl">Link to the posting</label><input id="m-url" type="url" placeholder="https://"></div>
+          <div class="field" style="align-self:end">
+            <div class="actions"><button class="primary" id="m-add" type="submit" data-i18n="mAdd">Add posting</button><span id="m-msg" aria-live="polite"></span></div>
+          </div>
+          <p class="fine" style="grid-column:1/-1" data-i18n="mHint">Saw the same job reposted with a new date? Add it again with the new date. The app counts each one as a repost and flags companies that do it repeatedly.</p>
+          <datalist id="dl-companies"></datalist><datalist id="dl-industries"></datalist>
+        </form>
+
+        <div id="pane-paste" role="tabpanel" hidden style="display:grid; gap:10px">
+          <p class="fine" data-i18n-html="pasteHelp">Copy rows from a spreadsheet or job search and paste them here. The first line must be column names: <code>company</code>, <code>title</code>, <code>posted_date</code>, and optionally <code>industry</code>, <code>location</code>, <code>last_seen</code>, <code>url</code>. Commas or tabs both work.</p>
+          <textarea id="paste" aria-label="Paste rows" placeholder="company,industry,title,location,posted_date,last_seen,url&#10;NVIDIA,Technology,Senior Software Engineer,Santa Clara CA,2026-06-02,,https://…"></textarea>
+          <div class="actions"><button class="primary" id="paste-add" data-i18n="pasteAdd">Add these postings</button><span id="paste-msg" aria-live="polite"></span></div>
+        </div>
+
+        <div id="pane-file" role="tabpanel" hidden style="display:grid; gap:10px">
+          <div class="drop" id="drop"><span data-i18n="dropText">Drop a .csv or .json file here, or</span> <label for="file" data-i18n="dropChoose">choose a file</label><input id="file" type="file" accept=".csv,.json,.tsv,.txt" hidden></div>
+          <p class="fine" data-i18n-html="fileHelp">Works with the CSV from the Stale Posting Index collector and with most job-board or ATS exports. Headers like <code>company_name</code>, <code>job_title</code>, <code>date_posted</code>, <code>created_at</code>, <code>first_seen</code> and <code>sector</code> are recognized.</p>
+          <span id="file-msg" aria-live="polite"></span>
+        </div>
+
+        <div id="pane-mine" role="tabpanel" hidden style="display:grid; gap:10px">
+          <div class="actions" style="justify-content:space-between">
+            <span class="fine" id="mine-count"></span>
+            <div class="actions"><button id="btn-export-all" data-i18n="copyAll">Copy all postings as CSV</button><button class="danger" id="btn-clear" data-i18n="deleteAllPostings">Delete all postings</button></div>
+          </div>
+          <div id="clear-confirm" class="confirm" hidden><span data-i18n="clearQ">Delete every posting saved in this browser? This can't be undone.</span> <button class="danger" id="clear-yes" data-i18n="clearYes">Delete all</button><button id="clear-no" data-i18n="clearNo">Keep them</button></div>
+          <div class="mine" id="mine"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- FRAUD -->
+    <section class="panel" id="p-fraud" role="tabpanel" aria-labelledby="nav-fraud" hidden>
+      <section class="fraud" aria-labelledby="fraud-h">
+        <h2 id="fraud-h" data-i18n="fraudH">Most likely to be a fraud</h2>
+        <p class="fine" data-i18n-html="fraudP">Got a recruiter email or job message that feels off? Paste it here with its <strong>From</strong> line. The checker looks for common job-scam signs, such as a free email address for a big company, requests for money or bank details, or interviews over chat apps. Then it ranks every email you've checked, most likely fraud first. Emails stay in this browser.</p>
+        <p class="fine" data-i18n-html="fraudP2">Or check a <strong>job posting</strong> for signs an employer may take advantage of workers, which is common at some small clinics, home-health agencies, contractors and staffing firms: fees to start, commission-only pay, unpaid "working interviews", contractor (1099) status for a full-time schedule, no pay listed, mandatory overtime, or "always hiring".</p>
+        <p class="warn" data-i18n="warnFraud">Heads up: these checks look for common warning patterns. They can miss a scam or flag a real job. Never send money or personal details until you've confirmed the job on the employer's official site.</p>
+        <div class="form-grid">
+          <div class="field"><label for="fr-mode" data-i18n="frMode">What are you checking?</label><select id="fr-mode"><option value="email" data-i18n="frModeEmail">A recruiter email or message</option><option value="posting" data-i18n="frModePosting">A job posting</option></select></div>
+          <div class="field"><label for="fr-company" data-i18n="frCompany">Company it claims to be from</label><input id="fr-company" type="text" list="dl-companies" placeholder="e.g. Amazon" autocomplete="off"></div>
+          <div class="field" style="grid-column:1/-1"><label for="fr-text" data-i18n="frText">Email or message</label><textarea id="fr-text" placeholder="From: Amazon HR &lt;amazonhiring.team@gmail.com&gt;&#10;Subject: Remote Data Entry Offer&#10;&#10;Dear Candidate, you have been selected…"></textarea></div>
+        </div>
+        <div class="actions"><button class="primary" id="fr-check" data-i18n="frCheck">Check this email</button><span id="fr-msg" aria-live="polite"></span></div>
+        <div id="fr-result" aria-live="polite"></div>
+        <h3 data-i18n="frListH">Everything you've checked, highest risk first</h3>
+        <div id="fr-list" class="fr-list"></div>
+      </section>
+    </section>
+
+    <!-- COMMUNITY REPORTS (shared) -->
+    <section class="panel" id="p-reports" role="tabpanel" aria-labelledby="nav-reports" hidden>
+      <section class="reports" aria-labelledby="rep-h">
+        <h2 id="rep-h" data-i18n="repH">Community reports</h2>
+        <p class="fine" data-i18n="repP">Seen a company keep the same job posted for more than 3 months? Report it so others know. If you've seen the same thing, flag the report, and add a comment about your experience. Everyone who can open this app sees reports, flags and comments, without your name.</p>
+        <p class="warn" data-i18n="warnReports">Heads up: reports aren't verified. Treat them as leads to check, not as facts about a company.</p>
+        <div class="rules" data-i18n-html="repRules"><strong>Keep it factual.</strong> Say what was posted, when you first saw it, and what happened when you applied. Don't name individual people, share personal information, or insult anyone. Reports are people's experiences, not verified facts. Anything that breaks these rules is removed.</div>
+        <form id="rep-form" class="form-grid" novalidate>
+          <div class="field"><label for="r-company"><span data-i18n="mCompany">Company</span> <span class="req">*</span></label><input id="r-company" type="text" list="dl-companies" maxlength="120" autocomplete="off"></div>
+          <div class="field"><label for="r-title"><span data-i18n="mTitle">Job title</span> <span class="req">*</span></label><input id="r-title" type="text" maxlength="160" autocomplete="off"></div>
+          <div class="field"><label for="r-industry" data-i18n="mIndustry">Industry</label><input id="r-industry" type="text" list="dl-industries" maxlength="80" autocomplete="off"></div>
+          <div class="field"><label for="r-location" data-i18n="mLocation">Location</label><input id="r-location" type="text" maxlength="120" autocomplete="off"></div>
+          <div class="field"><label for="r-size" data-i18n="mSize">Company size</label><select id="r-size"><option value="" data-i18n="mSizeUnsure">Not sure</option><option value="large" data-i18n="mSizeLarge">Large or well-known</option><option value="small" data-i18n="mSizeSmall">Small or local business</option></select></div>
+          <div class="field"><label for="r-first"><span data-i18n="rFirst">First time you saw it posted</span> <span class="req">*</span></label><input id="r-first" type="date"></div>
+          <div class="field"><label for="r-last" data-i18n="mLast">Last seen</label><input id="r-last" type="date" disabled><label class="inline" for="r-open" style="text-transform:none; letter-spacing:0"><input id="r-open" type="checkbox" checked> <span data-i18n="mOpen">Still posted</span></label></div>
+          <div class="field"><label for="r-url" data-i18n="mUrl">Link to the posting</label><input id="r-url" type="url" maxlength="500" placeholder="https://"></div>
+          <div class="field" style="grid-column:1/-1"><label for="r-note" data-i18n="rNote">What happened? (optional)</label><textarea id="r-note" maxlength="600" data-i18n-ph="rNotePh" placeholder="e.g. Applied twice, never heard back. The same ad is reposted every month with a new date."></textarea></div>
+          <label class="inline" for="r-confirm" style="grid-column:1/-1"><input id="r-confirm" type="checkbox"> <span data-i18n="rConfirm">This is true to the best of my knowledge and doesn't include anyone's personal information.</span></label>
+          <div class="actions" style="grid-column:1/-1"><button class="primary" id="r-send" type="submit" data-i18n="rSend">Report this company</button><span id="r-msg" aria-live="polite"></span></div>
+        </form>
+        <div class="rep-tools">
+          <div class="field grow"><label for="rep-q" data-i18n="fSearch">Search company or job title</label><input id="rep-q" type="search"></div>
+          <div class="field"><label for="rep-sort" data-i18n="fRank">Rank by</label><select id="rep-sort"><option value="flags" data-i18n="rsFlags">Most flagged</option><option value="days" data-i18n="rsDays">Open longest</option><option value="new" data-i18n="rsNew">Newest</option></select></div>
+        </div>
+        <p class="fine" id="rep-status"></p>
+        <div id="rep-list" class="rep-list"></div>
+      </section>
+    </section>
+
+    <!-- PRIVACY / TERMS (filled from the language templates) -->
+    <section class="panel" id="p-privacy" role="tabpanel" aria-labelledby="nav-privacy" hidden><div class="legal-doc" id="doc-privacy"></div></section>
+    <section class="panel" id="p-terms" role="tabpanel" aria-labelledby="nav-terms" hidden><div class="legal-doc" id="doc-terms"></div></section>
+
+    <!-- FEEDBACK -->
+    <section class="panel" id="p-feedback" role="tabpanel" aria-labelledby="nav-feedback" hidden>
+      <form class="fbform" id="fb-form" novalidate>
+        <h2 data-i18n="fbH">Share feedback</h2>
+        <p class="fine" id="fb-window"></p>
+        <div class="field"><label for="fb-kind" data-i18n="fbKind">What's it about?</label>
+          <select id="fb-kind"><option value="idea" data-i18n="fbIdea">Idea or feature request</option><option value="bug" data-i18n="fbBug">Something's broken</option><option value="result" data-i18n="fbResult">Wrong or unfair result</option><option value="coverage" data-i18n="fbCoverage">Missing company, industry or area</option><option value="data" data-i18n="fbData">Data is wrong or out of date</option><option value="other" data-i18n="fbOther">Other</option></select></div>
+        <div class="field"><label for="fb-text" data-i18n="fbText">Your feedback</label><textarea id="fb-text" maxlength="2000" data-i18n-ph="fbPh" placeholder="Tell us what would make this more useful."></textarea></div>
+        <p class="fine" data-i18n="fbNote">Feedback is sent only when you click Send feedback. It goes only to the app's owner and is used to improve future versions. Please don't include personal details.</p>
+        <p id="fb-msg" aria-live="polite"></p>
+        <div class="actions"><button class="primary" id="fb-send" type="submit" data-i18n="fbSend">Send feedback</button></div>
+      </form>
+      <section class="inbox" id="inbox" hidden aria-labelledby="inbox-h">
+        <h2 id="inbox-h" data-i18n="inboxH">Feedback inbox</h2>
+        <p class="fine" data-i18n="inboxP">Only you, the owner, see this. Newest first.</p>
+        <div id="inbox-list" class="mine"></div>
+      </section>
+    </section>
+  </div>
+
+  <section class="about">
+    <div class="eyebrow" data-i18n="aboutEyebrow">About this project</div>
+    <p data-i18n="aboutP">Built so job seekers can tell a real opening from a posting that never closes, and so hiring teams can see where the tech talent market is stuck. Postings come from what you add or from the optional collector, which checks tech career sites such as Apple, Microsoft, NVIDIA, Amazon, Blue Origin and Tesla once a day and exports a CSV for the Add postings tab.</p>
+  </section>
+</div>
+
+<footer class="site-foot">
+  <div class="in">
+    <p data-i18n="footBy">Stale Posting Index by Karen Tinoco. Designed and directed by the author; implemented with Claude Code as an AI pair programmer. Rankings come only from postings you add; no company data is built in.</p>
+    <p data-i18n-html="footLicense">© 2026 Karen Tinoco. Licensed under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>: free to use, share and adapt for non-commercial purposes, with credit. Commercial use by permission only.</p>
+    <div class="links">
+      <a href="#privacy" data-i18n="footPrivacy">Privacy &amp; security</a><span aria-hidden="true">·</span>
+      <a href="#terms" data-i18n="footTerms">Terms &amp; conditions</a><span aria-hidden="true">·</span>
+      <a href="#content-removal" data-i18n="footRemoval">Content removal</a><span aria-hidden="true">·</span>
+      <a href="#copyright" data-i18n="footCopyright">Copyright</a><span aria-hidden="true">·</span>
+      <a href="#feedback" data-i18n="footFeedback">Share feedback</a><span aria-hidden="true">·</span>
+      <button class="linkbtn" id="foot-delete" data-i18n="footDelete">Delete all my data</button>
+    </div>
+    <div id="wipe-confirm" class="confirm" hidden><span data-i18n="wipeQ">Permanently delete everything this app saved in this browser: your postings, checked emails, settings the feedback you sent, and your community reports, flags and comments? This can't be undone.</span> <button class="danger" id="wipe-yes" data-i18n="wipeYes">Delete everything</button><button id="wipe-no" data-i18n="wipeNo">Cancel</button></div>
+    <p data-i18n="footGuidance">Guidance only: rankings and fraud scores are automatic signals based on the data entered, not facts about any company, and do not guarantee results. Deleting data is permanent and your responsibility.</p>
+  </div>
+</footer>
+
+<!-- TERMS GATE -->
+<dialog id="gate" aria-labelledby="gate-title">
+  <div class="gate-head">
+    <div><span class="tag">Stale Posting Index</span><h2 id="gate-title" data-i18n="gateTitle">Before you start: Terms of use</h2></div>
+    <div class="seg" role="group" aria-label="Language"><button id="glang-en" aria-pressed="true" lang="en">EN</button><button id="glang-es" aria-pressed="false" lang="es">ES</button></div>
+  </div>
+  <div class="gate-body">
+    <p class="fine" data-i18n="gateIntro">A summary of the Stale Posting Index terms of use and privacy notice. Please read it and accept to continue.</p>
+    <div class="gcard" style="--gc:#0f9d76"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026.</p></div>
+    <div class="gcard" style="--gc:#7c3aed"><h3 data-i18n="g2h">No guaranteed results</h3><p data-i18n="g2p">Stale Posting Index and its developer make no warranty of any outcome. Rankings, labels and fraud scores are automatic signals based on the data provided, and are only as good as that data. They are not facts about any company. A long-open or reposted job can have legitimate reasons, so always check with the employer.</p></div>
+    <div class="gcard" style="--gc:#d97706"><h3 data-i18n="g6h">Know the catch: not live data yet</h3><p data-i18n="g6p">The app doesn't pull jobs from the web on its own yet, and coverage is partial. Rankings use only postings people add, uploaded files and community reports, so a company that's missing isn't proof it hires fairly. Help make it better: tell us what's missing with Send feedback.</p></div>
+    <div class="gcard" style="--gc:#2563eb"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads, analytics or tracking. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
+    <div class="gcard" style="--gc:#dc4a26"><h3 data-i18n="g4h">Deleting is permanent; your data is your responsibility</h3><p data-i18n="g4p1">Delete all my data permanently removes everything you entered. This can't be undone.</p><p data-i18n-html="g4p2">You're responsible for your data. Stale Posting Index and its developer aren't responsible for lost or deleted data, to the fullest extent the law allows. Keep your own copy of what matters. In <strong>Add postings</strong>, the <strong>My postings</strong> tab has a <strong>Copy all postings as CSV</strong> button.</p></div>
+    <div class="gcard" style="--gc:#3f8f3a"><h3 data-i18n="g5h">Licence</h3><p data-i18n-html="g5p">© 2026 Karen Tinoco. Licensed under PolyForm Noncommercial 1.0.0: free to view, run, and adapt for non-commercial use. Commercial use by permission only. <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">License</a></p></div>
+    <div class="gate-links"><button class="linkbtn" id="gate-terms" data-i18n="gateReadTerms">Read the full Terms of use</button><button class="linkbtn" id="gate-privacy" data-i18n="gateReadPrivacy">Read the Privacy &amp; security notice</button></div>
+  </div>
+  <div class="gate-foot">
+    <label for="gate-accept"><input id="gate-accept" type="checkbox"> <span data-i18n="gateAccept">I have read and accept the Terms of use and the Privacy &amp; security notice</span></label>
+    <div class="actions"><button id="gate-decline" data-i18n="gateDecline">Decline</button><button class="primary" id="gate-ok" disabled data-i18n="gateOk">Accept and continue</button></div>
+  </div>
+</dialog>
+
+<div id="declined" class="declined" hidden>
+  <h2 data-i18n="declinedH">You declined the terms</h2>
+  <p data-i18n="declinedP">Stale Posting Index can only be used after you accept the Terms of use and the Privacy &amp; security notice. Nothing was saved.</p>
+  <button class="primary" id="declined-review" data-i18n="declinedReview">Review the terms again</button>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<template id="tpl-terms-en">
+  <h2>Terms &amp; conditions</h2>
+  <p class="updated">Last updated November 3, 2026</p>
+  <p>These terms cover your use of Stale Posting Index (the "App"), created by Karen Tinoco ("we", "us"). By accepting them on the start screen and using the App, you agree to them. If you don't agree, don't use the App.</p>
+  <h3>Free, while it's being tested</h3>
+  <p>The App is free and provided "as is" and "as available", without warranties of any kind. Features may change or stop at any time.</p>
+  <h3>What the App does</h3>
+  <p>The App lets you record job postings, see how long the same role has stayed posted and how often it has been reposted, and check recruiter emails for common scam signs. Rankings, labels such as "Stale", "Likely ghost", "Serial reposter" and "Most likely fraud", and all scores are calculated automatically by fixed rules from the data you enter. They are opinions about patterns, not statements of fact about any company's intentions, hiring practices or conduct. The App doesn't yet collect postings from the web automatically, and its coverage of companies, industries and areas is partial.</p>
+  <h3>No guaranteed results</h3>
+  <p>The App is not career, legal, employment or investment advice. We make no warranty of any outcome, and results are only as good as the data provided. A role can stay posted for legitimate reasons, such as continuous hiring or many openings under one title. A real recruiter email can trip a fraud flag, and a scam can pass. Always check with the employer through its official careers site before you decide anything or share personal details.</p>
+  <h3>Your responsibilities</h3>
+  <ul>
+    <li>Only add information you're allowed to use, such as publicly visible job postings and emails sent to you.</li>
+    <li>Don't add other people's personal information, confidential information, or anything unlawful, defamatory or misleading.</li>
+    <li>Follow each website's terms when you collect postings, and don't use the App or its collector to overload or interfere with any site.</li>
+    <li>Don't publish the App's rankings or fraud scores as verified findings of wrongdoing by any company or person.</li>
+  </ul>
+  <h3>Community reports</h3>
+  <p>Community reports, flags and comments are posted by users and describe their own experiences. They are not verified and don't represent our views. Only report jobs you have seen posted for more than 3 months, keep it factual, and don't name individual people, share personal information or post anything abusive, defamatory or unlawful. You are responsible for what you post. We may remove any report or comment, and may stop accepting them, at any time.</p>
+  <h3>Your data is your responsibility</h3>
+  <p>Your data is stored in your own browser. Deleting it is permanent. To the fullest extent the law allows, we aren't responsible for lost or deleted data. Keep your own copy with "Copy all postings as CSV".</p>
+  <h3>Limitation of liability</h3>
+  <p>To the fullest extent the law allows, we aren't liable for any indirect, incidental or consequential loss, or for any decision made using the App.</p>
+  <section id="sec-content-removal">
+    <h3>Content removal</h3>
+    <p><strong>Your own content.</strong> You control everything you add. Delete one posting in Add postings, then My postings. Delete one checked email in Fraud check. Remove everything with "Delete all my data" in the footer. Deleted data is gone immediately and can't be recovered.</p>
+    <p><strong>Requests from companies and others.</strong> If you represent a company, or you believe something shown through or published from the App is inaccurate, out of date, infringing or includes personal information, ask for a correction or removal through Share feedback. Include who you are, exactly what the content is and where you saw it, what's wrong, and what you'd like done. We aim to reply within 10 business days. We'll correct or remove content that is inaccurate, unlawful or infringing. We can't reach data saved in another person's own browser, but we can correct anything we publish.</p>
+  </section>
+  <section id="sec-copyright">
+    <h3>Copyright and licence</h3>
+    <p>© 2026 Karen Tinoco. The App's design, code and text are licensed under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>: free to use, share and adapt for non-commercial purposes, with credit. Commercial use by permission only.</p>
+    <p>Job titles, descriptions and links belong to the employers and websites that published them. Company names and trademarks, including Apple, Microsoft, NVIDIA, Amazon and its subsidiaries, Blue Origin and Tesla, belong to their owners. They are used only to identify postings and don't mean any company endorses or is affiliated with the App.</p>
+    <p><strong>Copyright complaints.</strong> If you believe something shown through the App infringes your copyright, send a notice through Share feedback that identifies the work, where the material appears, your contact details, a good-faith statement that the use isn't authorized, and a statement that your notice is accurate and that you are the owner or authorized to act for the owner. We'll review valid notices promptly and remove infringing material.</p>
+  </section>
+  <h3>Changes</h3>
+  <p>We may update these terms. The date at the top shows the latest version.</p>
+</template>
+
+<template id="tpl-terms-es">
+  <h2>Términos y condiciones</h2>
+  <p class="updated">Última actualización: 3 de noviembre de 2026</p>
+  <p>Estos términos regulan el uso de Stale Posting Index (la "App"), creada por Karen Tinoco ("nosotros"). Al aceptarlos en la pantalla de inicio y usar la App, los aceptas. Si no estás de acuerdo, no uses la App.</p>
+  <h3>Gratis, mientras está en pruebas</h3>
+  <p>La App es gratuita y se ofrece "tal cual" y "según disponibilidad", sin garantías de ningún tipo. Sus funciones pueden cambiar o dejar de funcionar en cualquier momento.</p>
+  <h3>Qué hace la App</h3>
+  <p>La App te permite registrar ofertas de empleo, ver cuánto tiempo ha seguido publicado el mismo puesto y cuántas veces se ha vuelto a publicar, y revisar correos de reclutadores en busca de señales comunes de estafa. Los rankings, las etiquetas como "Estancada", "Probable fantasma", "Republica en serie" y "Muy probable fraude", y todas las puntuaciones se calculan automáticamente con reglas fijas a partir de los datos que ingresas. Son opiniones sobre patrones, no afirmaciones de hecho sobre las intenciones, prácticas de contratación o conducta de ninguna empresa. La App todavía no recopila ofertas de la web de forma automática, y su cobertura de empresas, industrias y zonas es parcial.</p>
+  <h3>Sin resultados garantizados</h3>
+  <p>La App no es asesoría profesional, legal, laboral ni de inversión. No garantizamos ningún resultado, y los resultados solo son tan buenos como los datos ingresados. Un puesto puede seguir publicado por razones legítimas, como contratación continua o varias vacantes con el mismo título. Un correo real puede activar una alerta de fraude y una estafa puede pasar sin alertas. Verifica siempre con el empleador a través de su sitio oficial de empleo antes de decidir o compartir datos personales.</p>
+  <h3>Tus responsabilidades</h3>
+  <ul>
+    <li>Agrega solo información que puedas usar, como ofertas públicas y correos que te enviaron a ti.</li>
+    <li>No agregues datos personales de otras personas, información confidencial ni contenido ilegal, difamatorio o engañoso.</li>
+    <li>Respeta los términos de cada sitio web al recopilar ofertas, y no uses la App ni su recopilador para sobrecargar o interferir con ningún sitio.</li>
+    <li>No publiques los rankings ni las puntuaciones de fraude como pruebas verificadas de faltas de ninguna empresa o persona.</li>
+  </ul>
+  <h3>Reportes de la comunidad</h3>
+  <p>Los reportes, marcas y comentarios de la comunidad los publican las personas usuarias y describen sus propias experiencias. No están verificados y no representan nuestra opinión. Reporta solo ofertas que hayas visto publicadas más de 3 meses, sé objetivo, y no nombres a personas, no compartas datos personales ni publiques nada abusivo, difamatorio o ilegal. Eres responsable de lo que publicas. Podemos eliminar cualquier reporte o comentario, y dejar de aceptarlos, en cualquier momento.</p>
+  <h3>Tus datos son tu responsabilidad</h3>
+  <p>Tus datos se guardan en tu propio navegador. Borrarlos es permanente. En la medida máxima que permita la ley, no somos responsables por datos perdidos o borrados. Guarda tu propia copia con "Copiar todas las ofertas como CSV".</p>
+  <h3>Limitación de responsabilidad</h3>
+  <p>En la medida máxima que permita la ley, no somos responsables de pérdidas indirectas, incidentales o consecuentes, ni de decisiones tomadas usando la App.</p>
+  <section id="sec-content-removal-es">
+    <h3>Eliminación de contenido</h3>
+    <p><strong>Tu propio contenido.</strong> Tú controlas todo lo que agregas. Borra una oferta en Agregar ofertas, luego Mis ofertas. Borra un correo revisado en Revisar fraude. Elimina todo con "Borrar todos mis datos" en el pie de página. Lo borrado desaparece de inmediato y no se puede recuperar.</p>
+    <p><strong>Solicitudes de empresas y otras personas.</strong> Si representas a una empresa, o crees que algo mostrado o publicado desde la App es inexacto, está desactualizado, infringe derechos o incluye datos personales, pide una corrección o eliminación mediante Enviar comentarios. Indica quién eres, cuál es el contenido exacto y dónde lo viste, qué está mal y qué deseas que hagamos. Intentamos responder en un plazo de 10 días hábiles. Corregiremos o eliminaremos el contenido inexacto, ilegal o que infrinja derechos. No podemos acceder a datos guardados en el navegador de otra persona, pero sí corregir lo que publiquemos.</p>
+  </section>
+  <section id="sec-copyright-es">
+    <h3>Derechos de autor y licencia</h3>
+    <p>© 2026 Karen Tinoco. El diseño, el código y los textos de la App tienen licencia <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>: libre para usar, compartir y adaptar con fines no comerciales, dando crédito. El uso comercial requiere permiso.</p>
+    <p>Los títulos, descripciones y enlaces de las ofertas pertenecen a los empleadores y sitios que los publicaron. Los nombres y marcas de empresas, incluidas Apple, Microsoft, NVIDIA, Amazon y sus filiales, Blue Origin y Tesla, pertenecen a sus dueños. Se usan solo para identificar ofertas y no implican respaldo ni afiliación con la App.</p>
+    <p><strong>Reclamos de derechos de autor.</strong> Si crees que algo mostrado en la App infringe tus derechos de autor, envía un aviso mediante Enviar comentarios que identifique la obra, dónde aparece el material, tus datos de contacto, una declaración de buena fe de que el uso no está autorizado y una declaración de que tu aviso es exacto y de que eres el titular o estás autorizado a actuar en su nombre. Revisaremos los avisos válidos con prontitud y retiraremos el material infractor.</p>
+  </section>
+  <h3>Cambios</h3>
+  <p>Podemos actualizar estos términos. La fecha al inicio indica la versión más reciente.</p>
+</template>
+
+<template id="tpl-privacy-en">
+  <h2>Privacy &amp; security</h2>
+  <p class="updated">Last updated November 3, 2026</p>
+  <h3>Private by design</h3>
+  <p>The App doesn't ask for your name, email or account details. The postings you add, the emails you check, your settings and your acceptance of the terms are saved only in your own browser's storage on this device. They are never sent to us, never stored on a server, and other people who open the App can't see them.</p>
+  <h3>No AI, ads or tracking</h3>
+  <p>Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules that run inside the App. There are no ads, analytics or tracking.</p>
+  <h3>Feedback, the one exception</h3>
+  <p>If you click Send feedback, your message, the topic you picked, the time and an anonymous ID for your account are stored with the App on claude.ai so the owner can read them. Feedback is open until December 3, 2026. "Delete all my data" also deletes feedback you sent.</p>
+  <h3>Community reports</h3>
+  <p>Reports, flags and comments you post in Community reports are stored with the App on claude.ai, together with an anonymous ID for your account, and everyone who can open the App can read them. They show as "member" plus the last 4 characters of that ID, never your name. Don't include personal information. You can remove your own reports and comments at any time, and "Delete all my data" removes all of them along with your flags. The owner can remove any report or comment.</p>
+  <h3>Outside services</h3>
+  <p>The page is hosted on claude.ai, which may keep standard access logs under Anthropic's privacy policy. Fonts load from Google Fonts, which may receive your IP address and browser details under Google's privacy policy. Links to job postings open the employer's own site, which has its own policies.</p>
+  <h3>Security tips</h3>
+  <ul>
+    <li>Data in browser storage can be read by anyone who uses this browser profile. Use your own device or profile.</li>
+    <li>Don't paste passwords, Social Security numbers or bank details into the fraud checker. Remove them from an email before you paste it.</li>
+    <li>Clearing your browser's site data also deletes everything the App saved.</li>
+  </ul>
+  <h3>Deleting is permanent</h3>
+  <p>"Delete all my data" in the footer permanently removes everything the App saved for you. You can also delete single postings and checked emails. This can't be undone.</p>
+  <h3>Children</h3>
+  <p>The App is for adults looking for work or hiring. It isn't directed at children under 16.</p>
+  <h3>Questions</h3>
+  <p>Use Share feedback.</p>
+</template>
+
+<template id="tpl-privacy-es">
+  <h2>Privacidad y seguridad</h2>
+  <p class="updated">Última actualización: 3 de noviembre de 2026</p>
+  <h3>Privada por diseño</h3>
+  <p>La App no te pide nombre, correo ni datos de cuenta. Las ofertas que agregas, los correos que revisas, tus ajustes y tu aceptación de los términos se guardan solo en el almacenamiento de tu propio navegador en este dispositivo. Nunca se nos envían, nunca se guardan en un servidor, y otras personas que abran la App no pueden verlos.</p>
+  <h3>Sin IA, anuncios ni rastreo</h3>
+  <p>Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios, analítica ni rastreo.</p>
+  <h3>Comentarios, la única excepción</h3>
+  <p>Si haces clic en Enviar comentarios, tu mensaje, el tema elegido, la hora y un ID anónimo de tu cuenta se guardan con la App en claude.ai para que la dueña pueda leerlos. Los comentarios están abiertos hasta el 3 de diciembre de 2026. "Borrar todos mis datos" también borra los comentarios que enviaste.</p>
+  <h3>Reportes de la comunidad</h3>
+  <p>Los reportes, marcas y comentarios que publicas en Reportes de la comunidad se guardan con la App en claude.ai, junto con un ID anónimo de tu cuenta, y todas las personas que pueden abrir la App pueden leerlos. Aparecen como "miembro" más los últimos 4 caracteres de ese ID, nunca tu nombre. No incluyas datos personales. Puedes quitar tus reportes y comentarios cuando quieras, y "Borrar todos mis datos" los elimina todos junto con tus marcas. La dueña puede eliminar cualquier reporte o comentario.</p>
+  <h3>Servicios externos</h3>
+  <p>La página está alojada en claude.ai, que puede guardar registros de acceso estándar según la política de privacidad de Anthropic. Las fuentes se cargan desde Google Fonts, que puede recibir tu dirección IP y datos del navegador según la política de privacidad de Google. Los enlaces a ofertas abren el sitio del empleador, que tiene sus propias políticas.</p>
+  <h3>Consejos de seguridad</h3>
+  <ul>
+    <li>Cualquier persona que use este perfil del navegador puede leer los datos guardados. Usa tu propio dispositivo o perfil.</li>
+    <li>No pegues contraseñas, números de seguro social ni datos bancarios en el revisor de fraude. Quítalos del correo antes de pegarlo.</li>
+    <li>Borrar los datos del sitio en tu navegador también borra todo lo que guardó la App.</li>
+  </ul>
+  <h3>Borrar es permanente</h3>
+  <p>"Borrar todos mis datos" en el pie de página elimina para siempre todo lo que la App guardó para ti. También puedes borrar ofertas o correos revisados uno por uno. No se puede deshacer.</p>
+  <h3>Menores</h3>
+  <p>La App es para adultos que buscan empleo o contratan. No está dirigida a menores de 16 años.</p>
+  <h3>Preguntas</h3>
+  <p>Usa Enviar comentarios.</p>
+</template>
+
+<script>
+(function () {
+  const DAY = 86400000;
+  const $ = (id) => document.getElementById(id);
+  const K = { catchUi: "spi-catch", rows: "spi-postings-v2", fraud: "spi-fraud-v1", lens: "spi-lens", lang: "spi-lang", accepted: "spi-accepted-v1" };
+  const state = { rows: [], lens: "seeker", lang: "en", open: new Set(), tab: "ranking" };
+  const rp = { state: "pending", db: null, user: null, me: "", owner: false, docs: [], byCo: {}, openComments: new Set(), queue: Promise.resolve() };
+  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+
+  // Watchlist suggestions (typing a company or industry offers these)
+  const WATCH_COMPANIES = ["Apple", "Microsoft", "NVIDIA", "Amazon", "Amazon Web Services (AWS)", "Whole Foods Market", "Zappos", "Twitch", "Audible", "Ring", "Zoox", "Project Kuiper", "One Medical", "IMDb", "Amazon MGM Studios", "Wondery", "eero", "Blue Origin", "SpaceX", "Tesla", "Alphabet (Google)", "Meta", "Oracle", "IBM", "Cisco", "AMD", "Qualcomm", "Intel", "Salesforce", "Adobe", "Netflix", "Ford", "General Motors", "Delta Air Lines", "American Airlines", "United Airlines", "Southwest Airlines", "JetBlue", "Alaska Airlines", "Skydio", "Zipline", "Wing", "Shield AI", "AeroVironment", "Joby Aviation", "Archer Aviation", "Royal Caribbean Group", "Carnival Corporation", "Norwegian Cruise Line Holdings", "Virgin Voyages", "Lennar", "D.R. Horton", "PulteGroup", "Toll Brothers", "KB Home", "NVR", "Bechtel", "Turner Construction", "Kiewit"];
+  const WATCH_INDUSTRIES = ["Technology", "Hospitals", "Home Health Care", "Nursing Homes & Assisted Living", "Clinics (Medical & Dental)", "Behavioral Health", "Construction Trades", "Homebuilding & Construction", "Staffing Agencies", "Trucking & Delivery", "Warehousing", "Restaurants & Food Service", "Hotels & Hospitality", "Cleaning & Janitorial", "Security Services", "Call Centers", "Childcare", "Landscaping", "Auto Repair & Dealerships", "Retail", "Aerospace & Defense", "Drones & Aerial Tech", "Automotive", "Airlines", "Cruise Lines", "Banking & Finance", "Fintech", "Healthcare", "Pharma & Biotech", "Media & Entertainment", "Telecom & Media", "Energy", "Manufacturing", "Logistics", "Food & Consumer Goods", "Consulting"];
+  const AMAZON_FAMILY = /^(amazon|aws|amazon web services|whole foods|zappos|twitch|audible|ring|zoox|project kuiper|amazon leo|one medical|imdb|amazon mgm|mgm studios|wondery|eero|woot|shopbop|blink|annapurna labs|amazon robotics|goodreads|amazon pharmacy|pillpack)\b/i;
+
+  // ---------- i18n ----------
+  const ES = {
+    eyebrow: "Vigilancia del mercado laboral · De gigantes tecnológicos a empleadores locales",
+    heroLede: "Descubre qué empleadores, desde gigantes tecnológicos hasta hospitales, clínicas y contratistas locales, mantienen la misma oferta publicada durante meses o la republican para que parezca nueva, y revisa anuncios en busca de señales de que una empresa se aprovecha de sus trabajadores. Quienes buscan empleo saben dónde no perder su tiempo. Los empleadores ven qué puestos no logra cubrir la competencia.",
+    chipWatch: "2 meses · Vigilar", chipStale: "3 meses · Estancada", chipGhost: "6 meses · Probable fantasma", chipRepost: "3+ publicaciones · Republica en serie",
+    ctaStart: "Empezar a rastrear", ctaHow: "Cómo se puntúa",
+    navRanking: "Ranking", navAdd: "Agregar ofertas", navFraud: "Revisar fraude", navPrivacy: "Privacidad y seguridad", navTerms: "Términos", navFeedback: "Comentarios",
+    lensSeeker: "Busco empleo", lensEmployer: "Estoy contratando",
+    fSearch: "Buscar empresa o puesto", fSearchPh: "p. ej. Ingeniero, NVIDIA", fOpen: "Abierta al menos", oAll: "Todos los puestos (cualquier duración)", o60: "2 meses (60 días)", o90: "3 meses (90 días)", o180: "6 meses (180 días)", o270: "9 meses (270 días)",
+    fRank: "Ordenar por", sScore: "Días totales después de 3 meses", sLongest: "Puesto más largo", sCount: "Puestos abiertos más de 3 meses", sReposts: "Más republicaciones", sAvg: "Promedio de días abierta",
+    fIndustry: "Industria", fAsOf: "Fecha de corte", fOnlyRepost: "Solo las que republican en serie", fSplit: "Contar cada ubicación por separado",
+    rankingH: "Ranking de empresas", tWatch: "Vigilar", tStale: "Estancada", tGhost: "Probable fantasma", tSerial: "Republica en serie",
+    lgWatch: "2–3 meses", lgStale: "3–6 meses", lgGhost: "6+ meses", lgSerial: "misma oferta publicada 3+ veces", copyRanking: "Copiar ranking como CSV",
+    marketH: "Puestos que el mercado no logra cubrir", marketP: "Puestos abiertos más de 3 meses en más de una empresa. Un proceso más rápido o una oferta más clara aquí puede ganar a los candidatos que tu competencia sigue perdiendo.",
+    howH: "Cómo se puntúa",
+    how1: "<strong>Mismo puesto.</strong> Las ofertas se agrupan por empresa y un título limpio. Se ignoran mayúsculas, puntuación, números de requisición y etiquetas como \"(Remote)\", y \"Sr.\" cuenta como \"Senior\".",
+    how2: "<strong>Días abierta.</strong> Desde la primera publicación del puesto hasta la última vez que se vio, o hasta la fecha de corte si sigue publicada. Republicar no reinicia el conteo.",
+    how3: "<strong>Ranking.</strong> Por defecto, las empresas se ordenan por el total de días que sus puestos han seguido abiertos después de 3 meses.",
+    how4: "<strong>Republica en serie.</strong> Se marca cuando un puesto se ha publicado 3 o más veces, por ejemplo retirado y vuelto a publicar con un ID nuevo o con la fecha renovada.",
+    how5: "<strong>Una señal, no una prueba.</strong> Una oferta abierta mucho tiempo también puede ser un puesto permanente o de alto volumen. Usa el ranking como motivo para hacer preguntas.",
+    addH: "Agregar ofertas", tabManual: "Agregar una oferta", tabPaste: "Pegar resultados de búsqueda", tabFile: "Subir un archivo", tabMine: "Mis ofertas",
+    mCompany: "Empresa", mCompanyPh: "p. ej. NVIDIA", mTitle: "Puesto", mTitlePh: "p. ej. Ingeniero de software sénior", mIndustry: "Industria", mLocation: "Ubicación", mLocationPh: "p. ej. Santa Clara, CA",
+    mPosted: "Fecha de publicación o primera vez vista", mLast: "Última vez vista", mOpen: "Sigue publicada", mUrl: "Enlace a la oferta", mAdd: "Agregar oferta",
+    mHint: "¿Viste la misma oferta republicada con otra fecha? Agrégala otra vez con la fecha nueva. La App cuenta cada una como republicación y marca a las empresas que lo hacen repetidamente.",
+    pasteHelp: "Copia filas de una hoja de cálculo o búsqueda de empleo y pégalas aquí. La primera línea debe tener los nombres de columna: <code>company</code>, <code>title</code>, <code>posted_date</code>, y opcionalmente <code>industry</code>, <code>location</code>, <code>last_seen</code>, <code>url</code>. Sirven comas o tabulaciones.",
+    pasteAdd: "Agregar estas ofertas", dropText: "Suelta aquí un archivo .csv o .json, o", dropChoose: "elige un archivo",
+    fileHelp: "Funciona con el CSV del recopilador de Stale Posting Index y con la mayoría de exportaciones de portales de empleo o ATS. Se reconocen encabezados como <code>company_name</code>, <code>job_title</code>, <code>date_posted</code>, <code>created_at</code>, <code>first_seen</code> y <code>sector</code>.",
+    copyAll: "Copiar todas las ofertas como CSV", deleteAllPostings: "Borrar todas las ofertas", clearQ: "¿Borrar todas las ofertas guardadas en este navegador? No se puede deshacer.", clearYes: "Borrar todo", clearNo: "Conservarlas",
+    fraudH: "Muy probablemente un fraude",
+    fraudP: "¿Recibiste un correo o mensaje de un reclutador que no te convence? Pégalo aquí con su línea <strong>From</strong> (De). El revisor busca señales comunes de estafa laboral, como un correo gratuito para una gran empresa, pedidos de dinero o datos bancarios, o entrevistas por apps de chat. Luego ordena todos los correos revisados, del más probable fraude al menos. Los correos se quedan en este navegador.",
+    frCompany: "Empresa que dice representar", frText: "Correo o mensaje", frCheck: "Revisar este correo", frListH: "Todo lo que revisaste, del mayor riesgo al menor",
+    fbH: "Enviar comentarios", fbKind: "¿Sobre qué es?", fbIdea: "Idea o función nueva", fbBug: "Algo no funciona", fbResult: "Resultado incorrecto o injusto", fbOther: "Otro",
+    fbText: "Tus comentarios", fbPh: "Cuéntanos qué la haría más útil.", fbNote: "Los comentarios se envían solo cuando haces clic en Enviar comentarios. Van solo a la dueña de la App y se usan para mejorar futuras versiones. No incluyas datos personales.",
+    fbSend: "Enviar comentarios", inboxH: "Bandeja de comentarios", inboxP: "Solo tú, la dueña, ves esto. Lo más reciente primero.",
+    aboutEyebrow: "Sobre este proyecto",
+    aboutP: "Creada para que quienes buscan empleo distingan una vacante real de una oferta que nunca se cierra, y para que los equipos de contratación vean dónde está estancado el mercado de talento tecnológico. Las ofertas vienen de lo que agregas o del recopilador opcional, que revisa a diario sitios de empleo de tecnología como Apple, Microsoft, NVIDIA, Amazon, Blue Origin y Tesla, y exporta un CSV para la pestaña Agregar ofertas.",
+    footBy: "Stale Posting Index por Karen Tinoco. Diseñada y dirigida por la autora; implementada con Claude Code como programador de IA en pareja. Los rankings provienen solo de las ofertas que agregas; no incluye datos de empresas.",
+    footLicense: "© 2026 Karen Tinoco. Licencia <a href=\"https://polyformproject.org/licenses/noncommercial/1.0.0/\" target=\"_blank\" rel=\"noopener\">PolyForm Noncommercial 1.0.0</a>: libre para usar, compartir y adaptar con fines no comerciales, dando crédito. El uso comercial requiere permiso.",
+    footPrivacy: "Privacidad y seguridad", footTerms: "Términos y condiciones", footRemoval: "Eliminación de contenido", footCopyright: "Derechos de autor", footFeedback: "Enviar comentarios", footDelete: "Borrar todos mis datos",
+    wipeQ: "¿Borrar para siempre todo lo que esta App guardó en este navegador: tus ofertas, correos revisados, ajustes, los comentarios que enviaste y tus reportes, marcas y comentarios de la comunidad? No se puede deshacer.", wipeYes: "Borrar todo", wipeNo: "Cancelar",
+    footGuidance: "Solo orientación: los rankings y las puntuaciones de fraude son señales automáticas basadas en los datos ingresados, no hechos sobre ninguna empresa, y no garantizan resultados. Borrar datos es permanente y tu responsabilidad.",
+    gateTitle: "Antes de empezar: Términos de uso", gateIntro: "Un resumen de los términos de uso y el aviso de privacidad de Stale Posting Index. Léelo y acéptalo para continuar.",
+    g1h: "Gratis, mientras está en pruebas", g1p: "Stale Posting Index es gratuita y se ofrece tal cual. Los comentarios se envían solo cuando haces clic en <strong>Enviar comentarios</strong>; van solo a la dueña de la App y se usan para mejorar futuras versiones. Los comentarios están abiertos hasta el 3 de diciembre de 2026.",
+    g2h: "Sin resultados garantizados", g2p: "Stale Posting Index y su desarrolladora no garantizan ningún resultado. Los rankings, etiquetas y puntuaciones de fraude son señales automáticas basadas en los datos ingresados, y solo son tan buenos como esos datos. No son hechos sobre ninguna empresa. Una oferta abierta mucho tiempo o republicada puede tener razones legítimas; verifica siempre con el empleador.",
+    g3h: "Privada por diseño.", g3p1: "Todo lo que ingresas se queda en tu propio navegador. Tus ofertas y correos revisados nunca se envían a ningún lado, nunca se guardan en un servidor y no se rastrea nada. Puedes borrarlos cuando quieras.",
+    g3p2: "Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios, analítica ni rastreo. Lo único que se guarda fuera de tu navegador son los comentarios que decidas enviar y los reportes, marcas y comentarios de la comunidad que decidas publicar. Otras personas ven los reportes, marcas y comentarios, sin tu nombre.",
+    g4h: "Borrar es permanente; tus datos son tu responsabilidad", g4p1: "Borrar todos mis datos elimina para siempre todo lo que ingresaste. No se puede deshacer.",
+    g4p2: "Eres responsable de tus datos. Stale Posting Index y su desarrolladora no son responsables por datos perdidos o borrados, en la medida máxima que permita la ley. Guarda tu propia copia de lo importante. En <strong>Agregar ofertas</strong>, la pestaña <strong>Mis ofertas</strong> tiene un botón <strong>Copiar todas las ofertas como CSV</strong>.",
+    g5h: "Licencia", g5p: "© 2026 Karen Tinoco. Licencia PolyForm Noncommercial 1.0.0: libre para ver, ejecutar y adaptar con fines no comerciales. El uso comercial requiere permiso. <a href=\"https://polyformproject.org/licenses/noncommercial/1.0.0/\" target=\"_blank\" rel=\"noopener\">Licencia</a>",
+    gateReadTerms: "Leer los Términos de uso completos", gateReadPrivacy: "Leer el aviso de Privacidad y seguridad",
+    gateAccept: "He leído y acepto los Términos de uso y el aviso de Privacidad y seguridad", gateDecline: "Rechazar", gateOk: "Aceptar y continuar",
+    declinedH: "Rechazaste los términos", declinedP: "Stale Posting Index solo puede usarse después de aceptar los Términos de uso y el aviso de Privacidad y seguridad. No se guardó nada.", declinedReview: "Revisar los términos otra vez",
+    viewAs: "Ver como",
+    catchH: "Conoce las limitaciones antes de confiar en esto",
+    catch1: "<strong>Todavía no es en vivo.</strong> La App aún no obtiene ofertas de la web por sí sola. Los rankings usan solo las ofertas que agregas, los archivos que subes y los reportes de la comunidad, así que si una empresa no aparece aquí no es prueba de que contrate de forma justa.",
+    catch2: "<strong>La cobertura es parcial.</strong> Muchas empresas grandes y la mayoría de los empleadores pequeños y locales aún no se rastrean, y sitios como Indeed y LinkedIn no comparten sus datos.",
+    catch3: "<strong>Estar abierta mucho tiempo no siempre es malo.</strong> Algunos puestos son permanentes, de temporada o tienen varias vacantes con el mismo título.",
+    catch4: "<strong>Los reportes no están verificados.</strong> Los reportes, marcas y comentarios de la comunidad son experiencias de las personas.",
+    catch5: "<strong>Las revisiones pueden equivocarse.</strong> Las revisiones de fraude y de señales de alerta buscan patrones comunes. Pueden no detectar una estafa o marcar un empleo real.",
+    sugCoverage: "Sugerir una empresa o industria", sugIdea: "Sugerir una mejora",
+    improveQ: "¿Falta algo o hay algo mal en este ranking?", improveBtn: "Cuéntanos para corregirlo",
+    warnFraud: "Atención: estas revisiones buscan patrones comunes de alerta. Pueden no detectar una estafa o marcar un empleo real. Nunca envíes dinero ni datos personales hasta confirmar el puesto en el sitio oficial del empleador.",
+    warnReports: "Atención: los reportes no están verificados. Tómalos como pistas para revisar, no como hechos sobre una empresa.",
+    fbCoverage: "Falta una empresa, industria o zona", fbData: "Los datos están mal o desactualizados",
+    g6h: "Conoce las limitaciones: todavía no son datos en vivo", g6p: "La App aún no obtiene ofertas de la web por sí sola, y la cobertura es parcial. Los rankings usan solo las ofertas que agregan las personas, los archivos subidos y los reportes de la comunidad, así que si una empresa no aparece no es prueba de que contrate de forma justa. Ayuda a mejorarla: dinos qué falta con Enviar comentarios.",
+    fSize: "Tamaño del empleador", szAll: "Todos los empleadores", szBig: "Grandes marcas", szSmall: "Empleadores pequeños y locales",
+    mIndustryPh: "p. ej. Tecnología, Hospitales, Oficios de construcción", mSize: "Tamaño de la empresa", mSizeUnsure: "No estoy segura/o", mSizeLarge: "Grande o conocida", mSizeSmall: "Pequeña o negocio local",
+    fraudP2: "O revisa un <strong>anuncio de empleo</strong> en busca de señales de que un empleador podría aprovecharse de sus trabajadores, algo común en algunas clínicas pequeñas, agencias de salud a domicilio, contratistas y agencias de personal: cobros para empezar, pago solo por comisión, \"entrevistas de trabajo\" sin pago, contrato 1099 para un horario de tiempo completo, sin salario indicado, horas extra obligatorias o \"siempre contratando\".",
+    frMode: "¿Qué estás revisando?", frModeEmail: "Un correo o mensaje de un reclutador", frModePosting: "Un anuncio de empleo",
+    navReports: "Reportes de la comunidad", repH: "Reportes de la comunidad",
+    repP: "¿Viste a una empresa mantener la misma oferta publicada más de 3 meses? Repórtala para que otros lo sepan. Si viste lo mismo, marca el reporte y agrega un comentario sobre tu experiencia. Todas las personas que pueden abrir esta App ven los reportes, marcas y comentarios, sin tu nombre.",
+    repRules: "<strong>Sé objetivo.</strong> Indica qué se publicó, cuándo lo viste por primera vez y qué pasó cuando te postulaste. No nombres a personas, no compartas datos personales ni insultes. Los reportes son experiencias de personas, no hechos verificados. Lo que no cumpla estas reglas se elimina.",
+    rFirst: "Primera vez que lo viste publicado", rNote: "¿Qué pasó? (opcional)", rNotePh: "p. ej. Me postulé dos veces y nunca respondieron. El mismo anuncio se republica cada mes con fecha nueva.",
+    rConfirm: "Esto es cierto según mi conocimiento y no incluye datos personales de nadie.", rSend: "Reportar esta empresa",
+    rsFlags: "Más marcados", rsDays: "Abiertos por más tiempo", rsNew: "Más recientes"
+  };
+  // dynamic strings
+  const T = {
+    en: {
+      lensSeeker: "Roles that stay posted for months, or keep getting reposted, often mean a slow or stalled hiring process, requirements no one can meet, or a posting with no real opening behind it. Before you put hours into an application, ask the recruiter how long the role has been open and what has held it up.",
+      lensEmployer: "When a competitor can't fill a role for 3+ months, the candidates they're chasing are still on the market. Use this list to spot where to recruit, which roles you can win with a faster process, and which competitors are struggling to grow.",
+      allInd: "All industries", stCos: "Companies with a role open 2+ months", stCosSub: "of {n} companies you've added", stStart: "Add postings to start", stRoles: "Roles open past 3 months", stRolesSub: "{n} of them past 6 months", nothing: "Nothing tracked yet",
+      stLong: "Longest open role", days: "days", at: "{t} at {c}", stSerial: "Serial reposters", stSerialSub: "{c} posted one role {n} times", stSerialEmpty: "Companies posting the same job 3+ times",
+      colCo: "Company", col3: "Past 3 mo", colLong: "Longest", colBar: "Longest role open", colScore: "Days past 3 mo",
+      emptyH: "No postings yet", emptyP: "Add the job postings you've found at the companies you're watching, such as Apple, Microsoft, NVIDIA, Amazon, Blue Origin or Tesla. As soon as a role has been posted for more than 2 months, or posted 3 or more times, its company is flagged here.",
+      noMatchH: "No matches", noMatchP: "None of the companies you've added has a role that matches these filters. Try a shorter time window, another industry, or clear the search.",
+      roles: "{n} role", rolesPl: "{n} roles", reposts1: "{n} repost", repostsPl: "{n} reposts", amazonCo: "an Amazon company",
+      monthsAvg: "{m} months · avg {a}d", mstats: "{a} past 3 mo · longest {l}d · {s} days past 3 mo",
+      postedX: "Posted {n}× to look new", firstPosted: "First posted {d}", stillPosted: "Still posted", lastSeen: "Last seen {d}", never: "Never reposted", view: "View posting",
+      marketLi: "open past 3 months at {n} companies · avg {a} days",
+      count: "{p} postings · {r} distinct roles · {c} companies", countEmpty: "Nothing tracked yet. Start by adding your first posting.",
+      mineCount: "{n} postings saved in this browser", mineEmpty: "No postings saved yet.", mineMore: "Showing the first 500.", del: "Delete", postedOn: "posted {d}",
+      errFill: "Fill in company, job title and date posted.", errFuture: "The posted date can't be in the future.", errLast: "Add the last-seen date, or tick Still posted.", errBefore: "Last seen can't be before the posted date.",
+      added: "Added {t} at {c}.", dup: "You already added that exact posting.", addedN: "Added {n} postings", skippedDup: ", skipped {n} already saved", skippedBad: ", skipped {n} without a usable date",
+      pasteFirst: "Paste some rows first.", noRows: "No rows found. The first line needs column names, with at least one posting below it.", missingCols: "Couldn't find a column for: {m}. Columns found: {k}.", postedDate: "posted date", noneUsable: "None of the rows had a readable company, title and posted date. Dates work best as YYYY-MM-DD.", badJson: "That looks like JSON but it couldn't be read. Check for a missing bracket or comma.",
+      deleted: "Deleted {t} at {c}", allDeleted: "All postings deleted", copiedAll: "All postings copied as CSV", copiedRank: "Ranking copied as CSV", copyBlocked: "Copy is blocked here. The CSV is selected in the paste box, so press Ctrl+C.",
+      frPaste: "Paste the full email, including the From line.", frAdded: "Checked and added to your list.", frNone: "No common scam signs found.", frNote: "This is an automatic check for common scam patterns, not proof either way. Before you share personal details, find the job on the company's own careers site and contact them through it.", frEmpty: "No emails checked yet. Paste one above to start your list.", frUnknown: "Unknown company", frNoAddr: "no sender address", frDeleted: "Deleted checked email",
+      lvHigh: "Most likely fraud", lvMid: "Suspicious", lvLow: "Few red flags",
+      fFree: "Sent from a free {d} address while claiming to be {c}", fFree2: "Sent from a free {d} address, not a company domain", fDomain: "Sender domain {d} doesn't match {c}", fLook: "{d} looks like a lookalike domain, not {c}'s main domain", fNoFrom: "No sender address found. Paste the From line to check the domain.",
+      r0: "Asks you to pay, send money, buy gift cards or crypto, or deposit a check for equipment", r1: "Asks for your Social Security number, bank, card or ID details", r2: "Interview or contact over a chat app instead of a real call", r3: "Package reshipping, payment processing or personal-assistant jobs are classic scams", r4: "Says you're selected or hired without a proper interview", r5: "Uses shortened links or a Google Form instead of the company's careers site", r6: "Pay that's too good for an entry-level or no-experience role", r7: "Pressures you to act right away", r8: "Generic greeting instead of your name",
+      fbOpen: "Open for {n} more day{s}, until Dec 3, 2026", fbClosed: "Feedback closed on Dec 3, 2026", fbConnecting: "Connecting…", fbNoDb: "Feedback can be sent only from the published app on claude.ai while you're signed in, by people the owner has shared it with at Contributor level or above.", fbShort: "Write a few words first.", fbSending: "Sending…", fbThanks: "Thanks, your feedback was sent.", fbSent: "Feedback sent", fbNoAccess: "You can't send feedback with your current access. Ask the owner to share the app with you at Contributor level.", fbFull: "The feedback box is full right now. Please try again later.", fbFail: "Couldn't send your feedback. Please try again in a moment.", fbBtnClosed: "Feedback closed",
+      inboxLoading: "Loading feedback…", inboxEmpty: "No feedback yet. It appears here as soon as someone sends it.", inboxErr: "Couldn't load feedback. Reopen the app to try again.", person: "person",
+      szTagSmall: "small or local", community: "{n} community report", communityPl: "{n} community reports",
+      pv: "job posting", em: "email",
+      pLvHigh: "Likely takes advantage of workers", pLvMid: "Watch out", pLvLow: "Few red flags", pNone: "No common warning signs found in this posting.", pNote: "This is an automatic check for common warning signs, not proof. Ask about pay, schedule and employment type in writing before you accept.",
+      frPastePosting: "Paste the full job posting text.", frBtnEmail: "Check this email", frBtnPosting: "Check this posting", frTextPosting: "Job posting text", frTextEmail: "Email or message", frCompanyPosting: "Company that posted it",
+      p0: "Asks you to pay to start: training, uniform, tools, background check or a deposit", p1: "Commission-only pay or no base pay", p2: "Unpaid training, trial shift or \"working interview\"", p3: "Treats a full-time, set-schedule job as independent contractor (1099) work", p4: "No pay or pay range listed", p5: "Mandatory overtime, double shifts or on call around the clock", p6: "\"Always hiring\" or urgent, constant hiring often means high turnover", p7: "Very large sign-on bonus for an entry-level role, often a sign of high turnover", p8: "Paid in cash or \"under the table\"", p9: "Use of your own vehicle without mileage pay", p10: "Benefits or full pay held back for months, or a long unpaid probation", p11: "Non-compete or stay-or-pay clause for an hourly job", p12: "Vague culture phrases like \"we're a family\" or \"wear many hats\" that can hide unpaid extra work",
+      repSignIn: "Reports can be posted, flagged and read only in the published app on claude.ai while you're signed in. People need Contributor access to post.", repLoading: "Loading reports…", repEmpty: "No reports yet. Be the first to report a company that keeps the same job posted for more than 3 months.", repNoMatch: "No reports match your search.", repCount: "{n} reports from the community",
+      rErrFill: "Fill in company, job title and the first date you saw it.", rErr90: "Reports are for jobs posted more than 3 months. You first saw this one {n} days ago. Track it in Add postings and report it once it passes 90 days.", rErrConfirm: "Tick the box to confirm your report is factual and has no personal information.", rErrLast: "Add the last-seen date, or tick Still posted.", rErrFuture: "Dates can't be in the future.",
+      rSending: "Posting…", rPosted: "Your report is posted. Thank you.", rFail: "Couldn't save that. Please try again in a moment.", rNoAccess: "You can view reports, but posting needs Contributor access. Ask the owner to share the app with you as a Contributor.", rFull: "You've reached the limit for your account. Remove an older report or comment first.",
+      rOpen: "Open {n} days", rReportedBy: "Reported by member …{w} · {d}", rYou: "you", rReportedByYou: "Reported by you · {d}", cByYou: "You · {d}", rFlag: "I've seen this too", rFlagged: "Flagged", rFlags: "{n} flag", rFlagsPl: "{n} flags", rComment: "Comment", rAddMine: "Add to my ranking", rRemove: "Remove", rAddedMine: "Added to your ranking", rRemoved: "Removed",
+      cPh: "Share your experience. No names or personal information.", cPost: "Post comment", cBy: "Member …{w} · {d}", cShort: "Write a few words first.",
+      wiped: "All your data was deleted", accepted: "Welcome. You can change language anytime with EN / ES.", mustAccept: "Accept the terms to continue."
+    },
+    es: {
+      lensSeeker: "Los puestos que siguen publicados durante meses, o que se republican una y otra vez, suelen indicar un proceso lento o detenido, requisitos que nadie cumple o una oferta sin una vacante real detrás. Antes de invertir horas en una solicitud, pregunta al reclutador cuánto tiempo lleva abierto el puesto y qué lo ha frenado.",
+      lensEmployer: "Cuando la competencia no logra cubrir un puesto en 3+ meses, los candidatos que busca siguen en el mercado. Usa esta lista para saber dónde reclutar, qué puestos puedes ganar con un proceso más rápido y qué competidores tienen dificultades para crecer.",
+      allInd: "Todas las industrias", stCos: "Empresas con un puesto abierto 2+ meses", stCosSub: "de {n} empresas que agregaste", stStart: "Agrega ofertas para empezar", stRoles: "Puestos abiertos más de 3 meses", stRolesSub: "{n} de ellos más de 6 meses", nothing: "Aún no hay nada",
+      stLong: "Puesto abierto más tiempo", days: "días", at: "{t} en {c}", stSerial: "Republican en serie", stSerialSub: "{c} publicó un puesto {n} veces", stSerialEmpty: "Empresas que publican la misma oferta 3+ veces",
+      colCo: "Empresa", col3: "Más de 3 m", colLong: "Más larga", colBar: "Puesto abierto más tiempo", colScore: "Días tras 3 m",
+      emptyH: "Aún no hay ofertas", emptyP: "Agrega las ofertas que encontraste en las empresas que vigilas, como Apple, Microsoft, NVIDIA, Amazon, Blue Origin o Tesla. En cuanto un puesto lleve más de 2 meses publicado, o se haya publicado 3 o más veces, su empresa aparecerá aquí.",
+      noMatchH: "Sin coincidencias", noMatchP: "Ninguna de las empresas que agregaste tiene un puesto que coincida con estos filtros. Prueba un período más corto, otra industria o borra la búsqueda.",
+      roles: "{n} puesto", rolesPl: "{n} puestos", reposts1: "{n} republicación", repostsPl: "{n} republicaciones", amazonCo: "una empresa de Amazon",
+      monthsAvg: "{m} meses · prom. {a} d", mstats: "{a} más de 3 m · máx. {l} d · {s} días tras 3 m",
+      postedX: "Publicada {n}× para parecer nueva", firstPosted: "Publicada por primera vez {d}", stillPosted: "Sigue publicada", lastSeen: "Vista por última vez {d}", never: "Nunca republicada", view: "Ver oferta",
+      marketLi: "abierto más de 3 meses en {n} empresas · prom. {a} días",
+      count: "{p} ofertas · {r} puestos distintos · {c} empresas", countEmpty: "Aún no hay nada. Empieza agregando tu primera oferta.",
+      mineCount: "{n} ofertas guardadas en este navegador", mineEmpty: "Aún no hay ofertas guardadas.", mineMore: "Se muestran las primeras 500.", del: "Borrar", postedOn: "publicada {d}",
+      errFill: "Completa empresa, puesto y fecha de publicación.", errFuture: "La fecha de publicación no puede ser futura.", errLast: "Agrega la fecha de última vez vista o marca Sigue publicada.", errBefore: "La última vez vista no puede ser anterior a la publicación.",
+      added: "Se agregó {t} en {c}.", dup: "Ya agregaste esa misma oferta.", addedN: "Se agregaron {n} ofertas", skippedDup: ", se omitieron {n} ya guardadas", skippedBad: ", se omitieron {n} sin fecha válida",
+      pasteFirst: "Pega algunas filas primero.", noRows: "No se encontraron filas. La primera línea debe tener nombres de columna y al menos una oferta debajo.", missingCols: "No se encontró columna para: {m}. Columnas encontradas: {k}.", postedDate: "fecha de publicación", noneUsable: "Ninguna fila tenía empresa, puesto y fecha legibles. Usa fechas como AAAA-MM-DD.", badJson: "Parece JSON pero no se pudo leer. Revisa si falta un corchete o una coma.",
+      deleted: "Se borró {t} en {c}", allDeleted: "Se borraron todas las ofertas", copiedAll: "Todas las ofertas copiadas como CSV", copiedRank: "Ranking copiado como CSV", copyBlocked: "Aquí no se permite copiar. El CSV está seleccionado en el cuadro de pegado; presiona Ctrl+C.",
+      frPaste: "Pega el correo completo, incluida la línea From (De).", frAdded: "Revisado y agregado a tu lista.", frNone: "No se encontraron señales comunes de estafa.", frNote: "Es una revisión automática de patrones comunes de estafa, no una prueba. Antes de compartir datos personales, busca el puesto en el sitio oficial de empleo de la empresa y contáctala por ahí.", frEmpty: "Aún no hay correos revisados. Pega uno arriba para empezar tu lista.", frUnknown: "Empresa desconocida", frNoAddr: "sin dirección de remitente", frDeleted: "Correo revisado borrado",
+      lvHigh: "Muy probable fraude", lvMid: "Sospechoso", lvLow: "Pocas alertas",
+      fFree: "Enviado desde una dirección gratuita {d} diciendo ser {c}", fFree2: "Enviado desde una dirección gratuita {d}, no un dominio de empresa", fDomain: "El dominio {d} no coincide con {c}", fLook: "{d} parece un dominio imitación, no el dominio principal de {c}", fNoFrom: "No se encontró remitente. Pega la línea From para revisar el dominio.",
+      r0: "Te pide pagar, enviar dinero, comprar tarjetas de regalo o cripto, o depositar un cheque para equipo", r1: "Pide tu número de seguro social, datos bancarios, de tarjeta o identificación", r2: "Entrevista o contacto por app de chat en lugar de una llamada real", r3: "Reenvío de paquetes, procesamiento de pagos o asistente personal son estafas clásicas", r4: "Dice que te seleccionaron o contrataron sin una entrevista real", r5: "Usa enlaces acortados o un formulario de Google en lugar del sitio de empleo de la empresa", r6: "Pago demasiado bueno para un puesto inicial o sin experiencia", r7: "Te presiona para actuar de inmediato", r8: "Saludo genérico en lugar de tu nombre",
+      fbOpen: "Abierto {n} día{s} más, hasta el 3 de dic. de 2026", fbClosed: "Los comentarios cerraron el 3 de dic. de 2026", fbConnecting: "Conectando…", fbNoDb: "Los comentarios solo pueden enviarse desde la App publicada en claude.ai con sesión iniciada, por personas con quienes la dueña la compartió como Colaborador o superior.", fbShort: "Escribe unas palabras primero.", fbSending: "Enviando…", fbThanks: "Gracias, tus comentarios se enviaron.", fbSent: "Comentarios enviados", fbNoAccess: "Con tu acceso actual no puedes enviar comentarios. Pide a la dueña que te comparta la App como Colaborador.", fbFull: "El buzón de comentarios está lleno. Inténtalo más tarde.", fbFail: "No se pudieron enviar tus comentarios. Inténtalo de nuevo en un momento.", fbBtnClosed: "Comentarios cerrados",
+      inboxLoading: "Cargando comentarios…", inboxEmpty: "Aún no hay comentarios. Aparecerán aquí en cuanto alguien los envíe.", inboxErr: "No se pudieron cargar los comentarios. Vuelve a abrir la App.", person: "persona",
+      szTagSmall: "pequeña o local", community: "{n} reporte de la comunidad", communityPl: "{n} reportes de la comunidad",
+      pv: "anuncio", em: "correo",
+      pLvHigh: "Probablemente se aprovecha de sus trabajadores", pLvMid: "Ten cuidado", pLvLow: "Pocas alertas", pNone: "No se encontraron señales comunes de alerta en este anuncio.", pNote: "Es una revisión automática de señales comunes, no una prueba. Pide por escrito el pago, el horario y el tipo de contrato antes de aceptar.",
+      frPastePosting: "Pega el texto completo del anuncio.", frBtnEmail: "Revisar este correo", frBtnPosting: "Revisar este anuncio", frTextPosting: "Texto del anuncio", frTextEmail: "Correo o mensaje", frCompanyPosting: "Empresa que lo publicó",
+      p0: "Te pide pagar para empezar: capacitación, uniforme, herramientas, verificación de antecedentes o un depósito", p1: "Pago solo por comisión o sin salario base", p2: "Capacitación, turno de prueba o \"entrevista de trabajo\" sin pago", p3: "Trata un empleo de tiempo completo con horario fijo como contratista independiente (1099)", p4: "No indica salario ni rango de pago", p5: "Horas extra obligatorias, turnos dobles o disponibilidad las 24 horas", p6: "\"Siempre contratando\" o contratación urgente y constante suele indicar alta rotación", p7: "Bono de contratación muy alto para un puesto inicial, a menudo señal de alta rotación", p8: "Pago en efectivo o \"por debajo de la mesa\"", p9: "Uso de tu propio vehículo sin pago por millaje", p10: "Beneficios o pago completo retenidos por meses, o un período de prueba largo sin pago", p11: "Cláusula de no competencia o de pago por renuncia en un empleo por hora", p12: "Frases vagas como \"somos una familia\" o \"hacer de todo\" que pueden ocultar trabajo extra sin pago",
+      repSignIn: "Los reportes solo pueden publicarse, marcarse y leerse en la App publicada en claude.ai con sesión iniciada. Para publicar se necesita acceso de Colaborador.", repLoading: "Cargando reportes…", repEmpty: "Aún no hay reportes. Sé la primera persona en reportar una empresa que mantiene la misma oferta más de 3 meses.", repNoMatch: "Ningún reporte coincide con tu búsqueda.", repCount: "{n} reportes de la comunidad",
+      rErrFill: "Completa empresa, puesto y la primera fecha en que lo viste.", rErr90: "Los reportes son para ofertas publicadas más de 3 meses. Viste esta por primera vez hace {n} días. Síguela en Agregar ofertas y repórtala cuando pase de 90 días.", rErrConfirm: "Marca la casilla para confirmar que tu reporte es objetivo y no tiene datos personales.", rErrLast: "Agrega la fecha de última vez vista o marca Sigue publicada.", rErrFuture: "Las fechas no pueden ser futuras.",
+      rSending: "Publicando…", rPosted: "Tu reporte está publicado. Gracias.", rFail: "No se pudo guardar. Inténtalo de nuevo en un momento.", rNoAccess: "Puedes ver los reportes, pero para publicar necesitas acceso de Colaborador. Pide a la dueña que te comparta la App como Colaborador.", rFull: "Llegaste al límite de tu cuenta. Quita un reporte o comentario anterior primero.",
+      rOpen: "Abierta {n} días", rReportedBy: "Reportado por miembro …{w} · {d}", rYou: "tú", rReportedByYou: "Reportado por ti · {d}", cByYou: "Tú · {d}", rFlag: "Yo también lo vi", rFlagged: "Marcado", rFlags: "{n} marca", rFlagsPl: "{n} marcas", rComment: "Comentar", rAddMine: "Agregar a mi ranking", rRemove: "Quitar", rAddedMine: "Agregado a tu ranking", rRemoved: "Eliminado",
+      cPh: "Comparte tu experiencia. Sin nombres ni datos personales.", cPost: "Publicar comentario", cBy: "Miembro …{w} · {d}", cShort: "Escribe unas palabras primero.",
+      wiped: "Se borraron todos tus datos", accepted: "Bienvenida. Puedes cambiar el idioma cuando quieras con EN / ES.", mustAccept: "Acepta los términos para continuar."
+    }
+  };
+  const t = (k, v) => { let s = (T[state.lang] && T[state.lang][k]) || T.en[k] || k; if (v) for (const x in v) s = s.split("{" + x + "}").join(v[x]); return s; };
+  const EN_STATIC = {};
+  document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach((el) => { const k = el.dataset.i18n || el.dataset.i18nHtml; EN_STATIC[k] = el.innerHTML; });
+  document.querySelectorAll("[data-i18n-ph]").forEach((el) => { EN_STATIC[el.dataset.i18nPh] = el.placeholder; });
+  const loc = () => (state.lang === "es" ? "es" : "en-US");
+  function applyLang() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach((el) => { const k = el.dataset.i18n || el.dataset.i18nHtml; const v = state.lang === "es" && ES[k] ? ES[k] : EN_STATIC[k]; if (el.dataset.i18n) el.innerHTML = v; else el.innerHTML = v; });
+    document.querySelectorAll("[data-i18n-ph]").forEach((el) => { const k = el.dataset.i18nPh; el.placeholder = state.lang === "es" && ES[k] ? ES[k] : EN_STATIC[k]; });
+    ["lang-en", "glang-en"].forEach((id) => $(id).setAttribute("aria-pressed", state.lang === "en"));
+    ["lang-es", "glang-es"].forEach((id) => $(id).setAttribute("aria-pressed", state.lang === "es"));
+    $("doc-privacy").innerHTML = ""; $("doc-privacy").appendChild($("tpl-privacy-" + state.lang).content.cloneNode(true));
+    $("doc-terms").innerHTML = ""; $("doc-terms").appendChild($("tpl-terms-" + state.lang).content.cloneNode(true));
+    fbUI(); frModeUI(); fbPlaceholder(); renderChecks(); renderReports(); render();
+  }
+  const setLang = (l) => { state.lang = l; store.set(K.lang, l); applyLang(); };
+
+  // ---------- helpers ----------
+  function utcToday() { const d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function parseDate(v) {
+    if (v == null || v === "") return null;
+    if (typeof v === "number" || /^\d{9,13}$/.test(String(v).trim())) { const n = Number(v); const d = new Date(n < 1e11 ? n * 1000 : n); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); }
+    const s = String(v).trim();
+    let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/); if (m) { let y = +m[3]; if (y < 100) y += 2000; return Date.UTC(y, +m[1] - 1, +m[2]); }
+    const tt = Date.parse(s); if (isNaN(tt)) return null; const d = new Date(tt); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  const fmtDate = (ms) => new Date(ms).toLocaleDateString(loc(), { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+  const isoDate = (ms) => new Date(ms).toISOString().slice(0, 10);
+  const num = (n) => Number(n).toLocaleString(loc());
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function normTitle(x) {
+    return String(x || "").toLowerCase()
+      .replace(/\((?:m\/f\/d|f\/m\/d|m\/w\/d|w\/m\/d|all genders|remote|hybrid|on-?site|contract|full[- ]time|part[- ]time)[^)]*\)/g, " ")
+      .replace(/\b(req|job|id|ref)[\s#:-]*[a-z]*\d[\w-]*/g, " ").replace(/#\s*\d+/g, " ")
+      .replace(/\bsr\b\.?/g, "senior").replace(/\bjr\b\.?/g, "junior").replace(/\bmgr\b/g, "manager").replace(/\beng\b/g, "engineer")
+      .replace(/\b(remote|hybrid|on-?site|us|usa|emea|apac|wfh)\b/g, " ")
+      .replace(/[^a-z0-9+#]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+  const normCo = (c) => String(c || "").toLowerCase().replace(/[,.]/g, " ").replace(/\b(inc|llc|ltd|gmbh|corp|corporation|co|plc|sa|ag|bv)\b/g, " ").replace(/\s+/g, " ").trim();
+  const tier = (d) => d >= 180 ? [t("tGhostL"), "t-ghost"] : d >= 90 ? [t("tStaleL"), "t-stale"] : d >= 60 ? [t("tWatchL"), "t-watch"] : ["", ""];
+  Object.assign(T.en, { tGhostL: "Likely ghost", tStaleL: "Stale", tWatchL: "Watch" }); Object.assign(T.es, { tGhostL: "Probable fantasma", tStaleL: "Estancada", tWatchL: "Vigilar" });
+  const cleanTitle = (x) => x.replace(/\s*#\s*\d+\b/g, "").trim() || x;
+  const csvCell = (v) => /[",\n]/.test(String(v ?? "")) ? `"${String(v).replace(/"/g, '""')}"` : (v ?? "");
+  function toast(msg) { const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => (el.hidden = true), 2600); }
+  function copyText(text, okKey) {
+    navigator.clipboard.writeText(text).then(() => toast(t(okKey)), () => { showTab("add"); selectSub("paste"); $("paste").value = text; $("paste").select(); toast(t("copyBlocked")); });
+  }
+  let uid = Date.now(); const newId = () => "p" + (uid++).toString(36);
+
+  // ---------- parsing ----------
+  function parseCSV(text) {
+    const first = text.split("\n")[0];
+    const delim = (first.match(/\t/g) || []).length > (first.match(/,/g) || []).length ? "\t" : ",";
+    const out = []; let row = [], f = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+      else if (c === '"') q = true;
+      else if (c === delim) { row.push(f); f = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); f = ""; if (row.some((x) => x.trim() !== "")) out.push(row); row = []; }
+      else f += c;
+    }
+    row.push(f); if (row.some((x) => x.trim() !== "")) out.push(row);
+    if (out.length < 2) return [];
+    const head = out[0].map((h) => h.trim());
+    return out.slice(1).map((r) => Object.fromEntries(head.map((h, i) => [h, (r[i] ?? "").trim()])));
+  }
+  const ALIASES = {
+    company: ["company", "companyname", "employer", "organization", "organisation", "hiringorganization", "employername"],
+    title: ["title", "jobtitle", "position", "role", "positiontitle", "jobname", "name"],
+    industry: ["industry", "sector", "vertical", "category", "industryname"],
+    parent: ["parent", "parentcompany", "group", "brandfamily"],
+    size: ["size", "companysize", "employees", "employeecount", "sizeband", "headcount"],
+    location: ["location", "city", "joblocation", "candidaterequiredlocation", "locations", "region"],
+    posted: ["posteddate", "posted", "dateposted", "postedat", "createdat", "created", "publicationdate", "publishedat", "firstseen", "firstseendate", "datecreated", "listeddate", "date"],
+    lastSeen: ["lastseen", "lastseendate", "lastseenat", "updatedat", "closeddate", "closedat", "scrapedat", "removeddate", "enddate", "lastupdated"],
+    url: ["url", "link", "joburl", "applyurl", "postingurl", "redirecturl"]
+  };
+  function mapRows(raw) {
+    if (!raw.length) throw new Error(t("noRows"));
+    const keys = Object.keys(raw[0]); const norm = (k) => k.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const pick = (field) => { for (const a of ALIASES[field]) { const k = keys.find((k) => norm(k) === a); if (k) return k; } return null; };
+    const col = Object.fromEntries(Object.keys(ALIASES).map((f) => [f, pick(f)]));
+    const missing = ["company", "title", "posted"].filter((f) => !col[f]);
+    if (missing.length) throw new Error(t("missingCols", { m: missing.map((m) => m === "posted" ? t("postedDate") : m).join(", "), k: keys.join(", ") }));
+    const flat = (v) => (v && typeof v === "object") ? (v.display_name || v.name || v.label || "") : v;
+    const str = (k, r) => k ? String(flat(r[k]) ?? "").trim() : "";
+    const rows = []; let bad = 0;
+    for (const r of raw) {
+      const posted = parseDate(flat(r[col.posted])); const company = str(col.company, r), title = str(col.title, r);
+      if (!posted || !company || !title) { bad++; continue; }
+      rows.push({ id: newId(), company, title, industry: str(col.industry, r), parent: str(col.parent, r), size: normSize(str(col.size, r)), location: str(col.location, r), posted, lastSeen: col.lastSeen ? parseDate(flat(r[col.lastSeen])) : null, url: str(col.url, r) });
+    }
+    if (!rows.length) throw new Error(t("noneUsable"));
+    return { rows, bad };
+  }
+  function parseInput(text) {
+    const s = text.trim();
+    if (s.startsWith("[") || s.startsWith("{")) {
+      let j; try { j = JSON.parse(s); } catch (e) { throw new Error(t("badJson")); }
+      if (!Array.isArray(j)) j = j.data || j.jobs || j.results || j.items || j.postings || Object.values(j).find(Array.isArray) || [];
+      return mapRows(j.filter((x) => x && typeof x === "object"));
+    }
+    return mapRows(parseCSV(s));
+  }
+  const saveRows = () => store.set(K.rows, state.rows);
+  function addRows(rows) {
+    const key = (r) => [normCo(r.company), normTitle(r.title), (r.location || "").toLowerCase(), r.posted].join("|");
+    const seen = new Set(state.rows.map(key)); let added = 0;
+    for (const r of rows) { const k = key(r); if (!seen.has(k)) { seen.add(k); state.rows.push(r); added++; } }
+    saveRows(); render(); return added;
+  }
+  function normSize(v) {
+    const x = String(v || "").toLowerCase().trim(); if (!x) return "";
+    const n = parseInt(x.replace(/[, +]/g, ""), 10);
+    if (/small|local|startup|family|^(1|2|11|51)\s*-/.test(x)) return "small";
+    if (/large|enterprise|big|fortune/.test(x)) return "large";
+    if (!isNaN(n)) return n < 500 ? "small" : "large";
+    return "";
+  }
+  const WATCH_SET = new Set(WATCH_COMPANIES.map((c) => normCo(c)));
+  const isAmazon = (c, parent) => /amazon/i.test(parent || "") || AMAZON_FAMILY.test(c || "");
+
+  // ---------- analysis ----------
+  function analyze() {
+    const asOf = parseDate($("asof").value) || utcToday();
+    const split = $("split-loc").checked; const groups = new Map();
+    for (const r of state.rows) {
+      if (r.posted > asOf) continue;
+      const key = normCo(r.company) + "|" + normTitle(r.title) + (split ? "|" + (r.location || "").toLowerCase() : "");
+      let g = groups.get(key);
+      if (!g) { g = { company: r.company, industry: r.industry || "", parent: r.parent || "", size: r.size || "", title: r.title, locations: new Set(), first: r.posted, last: 0, dates: [], url: r.url, latestPosted: r.posted }; groups.set(key, g); }
+      g.dates.push(r.posted); if (r.location) g.locations.add(r.location); if (!g.industry && r.industry) g.industry = r.industry; if (!g.parent && r.parent) g.parent = r.parent; if (!g.size && r.size) g.size = r.size;
+      g.first = Math.min(g.first, r.posted); g.last = Math.max(g.last, Math.min(r.lastSeen ?? asOf, asOf));
+      if (r.posted >= g.latestPosted) { g.latestPosted = r.posted; g.title = cleanTitle(r.title); if (r.url) g.url = r.url; }
+    }
+    const roles = [...groups.values()].map((g) => { const postings = new Set(g.dates).size; return { ...g, postings, days: Math.max(0, Math.round((g.last - g.first) / DAY)), reposts: postings - 1, stillOpen: g.last >= asOf - 7 * DAY }; });
+    const byCo = new Map();
+    for (const r of roles) { const k = normCo(r.company); if (!byCo.has(k)) byCo.set(k, { company: r.company, industry: "", parent: "", size: "", roles: [] }); const c = byCo.get(k); c.roles.push(r); if (!c.industry && r.industry) c.industry = r.industry; if (!c.parent && r.parent) c.parent = r.parent; if (!c.size && r.size) c.size = r.size; }
+    const companies = [...byCo.values()].map((c) => {
+      const aged = c.roles.filter((r) => r.days >= 60).sort((a, b) => b.days - a.days); const over90 = c.roles.filter((r) => r.days > 90);
+      const amazon = isAmazon(c.company, c.parent);
+      return { ...c, amazon, big: c.size === "large" || (c.size !== "small" && (amazon || WATCH_SET.has(normCo(c.company)))), community: rp.byCo[normCo(c.company)] || 0, aged, over90: over90.length, longest: Math.max(0, ...c.roles.map((r) => r.days)),
+        avg: Math.round(c.roles.reduce((s, r) => s + r.days, 0) / c.roles.length), score: over90.reduce((s, r) => s + (r.days - 90), 0),
+        reposts: c.roles.reduce((s, r) => s + r.reposts, 0), serialRoles: c.roles.filter((r) => r.postings >= 3).length, maxPostings: Math.max(...c.roles.map((r) => r.postings)) };
+    });
+    return { asOf, roles, companies };
+  }
+
+  // ---------- render ----------
+  function render() {
+    const { roles, companies } = analyze();
+    const minAge = +$("min-age").value; const q = $("q").value.trim().toLowerCase();
+    $("lens-note").textContent = t(state.lens === "seeker" ? "lensSeeker" : "lensEmployer");
+    const inds = [...new Set(state.rows.map((r) => r.industry).filter(Boolean))].sort();
+    const curInd = $("industry").value;
+    $("industry").innerHTML = `<option value="">${esc(t("allInd"))}</option>` + inds.map((i) => `<option${i === curInd ? " selected" : ""}>${esc(i)}</option>`).join("");
+    $("dl-industries").innerHTML = [...new Set(inds.concat(WATCH_INDUSTRIES))].map((i) => `<option value="${esc(i)}">`).join("");
+    $("dl-companies").innerHTML = [...new Set(state.rows.map((r) => r.company).concat(WATCH_COMPANIES))].sort().map((c) => `<option value="${esc(c)}">`).join("");
+    const ind = $("industry").value; const onlyRepost = $("only-repost").checked; const sz = $("size-f").value;
+    let list = companies.filter((c) => (!ind || c.industry === ind) && (!onlyRepost || c.serialRoles) && (!sz || (sz === "big" ? c.big : !c.big))).map((c) => {
+      let rs = c.roles.filter((r) => r.days >= minAge || (onlyRepost && r.postings >= 3)).sort((a, b) => b.days - a.days);
+      const coMatch = c.company.toLowerCase().includes(q) || (q === "amazon" && c.amazon) || (c.parent || "").toLowerCase().includes(q);
+      if (q && !coMatch) rs = rs.filter((r) => r.title.toLowerCase().includes(q));
+      return { ...c, shown: rs };
+    }).filter((c) => c.shown.length);
+    const sorters = { score: (a, b) => b.score - a.score || b.longest - a.longest, longest: (a, b) => b.longest - a.longest, count: (a, b) => b.over90 - a.over90 || b.score - a.score, reposts: (a, b) => b.reposts - a.reposts || b.score - a.score, avg: (a, b) => b.avg - a.avg };
+    list.sort(sorters[$("sort").value]); state.lastList = list;
+
+    const has = state.rows.length > 0;
+    const over60 = companies.filter((c) => c.aged.length).length; const roles90 = roles.filter((r) => r.days > 90);
+    const top = roles.slice().sort((a, b) => b.days - a.days)[0];
+    const serial = companies.filter((c) => c.serialRoles); const topSerial = serial.slice().sort((a, b) => b.maxPostings - a.maxPostings)[0];
+    $("stats").innerHTML = `
+      <div class="stat s1"><span class="eyebrow">${t("stCos")}</span><span class="big">${has ? over60 : "–"}</span><span class="sub">${has ? t("stCosSub", { n: companies.length }) : t("stStart")}</span></div>
+      <div class="stat s2"><span class="eyebrow">${t("stRoles")}</span><span class="big">${has ? roles90.length : "–"}</span><span class="sub">${has ? t("stRolesSub", { n: roles90.filter((r) => r.days >= 180).length }) : t("nothing")}</span></div>
+      <div class="stat s3"><span class="eyebrow">${t("stLong")}</span><span class="big">${top ? top.days + `<small style="font-size:16px; font-weight:600"> ${t("days")}</small>` : "–"}</span><span class="sub">${top ? esc(t("at", { t: top.title, c: top.company })) : t("nothing")}</span></div>
+      <div class="stat s4"><span class="eyebrow">${t("stSerial")}</span><span class="big">${has ? serial.length : "–"}</span><span class="sub">${topSerial ? esc(t("stSerialSub", { c: topSerial.company, n: topSerial.maxPostings })) : t("stSerialEmpty")}</span></div>`;
+
+    const head = `<div class="cols"><span>#</span><span>${t("colCo")}</span><span class="r">${t("col3")}</span><span class="r">${t("colLong")}</span><span>${t("colBar")}</span><span class="r">${t("colScore")}</span></div>`;
+    if (!has) {
+      $("ledger").innerHTML = `<div class="empty"><h3>${t("emptyH")}</h3><p>${t("emptyP")}</p><div class="steps"><button class="primary" data-go="manual">${esc(state.lang === "es" ? ES.tabManual : EN_STATIC.tabManual)}</button><button data-go="paste">${esc(state.lang === "es" ? ES.tabPaste : EN_STATIC.tabPaste)}</button><button data-go="file">${esc(state.lang === "es" ? ES.tabFile : EN_STATIC.tabFile)}</button></div></div>`;
+    } else if (!list.length) {
+      $("ledger").innerHTML = head + `<div class="empty"><h3>${t("noMatchH")}</h3><p>${t("noMatchP")}</p></div>`;
+    } else {
+      const maxDays = Math.max(270, ...list.map((c) => c.longest)); const pct = (d) => Math.min(100, (d / maxDays) * 100);
+      $("ledger").innerHTML = head + list.map((c, i) => {
+        const key = normCo(c.company); const open = state.open.has(key); const w = pct(c.longest);
+        const detail = open ? `<div class="detail">${c.shown.map((r) => { const [lab, cls] = tier(r.days); return `
+          <div class="role"><span class="t">${esc(r.title)}</span><span>${lab ? `<span class="pill ${cls}">${lab}</span> ` : ""}<span class="num">${r.days}d</span></span>
+          <div class="meta">${r.postings >= 3 ? `<span class="pill t-repost">${t("postedX", { n: r.postings })}</span>` : ""}<span>${t("firstPosted", { d: fmtDate(r.first) })}</span><span>${r.stillOpen ? t("stillPosted") : t("lastSeen", { d: fmtDate(r.last) })}</span>${r.postings < 3 ? `<span>${r.reposts ? t("reposts1", { n: r.reposts }) : t("never")}</span>` : ""}${r.locations.size ? `<span>${esc([...r.locations].slice(0, 4).join(" · "))}${r.locations.size > 4 ? " +" + (r.locations.size - 4) : ""}</span>` : ""}${r.url && /^https?:\/\//.test(r.url) ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${t("view")}</a>` : ""}</div></div>`; }).join("")}</div>` : "";
+        const sub = [c.industry ? esc(c.industry) : "", c.size === "small" ? t("szTagSmall") : "", c.amazon && !/^amazon$/i.test(c.company.trim()) ? t("amazonCo") : "", c.community ? t(c.community === 1 ? "community" : "communityPl", { n: c.community }) : "", t(c.shown.length === 1 ? "roles" : "rolesPl", { n: c.shown.length }), t(c.reposts === 1 ? "reposts1" : "repostsPl", { n: c.reposts })].filter(Boolean).join(" · ");
+        return `<div class="row" role="listitem" style="--rc:var(--c${(i % 8) + 1})"><div class="row-head" tabindex="0" role="button" aria-expanded="${open}" data-key="${esc(key)}">
+          <span class="rank">${i + 1}</span>
+          <span class="co">${esc(c.company)}${c.serialRoles ? ` <span class="pill t-repost">${t("serialPill")}</span>` : ""}<small>${sub}</small></span>
+          <span class="num r c-roles">${c.over90}</span><span class="num r c-long">${c.longest}d</span>
+          <span class="barcell"><span class="bar" aria-hidden="true"><i style="width:${w.toFixed(2)}%; --full:${(10000 / Math.max(1, w)).toFixed(1)}%"></i><b class="tick" style="left:${pct(90).toFixed(2)}%"></b><b class="tick" style="left:${pct(180).toFixed(2)}%"></b></span><span>${t("monthsAvg", { m: (c.longest / 30.44).toFixed(1), a: c.avg })}</span></span>
+          <span class="score r">${num(c.score)}</span>
+          <span class="mstats" style="display:none">${t("mstats", { a: c.over90, l: c.longest, s: num(c.score) })}</span>
+        </div>${detail}</div>`;
+      }).join("");
+    }
+
+    const mk = $("market");
+    if (state.lens === "employer") {
+      const byTitle = new Map();
+      for (const r of roles.filter((r) => r.days > 90)) {
+        const k = normTitle(r.title).replace(/\b(senior|junior|lead|staff|principal|i|ii|iii)\b/g, "").replace(/\s+/g, " ").trim();
+        if (!byTitle.has(k)) byTitle.set(k, { label: r.title, cos: new Set(), days: [] });
+        const x = byTitle.get(k); x.cos.add(normCo(r.company)); x.days.push(r.days);
+      }
+      const items = [...byTitle.values()].filter((x) => x.cos.size > 1).sort((a, b) => b.cos.size - a.cos.size || Math.max(...b.days) - Math.max(...a.days)).slice(0, 8);
+      mk.hidden = !items.length;
+      $("market-list").innerHTML = items.map((x, i) => `<li style="--mc:var(--c${(i % 8) + 1})"><strong>${esc(x.label)}</strong> <span>${t("marketLi", { n: x.cos.size, a: Math.round(x.days.reduce((a, b) => a + b, 0) / x.days.length) })}</span></li>`).join("");
+    } else mk.hidden = true;
+
+    $("count").textContent = has ? t("count", { p: num(state.rows.length), r: num(roles.length), c: num(companies.length) }) : t("countEmpty");
+    renderMine();
+  }
+  Object.assign(T.en, { serialPill: "Serial reposter" }); Object.assign(T.es, { serialPill: "Republica en serie" });
+
+  function renderMine() {
+    $("mine-count").textContent = state.rows.length ? t("mineCount", { n: num(state.rows.length) }) : t("mineEmpty");
+    const rows = state.rows.slice().sort((a, b) => a.company.localeCompare(b.company) || a.title.localeCompare(b.title) || a.posted - b.posted);
+    $("mine").innerHTML = rows.slice(0, 500).map((r) => `<div class="mine-row"><span><strong>${esc(r.company)}</strong> · ${esc(r.title)}<br><small>${r.industry ? esc(r.industry) + " · " : ""}${r.location ? esc(r.location) + " · " : ""}${t("postedOn", { d: fmtDate(r.posted) })} · ${r.lastSeen ? t("lastSeen", { d: fmtDate(r.lastSeen) }) : t("stillPosted")}</small></span><button class="danger" data-del="${esc(r.id)}">${t("del")}</button></div>`).join("")
+      + (rows.length > 500 ? `<p class="fine">${t("mineMore")}</p>` : "");
+  }
+
+  // ---------- console tabs + hash routes ----------
+  const TABS = ["ranking", "add", "fraud", "reports", "privacy", "terms", "feedback"];
+  function showTab(name, focusSel) {
+    state.tab = name;
+    TABS.forEach((x) => { $("nav-" + x).setAttribute("aria-selected", x === name); $("p-" + x).hidden = x !== name; });
+    if (focusSel) { const el = document.getElementById(focusSel); el && el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  }
+  TABS.forEach((x) => ($("nav-" + x).onclick = () => { if (location.hash !== "#" + x) location.hash = x; else showTab(x); }));
+  function route() {
+    const h = location.hash.slice(1);
+    if (h === "content-removal") { showTab("terms"); $("app").scrollIntoView({ behavior: "smooth" }); setTimeout(() => { const s = document.getElementById(state.lang === "es" ? "sec-content-removal-es" : "sec-content-removal"); s && s.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60); return; }
+    if (h === "copyright") { showTab("terms"); setTimeout(() => { const s = document.getElementById(state.lang === "es" ? "sec-copyright-es" : "sec-copyright"); s && s.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60); return; }
+    if (TABS.includes(h)) { showTab(h); if (h !== "ranking") $("app").scrollIntoView({ behavior: "smooth", block: "start" }); }
+  }
+  window.addEventListener("hashchange", route);
+  $("cta-start").onclick = () => { location.hash = "add"; route(); };
+  $("cta-how").onclick = () => { showTab("ranking"); $("how").scrollIntoView({ behavior: "smooth", block: "start" }); };
+
+  const SUBS = ["manual", "paste", "file", "mine"];
+  function selectSub(name) { SUBS.forEach((x) => { $("tab-" + x).setAttribute("aria-selected", x === name); $("pane-" + x).hidden = x !== name; }); }
+  SUBS.forEach((x) => ($("tab-" + x).onclick = () => selectSub(x)));
+  $("ledger").addEventListener("click", (e) => {
+    const go = e.target.closest("[data-go]"); if (go) { showTab("add"); selectSub(go.dataset.go); $("app").scrollIntoView({ behavior: "smooth" }); return; }
+    const h = e.target.closest(".row-head"); if (h && !e.target.closest("a")) toggle(h);
+  });
+  function toggle(el) { const k = el.dataset.key; state.open.has(k) ? state.open.delete(k) : state.open.add(k); render(); const again = document.querySelector(`.row-head[data-key="${CSS.escape(k)}"]`); again && again.focus(); }
+  $("ledger").addEventListener("keydown", (e) => { const h = e.target.closest(".row-head"); if (h && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggle(h); } });
+
+  // ---------- add: manual / paste / file ----------
+  $("m-open").onchange = () => { $("m-last").disabled = $("m-open").checked; if ($("m-open").checked) $("m-last").value = ""; };
+  $("pane-manual").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const company = $("m-company").value.trim(), title = $("m-title").value.trim(), posted = parseDate($("m-posted").value);
+    const last = $("m-open").checked ? null : parseDate($("m-last").value); const msg = $("m-msg"); msg.className = "err";
+    if (!company || !title || !posted) { msg.textContent = t("errFill"); return; }
+    if (posted > utcToday()) { msg.textContent = t("errFuture"); return; }
+    if (!$("m-open").checked && !last) { msg.textContent = t("errLast"); return; }
+    if (last && last < posted) { msg.textContent = t("errBefore"); return; }
+    const n = addRows([{ id: newId(), company, title, industry: $("m-industry").value.trim(), parent: isAmazon(company) ? "Amazon" : "", size: $("m-size").value, location: $("m-location").value.trim(), posted, lastSeen: last, url: $("m-url").value.trim() }]);
+    msg.className = "ok"; msg.textContent = n ? t("added", { t: title, c: company }) : t("dup");
+    $("m-title").value = ""; $("m-url").value = ""; $("m-title").focus();
+  });
+  function ingest(text, msgEl) {
+    msgEl.className = "err";
+    try {
+      const { rows, bad } = parseInput(text); const n = addRows(rows);
+      msgEl.className = "ok"; msgEl.textContent = t("addedN", { n: num(n) }) + (rows.length - n ? t("skippedDup", { n: rows.length - n }) : "") + (bad ? t("skippedBad", { n: bad }) : "") + ".";
+      return true;
+    } catch (err) { msgEl.textContent = err.message; return false; }
+  }
+  $("paste-add").onclick = () => { const s = $("paste").value; if (!s.trim()) { $("paste-msg").className = "err"; $("paste-msg").textContent = t("pasteFirst"); return; } if (ingest(s, $("paste-msg"))) $("paste").value = ""; };
+  function readFile(f) { if (!f) return; const r = new FileReader(); r.onload = () => ingest(String(r.result), $("file-msg")); r.readAsText(f); }
+  $("file").onchange = (e) => { readFile(e.target.files[0]); e.target.value = ""; };
+  const drop = $("drop");
+  drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+  drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); readFile(e.dataTransfer.files[0]); });
+  $("mine").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-del]"); if (!b) return;
+    const r = state.rows.find((x) => x.id === b.dataset.del); state.rows = state.rows.filter((x) => x.id !== b.dataset.del); saveRows(); render();
+    if (r) toast(t("deleted", { t: r.title, c: r.company }));
+  });
+  $("btn-clear").onclick = () => { if (state.rows.length) $("clear-confirm").hidden = false; };
+  $("clear-no").onclick = () => ($("clear-confirm").hidden = true);
+  $("clear-yes").onclick = () => { state.rows = []; state.open.clear(); saveRows(); $("clear-confirm").hidden = true; render(); toast(t("allDeleted")); };
+  $("btn-export-all").onclick = () => {
+    const lines = [["company", "parent", "size", "industry", "title", "location", "posted_date", "last_seen", "url"].join(",")]
+      .concat(state.rows.map((r) => [r.company, r.parent || "", r.size || "", r.industry, r.title, r.location, isoDate(r.posted), r.lastSeen ? isoDate(r.lastSeen) : "", r.url].map(csvCell).join(",")));
+    copyText(lines.join("\n"), "copiedAll");
+  };
+  $("btn-copy").onclick = () => {
+    const lines = [["rank", "company", "industry", "amazon_company", "serial_reposter", "roles_open_past_3_months", "longest_open_days", "avg_open_days", "days_past_3_months", "reposts", "roles"].join(",")];
+    (state.lastList || []).forEach((c, i) => lines.push([i + 1, c.company, c.industry, c.amazon ? "yes" : "no", c.serialRoles ? "yes" : "no", c.over90, c.longest, c.avg, c.score, c.reposts, c.shown.map((r) => `${r.title} (${r.days}d, posted ${r.postings}x)`).join("; ")].map(csvCell).join(",")));
+    copyText(lines.join("\n"), "copiedRank");
+  };
+  ["q", "min-age", "sort", "industry", "size-f", "only-repost", "split-loc"].forEach((id) => $(id).addEventListener("input", render));
+  $("asof").addEventListener("change", render);
+  const setLens = (l) => { state.lens = l; $("lens-seeker").setAttribute("aria-pressed", l === "seeker"); $("lens-employer").setAttribute("aria-pressed", l === "employer"); store.set(K.lens, l); render(); };
+  $("lens-seeker").onclick = () => setLens("seeker"); $("lens-employer").onclick = () => setLens("employer");
+
+  // ---------- fraud checker ----------
+  let checks = store.get(K.fraud, []); if (!Array.isArray(checks)) checks = [];
+  const saveChecks = () => store.set(K.fraud, checks);
+  const FREE_MAIL = /^(gmail|googlemail|yahoo|ymail|outlook|hotmail|live|msn|aol|icloud|me|mail|gmx|proton|protonmail|zoho|yandex|tutanota)\./;
+  const RULES = [
+    [/\b(pay|send|deposit|wire|transfer)\b[^.]{0,60}\b(fee|deposit|training|equipment|software|starter kit|background check)|\b(gift ?cards?|bitcoin|crypto|usdt|zelle|cash ?app|venmo)\b|\bcheck\b[^.]{0,40}\b(deposit|equipment|vendor)\b/i, 30],
+    [/\b(ssn|social security|bank account|routing number|account number|credit card|passport|driver'?s licen[cs]e|copy of (your )?id)\b/i, 25],
+    [/\b(telegram|whatsapp|signal app|wickr|google hangouts|hangouts|text[- ]based interview|chat interview|interview (via|over|on) (chat|text|skype chat))\b/i, 20],
+    [/\b(reship|re-ship|package (forwarding|inspector|handler)|forward(ing)? packages|receive packages|personal assistant|mystery shopper|payment processing agent)\b/i, 20],
+    [/\b(no interview (required|needed))\b|\byou('ve| have) been selected\b|\b(without (an )?interview)\b/i, 15],
+    [/\b(bit\.ly|tinyurl|t\.co|rb\.gy|cutt\.ly|is\.gd|shorturl|forms\.gle|docs\.google\.com\/forms)\b/i, 10],
+    [/\b(no experience (needed|required)|earn \$?\d{3,}[^.]{0,20}(per|a|\/) ?(day|week)|\$\s?(4[5-9]|[5-9]\d|\d{3})\s?(\/|per|an?) ?h(ou)?r\b[^.]{0,80}\b(data entry|typing|remote assistant|part[- ]time))\b/i, 10],
+    [/\b(urgent(ly)?|immediately|asap|within 24 hours|limited (slots|positions)|act now|respond today)\b/i, 8],
+    [/\b(dear (candidate|applicant|job seeker|sir\/madam)|hello dear)\b/i, 5]
+  ];
+  function checkEmail(text, claimed) {
+    const flags = []; let score = 0;
+    const fromLine = (text.match(/^\s*(from|de):.*$/im) || [""])[0];
+    const email = ((fromLine || text).match(/[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})/i) || []);
+    const domain = (email[1] || "").toLowerCase();
+    const display = fromLine.replace(/^\s*(from|de):\s*/i, "").replace(/<.*>/, "").replace(/"/g, "").trim();
+    const ROLEWORDS = /\b(hr|human resources|talent|recruit(ing|ment|er|ers)?|team|careers?|hiring|jobs?)\b/gi;
+    const fromDisplay = ROLEWORDS.test(display) ? display.replace(ROLEWORDS, "").replace(/\s+/g, " ").trim() : "";
+    const company = claimed || fromDisplay || (domain && !FREE_MAIL.test(domain) ? domain.split(".").slice(-2, -1)[0] : "");
+    const coToken = normCo(company).split(" ").filter((w) => w.length > 2)[0] || "";
+    if (domain && FREE_MAIL.test(domain) && company) { score += 25; flags.push(["fFree", { d: domain, c: company }]); }
+    else if (domain && FREE_MAIL.test(domain)) { score += 15; flags.push(["fFree2", { d: domain }]); }
+    else if (domain && coToken && !domain.replace(/[^a-z0-9]/g, "").includes(coToken)) { score += 15; flags.push(["fDomain", { d: domain, c: company }]); }
+    if (domain && coToken && domain.includes(coToken) && /(careers?|hiring|recruit|jobs?|hr|talent|offer)[-.]|[-](careers?|hiring|recruit|jobs?|hr|talent|offer)\b|\d{2,}/.test(domain.split(".").slice(0, -1).join("."))) { score += 20; flags.push(["fLook", { d: domain, c: company }]); }
+    if (!domain) flags.push(["fNoFrom", null]);
+    RULES.forEach(([re, w], i) => { if (re.test(text)) { score += w; flags.push(["r" + i, null]); } });
+    score = Math.min(100, score);
+    return { score, flags, domain, company, level: score >= 60 ? "high" : score >= 30 ? "mid" : "low" };
+  }
+  const PRULES = [
+    [/\b(pay|purchase|buy|cover|deposit|fee)\b[^.]{0,50}\b(training|uniforms?|scrubs|tools|kit|background check|drug test|license fee|deposit|onboarding)\b|\b(training|uniform|onboarding|starter kit|background check) fee\b|\bat your own (cost|expense)\b/i, 25],
+    [/\b(commission[- ]only|100% commission|straight commission|no base (pay|salary)|unlimited earning potential)\b/i, 20],
+    [/\b(unpaid (training|trial|internship|shift|orientation)|working interview|trial shift|training is unpaid|(not|isn't) paid during training)\b/i, 20],
+    [/\b(1099|independent contractor|contract(or)? position)\b[\s\S]{0,250}\b(full[- ]time|40 hours|set schedule|mandatory shifts?|must work)\b|\b(full[- ]time|40 hours)\b[\s\S]{0,250}\b(1099|independent contractor)\b/i, 15],
+    null,
+    [/\b(mandatory overtime|overtime (is )?required|double shifts?|on[- ]call 24\/7|available 24\/7|must be available (nights,? )?weekends and holidays|work any shift)\b/i, 15],
+    [/\b(always hiring|now hiring immediately|hiring immediately|immediate (start|hire)|urgently hiring|multiple openings|start (today|tomorrow)|walk[- ]ins? welcome)\b/i, 10],
+    [/\bsign[- ]on bonus\b[^.]{0,40}\$\s?(5,?\d{3}|[1-9]\d,?\d{3})/i, 10],
+    [/\b(paid in cash|cash pay|cash daily|under the table|no paperwork)\b/i, 15],
+    [/\b(own (reliable )?(vehicle|car|transportation))\b(?![\s\S]{0,200}\b(mileage|reimburs))/i, 10],
+    [/\b(benefits after (6|six|9|nine|12|twelve) months|benefits after (one|1) year|unpaid probation|probation(ary)? period of (6|six|9|nine|12) months)\b/i, 10],
+    [/\b(non[- ]?compete|repay (training|the cost)|training repayment|stay[- ]or[- ]pay)\b/i, 10],
+    [/\b(we('| a)re (like )?a family|wear many hats|thick skin|work hard,? play hard|whatever it takes|other duties as assigned)\b/i, 5]
+  ];
+  function checkPosting(text, company) {
+    const flags = []; let score = 0;
+    PRULES.forEach((rule, i) => {
+      if (i === 4) { if (!/\$\s?\d|\b\d+(\.\d+)?\s?(\/|per|an?) ?(hr|hour|year|yr|week|wk)\b|\b(salary|pay range|hourly rate|wage)\b[^.]{0,30}\d/i.test(text)) { score += 10; flags.push(["p4", null]); } return; }
+      if (rule[0].test(text)) { score += rule[1]; flags.push(["p" + i, null]); }
+    });
+    score = Math.min(100, score);
+    return { score, flags, company, domain: "", level: score >= 50 ? "high" : score >= 25 ? "mid" : "low" };
+  }
+  const isPosting = () => $("fr-mode").value === "posting";
+  function frModeUI() {
+    const p = isPosting();
+    $("fr-check").textContent = t(p ? "frBtnPosting" : "frBtnEmail");
+    document.querySelector('label[for="fr-text"]').textContent = t(p ? "frTextPosting" : "frTextEmail");
+    document.querySelector('label[for="fr-company"]').textContent = p ? t("frCompanyPosting") : (state.lang === "es" ? ES.frCompany : EN_STATIC.frCompany);
+    $("fr-text").placeholder = p ? "Home Health Aide — Always hiring! Start tomorrow.\nPay: commission-based. Must use own vehicle. $75 uniform and background check fee.\n1099 independent contractor, 40 hours/week, mandatory weekends." : "From: Amazon HR <amazonhiring.team@gmail.com>\nSubject: Remote Data Entry Offer\n\nDear Candidate, you have been selected…";
+  }
+  $("fr-mode").addEventListener("change", () => { frModeUI(); $("fr-result").innerHTML = ""; $("fr-msg").textContent = ""; });
+  const LEVEL = { high: ["lvHigh", "v-high", "#e11d48"], mid: ["lvMid", "v-mid", "#ea580c"], low: ["lvLow", "v-low", "#059669"] };
+  const PLEVEL = { high: "pLvHigh", mid: "pLvMid", low: "pLvLow" };
+  const levelLabel = (c) => t(c.kind === "posting" ? PLEVEL[c.level] : LEVEL[c.level][0]);
+  const flagText = (f) => t(f[0], f[1] || undefined);
+  function renderChecks() {
+    const list = checks.slice().sort((a, b) => b.score - a.score || b.at - a.at);
+    $("fr-list").innerHTML = list.length ? list.map((c) => `<div class="fr-row"><span class="sc" style="background:${LEVEL[c.level][2]}">${c.score}</span><span><strong>${esc(c.company || t("frUnknown"))}</strong> · ${esc(levelLabel(c))}<br><small>${esc(t(c.kind === "posting" ? "pv" : "em"))} · ${c.kind === "posting" ? "" : esc(c.domain || t("frNoAddr")) + " · "}${esc(c.subject || (c.flags && c.flags[0] ? flagText(c.flags[0]) : ""))}</small></span><button class="danger" data-frdel="${esc(c.id)}">${t("del")}</button></div>`).join("")
+      : `<p class="fine">${t("frEmpty")}</p>`;
+  }
+  $("fr-check").onclick = () => {
+    const text = $("fr-text").value.trim(); const msg = $("fr-msg");
+    const kind = isPosting() ? "posting" : "email";
+    if (text.length < 20) { msg.className = "err"; msg.textContent = t(kind === "posting" ? "frPastePosting" : "frPaste"); return; }
+    const r = kind === "posting" ? checkPosting(text, $("fr-company").value.trim()) : checkEmail(text, $("fr-company").value.trim()); const cls = LEVEL[r.level][1];
+    $("fr-result").innerHTML = `<div class="verdict ${cls}"><div><span class="score-big">${r.score}</span> / 100 · <strong>${esc(levelLabel({ kind, level: r.level }))}</strong></div>${r.flags.length ? `<ul>${r.flags.map((f) => `<li>${esc(flagText(f))}</li>`).join("")}</ul>` : `<p>${t(kind === "posting" ? "pNone" : "frNone")}</p>`}<p class="fine">${t(kind === "posting" ? "pNote" : "frNote")}</p></div>`;
+    const subject = kind === "posting" ? text.split("\n")[0].trim() : ((text.match(/^\s*(subject|asunto):\s*(.*)$/im) || [])[2] || "");
+    checks.push({ id: newId(), kind, at: Date.now(), score: r.score, level: r.level, company: r.company, domain: r.domain, subject: subject.slice(0, 120), flags: r.flags.slice(0, 6) });
+    saveChecks(); renderChecks(); msg.className = "ok"; msg.textContent = t("frAdded");
+  };
+  $("fr-list").addEventListener("click", (e) => { const b = e.target.closest("[data-frdel]"); if (!b) return; checks = checks.filter((c) => c.id !== b.dataset.frdel); saveChecks(); renderChecks(); toast(t("frDeleted")); });
+
+  // ---------- community reports (shared through the db capability) ----------
+  // One document per person: reports/<their id> = { reports: [...], flags: [reportKey...], comments: [...] }.
+  // Everyone signed in can read; each person writes only their own document; the owner can moderate any.
+  const RP_MAX = { reports: 50, comments: 200, flags: 500 };
+  const short = (uid) => String(uid || "").slice(-4);
+  function aggregate() {
+    const reports = [], flags = {}, comments = {};
+    for (const d of rp.docs) {
+      (d.data.reports || []).forEach((r) => reports.push({ ...r, key: d.uid + ":" + r.id, by: d.uid }));
+      (d.data.flags || []).forEach((k) => { (flags[k] = flags[k] || new Set()).add(d.uid); });
+      (d.data.comments || []).forEach((c) => { (comments[c.rid] = comments[c.rid] || []).push({ ...c, by: d.uid }); });
+    }
+    const today = utcToday();
+    reports.forEach((r) => { r.flagSet = flags[r.key] || new Set(); r.flagCount = r.flagSet.size; r.comments = (comments[r.key] || []).sort((a, b) => String(a.at).localeCompare(String(b.at))); const end = r.lastSeen ? parseDate(r.lastSeen) : today; r.days = Math.max(0, Math.round((end - parseDate(r.firstSeen)) / DAY)); });
+    rp.byCo = {}; reports.forEach((r) => { const k = normCo(r.company); rp.byCo[k] = (rp.byCo[k] || 0) + 1; });
+    return reports;
+  }
+  function renderReports() {
+    const st = $("rep-status"); const list = $("rep-list");
+    $("r-send").disabled = rp.state !== "ready";
+    if (rp.state !== "ready") { st.textContent = rp.state === "pending" ? t("repLoading") : t("repSignIn"); list.innerHTML = ""; return; }
+    let reports = aggregate();
+    const q = $("rep-q").value.trim().toLowerCase();
+    if (q) reports = reports.filter((r) => (r.company + " " + r.title + " " + (r.industry || "") + " " + (r.location || "")).toLowerCase().includes(q));
+    const sort = $("rep-sort").value;
+    reports.sort(sort === "days" ? (a, b) => b.days - a.days : sort === "new" ? (a, b) => String(b.at).localeCompare(String(a.at)) : (a, b) => b.flagCount - a.flagCount || b.days - a.days);
+    const total = rp.docs.reduce((s, d) => s + (d.data.reports || []).length, 0);
+    st.textContent = total ? t("repCount", { n: num(total) }) : "";
+    if (!reports.length) { list.innerHTML = `<p class="fine">${t(total ? "repNoMatch" : "repEmpty")}</p>`; return; }
+    list.innerHTML = reports.map((r, i) => {
+      const [lab, cls] = tier(r.days); const mine = r.by === rp.me; const flagged = r.flagSet.has(rp.me);
+      const open = rp.openComments.has(r.key);
+      const cmts = r.comments.map((c) => `<div class="cmt"><small>${esc((c.by === rp.me ? t("cByYou", { d: fmtDate(Date.parse(c.at)) }) : t("cBy", { w: short(c.by), d: fmtDate(Date.parse(c.at)) })))}${(c.by === rp.me || rp.owner) ? ` · <button class="linkbtn" data-cdel="${esc(c.by + "|" + c.id)}">${t("rRemove")}</button>` : ""}</small><p>${esc(c.text)}</p></div>`).join("");
+      return `<article class="rep" style="--rc:var(--c${(i % 8) + 1})">
+        <div class="rep-top"><h3>${esc(r.company)}<small>${esc(r.title)}</small></h3><span>${lab ? `<span class="pill ${cls}">${lab}</span> ` : ""}<span class="flagcount" title="${esc(t(r.flagCount === 1 ? "rFlags" : "rFlagsPl", { n: r.flagCount }))}">⚑ ${r.flagCount}</span></span></div>
+        <div class="rep-meta"><span>${t("rOpen", { n: r.days })}</span><span>${t("firstPosted", { d: fmtDate(parseDate(r.firstSeen)) })}</span><span>${r.lastSeen ? t("lastSeen", { d: fmtDate(parseDate(r.lastSeen)) }) : t("stillPosted")}</span>${r.industry ? `<span>${esc(r.industry)}</span>` : ""}${r.size === "small" ? `<span>${t("szTagSmall")}</span>` : ""}${r.location ? `<span>${esc(r.location)}</span>` : ""}${r.url && /^https?:\/\//.test(r.url) ? `<a href="${esc(r.url)}" target="_blank" rel="noopener nofollow ugc">${t("view")}</a>` : ""}</div>
+        ${r.note ? `<p class="rep-note">${esc(r.note)}</p>` : ""}
+        <div class="rep-meta"><span>${esc((mine ? t("rReportedByYou", { d: fmtDate(Date.parse(r.at)) }) : t("rReportedBy", { w: short(r.by), d: fmtDate(Date.parse(r.at)) })))}</span></div>
+        <div class="rep-actions">
+          <button data-flag="${esc(r.key)}" aria-pressed="${flagged}">${flagged ? t("rFlagged") : t("rFlag")}</button>
+          <button data-ctoggle="${esc(r.key)}" aria-expanded="${open}">${t("rComment")}${r.comments.length ? " (" + r.comments.length + ")" : ""}</button>
+          <button data-addmine="${esc(r.key)}">${t("rAddMine")}</button>
+          ${(mine || rp.owner) ? `<button class="danger" data-rdel="${esc(r.key)}">${t("rRemove")}</button>` : ""}
+        </div>
+        ${(open || r.comments.length) ? `<div class="comments">${cmts}${open ? `<div class="cmt-form"><textarea maxlength="500" aria-label="${esc(t("rComment"))}" placeholder="${esc(t("cPh"))}" data-cfor="${esc(r.key)}"></textarea><button class="primary" data-cpost="${esc(r.key)}">${t("cPost")}</button></div>` : ""}</div>` : ""}
+      </article>`;
+    }).join("");
+    rp.last = reports;
+  }
+  // serialize writes: read my (or a moderated) doc, change it, write it back
+  function writeDoc(uid, mutate) {
+    const run = async () => {
+      const ref = rp.db.doc("reports/" + uid); const snap = await ref.get();
+      const cur = snap.exists ? snap.data() : {}; const next = { reports: cur.reports || [], flags: cur.flags || [], comments: cur.comments || [] };
+      mutate(next); next.updatedAt = new Date().toISOString();
+      if (next.reports.length > RP_MAX.reports || next.comments.length > RP_MAX.comments || next.flags.length > RP_MAX.flags) { const e = new Error("full"); e.code = "full"; throw e; }
+      await ref.set(next);
+    };
+    const p = rp.queue.then(run, run); rp.queue = p.catch(() => {}); return p;
+  }
+  const writeErr = (err) => t(err && err.code === "invalid_argument" ? "rNoAccess" : err && (err.code === "full" || err.code === "quota_exceeded") ? "rFull" : "rFail");
+  $("r-open").onchange = () => { $("r-last").disabled = $("r-open").checked; if ($("r-open").checked) $("r-last").value = ""; };
+  $("rep-form").addEventListener("submit", async (e) => {
+    e.preventDefault(); const m = $("r-msg"); m.className = "err";
+    if (rp.state !== "ready") { m.textContent = t("repSignIn"); return; }
+    const company = $("r-company").value.trim(), title = $("r-title").value.trim(), first = parseDate($("r-first").value);
+    const last = $("r-open").checked ? null : parseDate($("r-last").value);
+    if (!company || !title || !first) { m.textContent = t("rErrFill"); return; }
+    if (first > utcToday() || (last && last > utcToday())) { m.textContent = t("rErrFuture"); return; }
+    if (!$("r-open").checked && !last) { m.textContent = t("rErrLast"); return; }
+    if (last && last < first) { m.textContent = t("errBefore"); return; }
+    const days = Math.round(((last || utcToday()) - first) / DAY);
+    if (days <= 90) { m.textContent = t("rErr90", { n: days }); return; }
+    if (!$("r-confirm").checked) { m.textContent = t("rErrConfirm"); return; }
+    const report = { id: newId(), company: company.slice(0, 120), title: title.slice(0, 160), industry: $("r-industry").value.trim().slice(0, 80), location: $("r-location").value.trim().slice(0, 120), size: $("r-size").value, firstSeen: isoDate(first), lastSeen: last ? isoDate(last) : "", url: /^https?:\/\//.test($("r-url").value.trim()) ? $("r-url").value.trim().slice(0, 500) : "", note: $("r-note").value.trim().slice(0, 600), at: new Date().toISOString() };
+    $("r-send").disabled = true; m.className = "fine"; m.textContent = t("rSending");
+    try { await writeDoc(rp.me, (d) => d.reports.push(report)); m.className = "ok"; m.textContent = t("rPosted"); ["r-company", "r-title", "r-location", "r-url", "r-note", "r-first", "r-last"].forEach((id) => ($(id).value = "")); $("r-confirm").checked = false; }
+    catch (err) { m.className = "err"; m.textContent = writeErr(err); }
+    finally { $("r-send").disabled = rp.state !== "ready"; }
+  });
+  $("rep-q").addEventListener("input", renderReports); $("rep-sort").addEventListener("input", renderReports);
+  $("rep-list").addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b || rp.state !== "ready") return;
+    const find = (k) => (rp.last || []).find((r) => r.key === k);
+    try {
+      if (b.dataset.flag) { const k = b.dataset.flag; b.disabled = true; await writeDoc(rp.me, (d) => { d.flags = d.flags.includes(k) ? d.flags.filter((x) => x !== k) : d.flags.concat(k); }); }
+      else if (b.dataset.ctoggle) { const k = b.dataset.ctoggle; rp.openComments.has(k) ? rp.openComments.delete(k) : rp.openComments.add(k); renderReports(); const ta = document.querySelector(`textarea[data-cfor="${CSS.escape(k)}"]`); ta && ta.focus(); }
+      else if (b.dataset.cpost) { const k = b.dataset.cpost; const ta = document.querySelector(`textarea[data-cfor="${CSS.escape(k)}"]`); const text = (ta && ta.value.trim()) || ""; if (text.length < 3) { toast(t("cShort")); return; } b.disabled = true; await writeDoc(rp.me, (d) => d.comments.push({ id: newId(), rid: k, text: text.slice(0, 500), at: new Date().toISOString() })); rp.openComments.delete(k); }
+      else if (b.dataset.rdel) { const k = b.dataset.rdel; const [uid, id] = [k.slice(0, k.lastIndexOf(":")), k.slice(k.lastIndexOf(":") + 1)]; b.disabled = true; await writeDoc(uid, (d) => { d.reports = d.reports.filter((r) => r.id !== id); }); toast(t("rRemoved")); }
+      else if (b.dataset.cdel) { const [uid, id] = b.dataset.cdel.split("|"); b.disabled = true; await writeDoc(uid, (d) => { d.comments = d.comments.filter((c) => c.id !== id); }); toast(t("rRemoved")); }
+      else if (b.dataset.addmine) { const r = find(b.dataset.addmine); if (!r) return; addRows([{ id: newId(), company: r.company, title: r.title, industry: r.industry || "", parent: isAmazon(r.company) ? "Amazon" : "", size: r.size || "", location: r.location || "", posted: parseDate(r.firstSeen), lastSeen: r.lastSeen ? parseDate(r.lastSeen) : null, url: r.url || "" }]); toast(t("rAddedMine")); }
+    } catch (err) { toast(writeErr(err)); b.disabled = false; }
+  });
+
+  // ---------- feedback (open 30 days: Nov 3 to Dec 3, 2026) ----------
+  const FB_CLOSE = Date.UTC(2026, 11, 4); // closes at the end of Dec 3, 2026 (UTC)
+  const fbOpen = () => Date.now() < FB_CLOSE;
+  const fb = { db: null, user: null, state: "pending" };
+  function fbUI() {
+    const open = fbOpen(); const left = Math.max(1, Math.floor((FB_CLOSE - Date.now()) / DAY));
+    $("fb-window").textContent = open ? t("fbOpen", { n: left, s: left === 1 ? "" : "s" }) : t("fbClosed");
+    $("fb-text").disabled = !open; $("fb-kind").disabled = !open;
+    $("fb-send").disabled = !open || fb.state !== "ready";
+    if (!open) $("fb-send").textContent = t("fbBtnClosed");
+    const m = $("fb-msg");
+    if (open && fb.state !== "ready" && !m.dataset.sticky) { m.className = "fine"; m.textContent = fb.state === "pending" ? t("fbConnecting") : t("fbNoDb"); }
+    if (open && fb.state === "ready" && !m.dataset.sticky) m.textContent = "";
+  }
+  $("fb-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const m = $("fb-msg"); const text = $("fb-text").value.trim(); m.dataset.sticky = "1";
+    if (!fbOpen()) { m.className = "err"; m.textContent = t("fbClosed"); fbUI(); return; }
+    if (text.length < 3) { m.className = "err"; m.textContent = t("fbShort"); return; }
+    if (fb.state !== "ready") return;
+    $("fb-send").disabled = true; m.className = "fine"; m.textContent = t("fbSending");
+    try {
+      const id = await fb.user.id(); const ref = fb.db.doc("feedback/" + id);
+      const snap = await ref.get(); const prev = snap.exists ? (snap.data().messages || []) : [];
+      const messages = prev.concat({ kind: $("fb-kind").value, text: text.slice(0, 2000), lang: state.lang, at: new Date().toISOString() }).slice(-10);
+      await ref.set({ messages, updatedAt: new Date().toISOString() });
+      $("fb-text").value = ""; m.className = "ok"; m.textContent = t("fbThanks"); toast(t("fbSent"));
+    } catch (err) {
+      m.className = "err"; m.textContent = err && err.code === "invalid_argument" ? t("fbNoAccess") : err && err.code === "quota_exceeded" ? t("fbFull") : t("fbFail");
+    } finally { $("fb-send").disabled = !fbOpen() || fb.state !== "ready"; }
+  });
+  const KIND = { idea: "fbIdea", bug: "fbBug", result: "fbResult", coverage: "fbCoverage", data: "fbData", other: "fbOther" };
+  const FB_PH = {
+    en: { coverage: "Which company, industry or city should we add? A link to their careers page helps.", data: "Which company or posting is wrong, and what's the correct information?" },
+    es: { coverage: "¿Qué empresa, industria o ciudad deberíamos agregar? Un enlace a su página de empleo ayuda.", data: "¿Qué empresa u oferta está mal y cuál es la información correcta?" }
+  };
+  function fbPlaceholder() { const k = $("fb-kind").value; $("fb-text").placeholder = (FB_PH[state.lang] || FB_PH.en)[k] || (state.lang === "es" ? ES.fbPh : EN_STATIC.fbPh); }
+  $("fb-kind").addEventListener("change", fbPlaceholder);
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-suggest]"); if (!b) return;
+    $("fb-kind").value = b.dataset.suggest; fbPlaceholder();
+    location.hash = "feedback"; route();
+    setTimeout(() => $("fb-text").focus(), 80);
+  });
+  try { if (localStorage.getItem("spi-catch") === "closed") $("catch").open = false; } catch (e) {}
+  $("catch").addEventListener("toggle", () => { try { localStorage.setItem("spi-catch", $("catch").open ? "open" : "closed"); } catch (e) {} });
+  function renderInbox(snap) {
+    const items = snap.docs.flatMap((d) => (d.data().messages || []).map((x) => ({ ...x, who: d.id.slice(-6) }))).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    const kindLabel = (k) => { const key = KIND[k]; return key ? (state.lang === "es" ? ES[key] : EN_STATIC[key]) : (k || ""); };
+    $("inbox-list").innerHTML = items.length ? items.map((x) => `<div class="fb-card"><small>${esc(kindLabel(x.kind))} · ${esc(new Date(x.at).toLocaleString(loc()))} · ${t("person")} …${esc(x.who)}</small><p>${esc(x.text)}</p></div>`).join("") : `<p class="fine">${t("inboxEmpty")}</p>`;
+  }
+  (async () => {
+    if (!window.claude || !window.claude.use) { fb.state = "none"; rp.state = "none"; fbUI(); renderReports(); return; }
+    const timer = setTimeout(() => { if (fb.state === "pending") { fb.state = "none"; rp.state = "none"; fbUI(); renderReports(); } }, 10000);
+    try {
+      const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      clearTimeout(timer);
+      if (!db || !user) { fb.state = "none"; rp.state = "none"; fbUI(); renderReports(); return; }
+      fb.db = db; fb.user = user; fb.state = "ready"; fbUI();
+      rp.db = db; rp.user = user; rp.me = await user.id(); rp.owner = await user.isOwner(); rp.state = "ready"; renderReports();
+      db.collection("reports").onSnapshot((snap) => { rp.docs = snap.docs.filter((d) => d.exists).map((d) => ({ uid: d.id, data: d.data() || {} })); renderReports(); render(); }, () => { rp.state = "none"; renderReports(); });
+      if (await user.isOwner()) {
+        $("inbox").hidden = false; $("inbox-list").innerHTML = `<p class="fine">${t("inboxLoading")}</p>`;
+        db.collection("feedback").onSnapshot((s) => { fb.lastSnap = s; renderInbox(s); }, () => { $("inbox-list").innerHTML = `<p class="err">${t("inboxErr")}</p>`; });
+      }
+    } catch (e) { clearTimeout(timer); fb.state = "none"; rp.state = "none"; fbUI(); renderReports(); }
+  })();
+
+  // ---------- delete all my data ----------
+  $("foot-delete").onclick = () => { $("wipe-confirm").hidden = false; $("wipe-confirm").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  $("wipe-no").onclick = () => ($("wipe-confirm").hidden = true);
+  $("wipe-yes").onclick = async () => {
+    Object.values(K).forEach((k) => store.del(k));
+    if (fb.state === "ready") { try { await fb.db.doc("feedback/" + (await fb.user.id())).delete(); } catch (e) {} try { await rp.db.doc("reports/" + rp.me).delete(); } catch (e) {} }
+    state.rows = []; checks = []; state.open.clear(); $("wipe-confirm").hidden = true;
+    render(); renderChecks(); toast(t("wiped"));
+    showGate();
+  };
+
+  // ---------- terms gate ----------
+  const gate = $("gate");
+  function showGate() { $("gate-accept").checked = false; $("gate-ok").disabled = true; $("declined").hidden = true; document.querySelector(".wrap").hidden = false; document.querySelector(".site-foot").hidden = false; if (!gate.open) gate.showModal(); }
+  $("gate-accept").onchange = () => ($("gate-ok").disabled = !$("gate-accept").checked);
+  $("gate-ok").onclick = () => { if (!$("gate-accept").checked) return; store.set(K.accepted, { v: 1, at: new Date().toISOString() }); store.set(K.lang, state.lang); gate.close(); toast(t("accepted")); };
+  $("gate-decline").onclick = () => { gate.close(); document.querySelector(".wrap").hidden = true; document.querySelector(".site-foot").hidden = true; $("declined").hidden = false; };
+  $("declined-review").onclick = showGate;
+  gate.addEventListener("cancel", (e) => { e.preventDefault(); toast(t("mustAccept")); });
+  const readFromGate = (tab) => { gate.close(); location.hash = tab; route(); setTimeout(() => { const back = document.createElement("div"); back.className = "actions"; back.style.marginTop = "8px"; back.innerHTML = `<button class="primary" id="back-gate">${esc(state.lang === "es" ? "Volver para aceptar" : "Back to accept")}</button>`; const doc = $("doc-" + tab); doc.prepend(back); $("back-gate").onclick = () => { back.remove(); showGate(); }; }, 50); };
+  $("gate-terms").onclick = () => readFromGate("terms");
+  $("gate-privacy").onclick = () => readFromGate("privacy");
+  $("lang-en").onclick = $("glang-en").onclick = () => setLang("en");
+  $("lang-es").onclick = $("glang-es").onclick = () => setLang("es");
+
+  // ---------- boot ----------
+  $("asof").value = isoDate(utcToday()); $("m-posted").max = isoDate(utcToday());
+  const rows = store.get(K.rows, []); if (Array.isArray(rows)) state.rows = rows.filter((x) => x && x.company && x.title && x.posted);
+  state.lens = store.get(K.lens, "seeker") === "employer" ? "employer" : "seeker";
+  state.lang = store.get(K.lang, (navigator.language || "").toLowerCase().startsWith("es") ? "es" : "en") === "es" ? "es" : "en";
+  $("lens-seeker").setAttribute("aria-pressed", state.lens === "seeker"); $("lens-employer").setAttribute("aria-pressed", state.lens === "employer");
+  showTab("ranking");
+  applyLang();
+  route();
+  if (!store.get(K.accepted, null)) showGate();
+})();
+</script>
+
+</body>
+</html>

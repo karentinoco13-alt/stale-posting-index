@@ -1,0 +1,795 @@
+{
+ "_note": "Tech companies are the focus and listed first (focus: true), but every company here is collected by default. Endpoints are best-known guesses that could not be tested from the build environment: run `python3 collector.py check`, fix failing slugs, and find endpoints for entries with ats=unknown (their careers page is listed). `parent` marks subsidiaries such as Amazon companies.",
+ "companies": [
+  {
+   "name": "Apple",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://jobs.apple.com",
+   "focus": true
+  },
+  {
+   "name": "Microsoft",
+   "industry": "Technology",
+   "ats": "eightfold",
+   "host": "apply.careers.microsoft.com",
+   "domain": "microsoft.com",
+   "focus": true
+  },
+  {
+   "name": "NVIDIA",
+   "industry": "Technology",
+   "ats": "workday",
+   "host": "nvidia.wd5.myworkdayjobs.com",
+   "tenant": "nvidia",
+   "site": "NVIDIAExternalCareerSite",
+   "focus": true
+  },
+  {
+   "name": "Amazon",
+   "industry": "Technology / Retail",
+   "ats": "amazon",
+   "parent": "Amazon",
+   "_note": "amazon.jobs also lists AWS, Project Kuiper, Ring, Audible, IMDb, Annapurna Labs, Amazon Robotics and other Amazon companies; each posting is filed under its own company (see AMAZON_BRANDS in collector.py).",
+   "focus": true
+  },
+  {
+   "name": "Blue Origin",
+   "industry": "Aerospace & Defense",
+   "ats": "workday",
+   "host": "blueorigin.wd5.myworkdayjobs.com",
+   "tenant": "blueorigin",
+   "site": "BlueOrigin",
+   "focus": true
+  },
+  {
+   "name": "Tesla",
+   "industry": "Automotive",
+   "ats": "unknown",
+   "careers": "https://www.tesla.com/careers",
+   "focus": true
+  },
+  {
+   "name": "SpaceX",
+   "industry": "Aerospace & Defense",
+   "ats": "greenhouse",
+   "slug": "spacex",
+   "focus": true
+  },
+  {
+   "name": "Salesforce",
+   "industry": "Technology",
+   "ats": "workday",
+   "host": "salesforce.wd12.myworkdayjobs.com",
+   "tenant": "salesforce",
+   "site": "External_Career_Site",
+   "focus": true
+  },
+  {
+   "name": "Adobe",
+   "industry": "Technology",
+   "ats": "workday",
+   "host": "adobe.wd5.myworkdayjobs.com",
+   "tenant": "adobe",
+   "site": "external_experienced",
+   "focus": true
+  },
+  {
+   "name": "Intel",
+   "industry": "Technology",
+   "ats": "workday",
+   "host": "intel.wd1.myworkdayjobs.com",
+   "tenant": "intel",
+   "site": "External",
+   "focus": true
+  },
+  {
+   "name": "Netflix",
+   "industry": "Media & Entertainment",
+   "ats": "eightfold",
+   "host": "explore.jobs.netflix.net",
+   "domain": "netflix.com",
+   "focus": true
+  },
+  {
+   "name": "Spotify",
+   "industry": "Media & Entertainment",
+   "ats": "lever",
+   "slug": "spotify",
+   "focus": true
+  },
+  {
+   "name": "Pinterest",
+   "industry": "Technology",
+   "ats": "greenhouse",
+   "slug": "pinterest",
+   "focus": true
+  },
+  {
+   "name": "Stripe",
+   "industry": "Fintech",
+   "ats": "greenhouse",
+   "slug": "stripe",
+   "focus": true
+  },
+  {
+   "name": "Airbnb",
+   "industry": "Travel & Hospitality",
+   "ats": "greenhouse",
+   "slug": "airbnb",
+   "focus": true
+  },
+  {
+   "name": "Robinhood",
+   "industry": "Fintech",
+   "ats": "greenhouse",
+   "slug": "robinhood",
+   "focus": true
+  },
+  {
+   "name": "Anduril",
+   "industry": "Aerospace & Defense",
+   "ats": "greenhouse",
+   "slug": "andurilindustries",
+   "focus": true
+  },
+  {
+   "name": "Boeing",
+   "industry": "Aerospace & Defense",
+   "ats": "workday",
+   "host": "boeing.wd1.myworkdayjobs.com",
+   "tenant": "boeing",
+   "site": "EXTERNAL_CAREERS",
+   "focus": true
+  },
+  {
+   "name": "Lockheed Martin",
+   "industry": "Aerospace & Defense",
+   "ats": "unknown",
+   "careers": "https://www.lockheedmartinjobs.com",
+   "focus": true
+  },
+  {
+   "name": "Comcast",
+   "industry": "Telecom & Media",
+   "ats": "workday",
+   "host": "comcast.wd5.myworkdayjobs.com",
+   "tenant": "comcast",
+   "site": "Comcast_Careers",
+   "focus": true
+  },
+  {
+   "name": "Verizon",
+   "industry": "Telecom & Media",
+   "ats": "workday",
+   "host": "verizon.wd12.myworkdayjobs.com",
+   "tenant": "verizon",
+   "site": "verizon-careers",
+   "focus": true
+  },
+  {
+   "name": "Alphabet (Google)",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://careers.google.com",
+   "focus": true
+  },
+  {
+   "name": "Meta",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://www.metacareers.com",
+   "focus": true
+  },
+  {
+   "name": "Oracle",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://careers.oracle.com",
+   "focus": true
+  },
+  {
+   "name": "IBM",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://www.ibm.com/careers",
+   "focus": true
+  },
+  {
+   "name": "Cisco",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://jobs.cisco.com",
+   "focus": true
+  },
+  {
+   "name": "AMD",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://careers.amd.com",
+   "focus": true
+  },
+  {
+   "name": "Qualcomm",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://careers.qualcomm.com",
+   "focus": true
+  },
+  {
+   "name": "Whole Foods Market",
+   "industry": "Retail",
+   "ats": "unknown",
+   "careers": "https://careers.wholefoodsmarket.com",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Zappos",
+   "industry": "Retail",
+   "ats": "unknown",
+   "careers": "https://jobs.zappos.com",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Twitch",
+   "industry": "Technology",
+   "ats": "unknown",
+   "careers": "https://www.twitch.tv/jobs",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Zoox",
+   "industry": "Automotive",
+   "ats": "unknown",
+   "careers": "https://zoox.com/careers",
+   "parent": "Amazon"
+  },
+  {
+   "name": "One Medical",
+   "industry": "Healthcare",
+   "ats": "unknown",
+   "careers": "https://www.onemedical.com/careers",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Audible",
+   "industry": "Media & Entertainment",
+   "ats": "unknown",
+   "careers": "https://www.audible.careers",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Amazon MGM Studios",
+   "industry": "Media & Entertainment",
+   "ats": "unknown",
+   "careers": "https://www.amazon.jobs",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Wondery",
+   "industry": "Media & Entertainment",
+   "ats": "unknown",
+   "careers": "https://www.amazon.jobs",
+   "parent": "Amazon"
+  },
+  {
+   "name": "Skydio",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://www.skydio.com/careers"
+  },
+  {
+   "name": "Zipline",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://www.flyzipline.com/careers"
+  },
+  {
+   "name": "Wing",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://wing.com/careers"
+  },
+  {
+   "name": "Shield AI",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://shield.ai/careers"
+  },
+  {
+   "name": "AeroVironment",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://www.avinc.com/careers"
+  },
+  {
+   "name": "Joby Aviation",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://www.jobyaviation.com/careers"
+  },
+  {
+   "name": "Archer Aviation",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://www.archer.com/careers"
+  },
+  {
+   "name": "BRINC",
+   "industry": "Drones & Aerial Tech",
+   "ats": "unknown",
+   "careers": "https://brincdrones.com/careers"
+  },
+  {
+   "name": "Delta Air Lines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://jobs.delta.com"
+  },
+  {
+   "name": "American Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://jobs.aa.com"
+  },
+  {
+   "name": "United Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://careers.united.com"
+  },
+  {
+   "name": "Southwest Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://careers.southwestair.com"
+  },
+  {
+   "name": "JetBlue",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://careers.jetblue.com"
+  },
+  {
+   "name": "Alaska Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://careers.alaskaair.com"
+  },
+  {
+   "name": "Spirit Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://careers.spirit.com"
+  },
+  {
+   "name": "Frontier Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://www.flyfrontier.com/careers"
+  },
+  {
+   "name": "Hawaiian Airlines",
+   "industry": "Airlines",
+   "ats": "unknown",
+   "careers": "https://www.hawaiianairlines.com/careers"
+  },
+  {
+   "name": "Royal Caribbean Group",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://jobs.rclcareers.com"
+  },
+  {
+   "name": "Carnival Corporation",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://www.carnivalcorp.com/careers"
+  },
+  {
+   "name": "Norwegian Cruise Line Holdings",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://www.nclhltd.com/careers"
+  },
+  {
+   "name": "Virgin Voyages",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://www.virginvoyages.com/careers"
+  },
+  {
+   "name": "MSC Cruises",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://www.msccruises.com/careers"
+  },
+  {
+   "name": "Disney Cruise Line",
+   "industry": "Cruise Lines",
+   "ats": "unknown",
+   "careers": "https://jobs.disneycareers.com"
+  },
+  {
+   "name": "Lennar",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.lennar.com/careers"
+  },
+  {
+   "name": "D.R. Horton",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.drhorton.com/careers"
+  },
+  {
+   "name": "PulteGroup",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.pultegroup.com/careers"
+  },
+  {
+   "name": "NVR",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.nvrinc.com/careers"
+  },
+  {
+   "name": "Toll Brothers",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.tollbrothers.com/careers"
+  },
+  {
+   "name": "KB Home",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.kbhome.com/careers"
+  },
+  {
+   "name": "Taylor Morrison",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.taylormorrison.com/careers"
+  },
+  {
+   "name": "Meritage Homes",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.meritagehomes.com/careers"
+  },
+  {
+   "name": "Bechtel",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://jobs.bechtel.com"
+  },
+  {
+   "name": "Turner Construction",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.turnerconstruction.com/careers"
+  },
+  {
+   "name": "Kiewit",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://www.kiewit.com/careers"
+  },
+  {
+   "name": "Fluor",
+   "industry": "Homebuilding & Construction",
+   "ats": "unknown",
+   "careers": "https://careers.fluor.com"
+  },
+  {
+   "name": "Disney",
+   "industry": "Media & Entertainment",
+   "ats": "workday",
+   "host": "disney.wd5.myworkdayjobs.com",
+   "tenant": "disney",
+   "site": "disneycareer"
+  },
+  {
+   "name": "Ford",
+   "industry": "Automotive",
+   "ats": "unknown",
+   "careers": "https://careers.ford.com"
+  },
+  {
+   "name": "General Motors",
+   "industry": "Automotive",
+   "ats": "workday",
+   "host": "generalmotors.wd5.myworkdayjobs.com",
+   "tenant": "generalmotors",
+   "site": "Careers_GM"
+  },
+  {
+   "name": "Walmart",
+   "industry": "Retail",
+   "ats": "workday",
+   "host": "walmart.wd5.myworkdayjobs.com",
+   "tenant": "walmart",
+   "site": "WalmartExternal"
+  },
+  {
+   "name": "Target",
+   "industry": "Retail",
+   "ats": "workday",
+   "host": "target.wd5.myworkdayjobs.com",
+   "tenant": "target",
+   "site": "targetcareers"
+  },
+  {
+   "name": "The Home Depot",
+   "industry": "Retail",
+   "ats": "workday",
+   "host": "homedepot.wd5.myworkdayjobs.com",
+   "tenant": "homedepot",
+   "site": "CareerDepot"
+  },
+  {
+   "name": "Costco",
+   "industry": "Retail",
+   "ats": "unknown",
+   "careers": "https://www.costco.com/jobs.html"
+  },
+  {
+   "name": "Bank of America",
+   "industry": "Banking & Finance",
+   "ats": "workday",
+   "host": "ghr.wd1.myworkdayjobs.com",
+   "tenant": "ghr",
+   "site": "Lateral-US"
+  },
+  {
+   "name": "Mastercard",
+   "industry": "Banking & Finance",
+   "ats": "workday",
+   "host": "mastercard.wd1.myworkdayjobs.com",
+   "tenant": "mastercard",
+   "site": "CorporateCareers"
+  },
+  {
+   "name": "Capital One",
+   "industry": "Banking & Finance",
+   "ats": "workday",
+   "host": "capitalone.wd12.myworkdayjobs.com",
+   "tenant": "capitalone",
+   "site": "Capital_One"
+  },
+  {
+   "name": "JPMorgan Chase",
+   "industry": "Banking & Finance",
+   "ats": "unknown",
+   "careers": "https://careers.jpmorgan.com"
+  },
+  {
+   "name": "CVS Health",
+   "industry": "Healthcare",
+   "ats": "workday",
+   "host": "cvshealth.wd1.myworkdayjobs.com",
+   "tenant": "cvshealth",
+   "site": "CVS_Health_Careers"
+  },
+  {
+   "name": "Pfizer",
+   "industry": "Pharma & Biotech",
+   "ats": "workday",
+   "host": "pfizer.wd1.myworkdayjobs.com",
+   "tenant": "pfizer",
+   "site": "PfizerCareers"
+  },
+  {
+   "name": "UnitedHealth Group",
+   "industry": "Healthcare",
+   "ats": "unknown",
+   "careers": "https://careers.unitedhealthgroup.com"
+  },
+  {
+   "name": "Kaiser Permanente",
+   "industry": "Healthcare",
+   "ats": "unknown",
+   "careers": "https://www.kaiserpermanentejobs.org"
+  },
+  {
+   "name": "Chevron",
+   "industry": "Energy",
+   "ats": "workday",
+   "host": "chevron.wd5.myworkdayjobs.com",
+   "tenant": "chevron",
+   "site": "jobs"
+  },
+  {
+   "name": "ExxonMobil",
+   "industry": "Energy",
+   "ats": "unknown",
+   "careers": "https://jobs.exxonmobil.com"
+  },
+  {
+   "name": "3M",
+   "industry": "Manufacturing",
+   "ats": "workday",
+   "host": "3m.wd1.myworkdayjobs.com",
+   "tenant": "3m",
+   "site": "Search"
+  },
+  {
+   "name": "FedEx",
+   "industry": "Logistics",
+   "ats": "unknown",
+   "careers": "https://careers.fedex.com"
+  },
+  {
+   "name": "UPS",
+   "industry": "Logistics",
+   "ats": "unknown",
+   "careers": "https://www.jobs-ups.com"
+  },
+  {
+   "name": "Marriott",
+   "industry": "Travel & Hospitality",
+   "ats": "unknown",
+   "careers": "https://careers.marriott.com"
+  },
+  {
+   "name": "PepsiCo",
+   "industry": "Food & Consumer Goods",
+   "ats": "unknown",
+   "careers": "https://www.pepsicojobs.com"
+  },
+  {
+   "name": "Accenture",
+   "industry": "Consulting",
+   "ats": "unknown",
+   "careers": "https://www.accenture.com/us-en/careers"
+  }
+ ],
+ "searches": [
+  {
+   "label": "Hospitals",
+   "industry": "Hospitals",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "hospital"
+  },
+  {
+   "label": "Nursing (all employers)",
+   "industry": "Healthcare",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "healthcare-nursing-jobs"
+  },
+  {
+   "label": "Home Health Care",
+   "industry": "Home Health Care",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "home health aide"
+  },
+  {
+   "label": "Nursing Homes & Assisted Living",
+   "industry": "Nursing Homes & Assisted Living",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "CNA assisted living"
+  },
+  {
+   "label": "Clinics (Medical & Dental)",
+   "industry": "Clinics (Medical & Dental)",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "medical assistant clinic"
+  },
+  {
+   "label": "Behavioral Health",
+   "industry": "Behavioral Health",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "behavioral health technician"
+  },
+  {
+   "label": "Construction Trades",
+   "industry": "Construction Trades",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "trade-construction-jobs"
+  },
+  {
+   "label": "Construction Laborers",
+   "industry": "Construction Trades",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "construction laborer"
+  },
+  {
+   "label": "Staffing Agencies",
+   "industry": "Staffing Agencies",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "staffing agency"
+  },
+  {
+   "label": "Trucking & Delivery",
+   "industry": "Trucking & Delivery",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "CDL driver"
+  },
+  {
+   "label": "Warehousing",
+   "industry": "Warehousing",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "logistics-warehouse-jobs"
+  },
+  {
+   "label": "Restaurants & Food Service",
+   "industry": "Restaurants & Food Service",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "hospitality-catering-jobs"
+  },
+  {
+   "label": "Cleaning & Janitorial",
+   "industry": "Cleaning & Janitorial",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "domestic-help-cleaning-jobs"
+  },
+  {
+   "label": "Security Services",
+   "industry": "Security Services",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "security officer"
+  },
+  {
+   "label": "Call Centers",
+   "industry": "Call Centers",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "category": "customer-services-jobs"
+  },
+  {
+   "label": "Childcare",
+   "industry": "Childcare",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "childcare teacher daycare"
+  },
+  {
+   "label": "Landscaping",
+   "industry": "Landscaping",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "landscaping"
+  },
+  {
+   "label": "Auto Repair & Dealerships",
+   "industry": "Auto Repair & Dealerships",
+   "country": "us",
+   "where": "",
+   "max_pages": 10,
+   "what": "automotive technician"
+  }
+ ],
+ "_searches_note": "Job-board searches catch every employer, including small and local ones that have no career site of their own. They need a free Adzuna key (ADZUNA_APP_ID / ADZUNA_APP_KEY). Set 'where' to a city or state to focus on your area; each search reads up to max_pages x 50 postings per run."
+}
