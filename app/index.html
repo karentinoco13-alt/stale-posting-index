@@ -1546,7 +1546,7 @@ details.mailbox summary { cursor: pointer; font-weight: 600; color: var(--accent
   const FB_CLOSE = Date.UTC(2026, 11, 4); // closes at the end of Dec 3, 2026 (UTC)
   const fbOpen = () => Date.now() < FB_CLOSE;
   const fb = { db: null, user: null, state: "pending" };
-  const FEEDBACK_ENDPOINT = '';  // Google Apps Script web app URL; set by owner
+  const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHYLwYatf0CjrD8Y2IO5rVQUmlQUi7X1NVVkAiU0Oi7VpmJZJicC5-5bs7cOYQsyrdrA/exec';  // private Google Apps Script web app (feedback inbox)
   async function sendFeedbackToOwner(payload) { // payload = { app, page, topic, message, replyTo (only if typed), submitted }
     if (!FEEDBACK_ENDPOINT) return false;
     const body = JSON.stringify(payload);
