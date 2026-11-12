@@ -342,18 +342,41 @@ document.addEventListener('click', (e) => {
 // Links like /#feedback from the Privacy and Terms pages.
 if (['#feedback', '#delete'].includes(location.hash)) openDialog(location.hash.slice(1));
 
+// Feedback also goes straight to the developer, so it arrives even when no server is running.
+const FEEDBACK_ENDPOINT = '';  // Google Apps Script web app URL; set by owner
+async function sendFeedbackToOwner(payload) { // payload = { app, page, topic, message, replyTo (only if typed), submitted }
+  if (!FEEDBACK_ENDPOINT) return false;
+  const body = JSON.stringify(payload);
+  try { const r = await fetch(FEEDBACK_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body }); return r.ok; }
+  catch { try { await fetch(FEEDBACK_ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body }); return true; } catch { return false; } }
+}
+
 $('#feedbackForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const f = new FormData(e.target), msg = $('#fbMsg');
-  try {
+  const f = new FormData(e.target), msg = $('#fbMsg'), btn = e.target.querySelector('button[type="submit"]');
+  const topic = f.get('topic'), message = String(f.get('message') || '').trim(), replyTo = String(f.get('replyTo') || '').trim();
+  const payload = { app: 'Real Jobs Finder', page: location.href, topic, message };
+  if (replyTo) payload.replyTo = replyTo;
+  payload.submitted = new Date().toISOString();
+  btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Sending…';
+  const saveOnServer = async () => {
     const res = await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topic: f.get('topic'), message: f.get('message'), replyTo: f.get('replyTo'), clientId: clientId() }) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
+    return true;
+  };
+  // Sent if either the developer endpoint or the server save works.
+  const [owner, server] = await Promise.allSettled([sendFeedbackToOwner(payload), saveOnServer()]);
+  btn.disabled = false;
+  if (owner.value === true || server.value === true) {
     msg.className = 'msg ok'; msg.textContent = 'Thank you, your feedback was sent.';
     e.target.reset();
     setTimeout(() => { $('#dlg-feedback').close(); msg.textContent = ''; }, 1500);
-  } catch (err) { msg.className = 'msg err'; msg.textContent = err.message; }
+  } else {
+    msg.className = 'msg err';
+    msg.textContent = (server.reason && server.reason.message && !/JSON|fetch/i.test(server.reason.message)) ? server.reason.message : "Couldn't send your feedback. Please try again in a moment.";
+  }
 });
 
 $('#deleteForm').addEventListener('submit', async (e) => {
