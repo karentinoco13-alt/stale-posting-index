@@ -343,7 +343,7 @@ document.addEventListener('click', (e) => {
 if (['#feedback', '#delete'].includes(location.hash)) openDialog(location.hash.slice(1));
 
 // Feedback also goes straight to the developer, so it arrives even when no server is running.
-const FEEDBACK_ENDPOINT = '';  // Google Apps Script web app URL; set by owner
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHYLwYatf0CjrD8Y2IO5rVQUmlQUi7X1NVVkAiU0Oi7VpmJZJicC5-5bs7cOYQsyrdrA/exec';  // private Google Apps Script web app (feedback inbox)
 async function sendFeedbackToOwner(payload) { // payload = { app, page, topic, message, replyTo (only if typed), submitted }
   if (!FEEDBACK_ENDPOINT) return false;
   const body = JSON.stringify(payload);
