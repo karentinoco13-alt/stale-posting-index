@@ -66,7 +66,7 @@ button:hover { border-color: var(--accent); }
 button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-color); }
 button.danger { color: var(--ghost); border-color: color-mix(in srgb, var(--ghost) 45%, transparent); }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .row-head:focus-visible, a:focus-visible { outline: 3px solid var(--c8); outline-offset: 2px; }
-input[type="search"], input[type="text"], input[type="url"], input[type="date"], select, textarea { font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 9px; padding: 7px 10px; width: 100%; min-width: 0; }
+input[type="search"], input[type="text"], input[type="url"], input[type="email"], input[type="date"], select, textarea { font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 9px; padding: 7px 10px; width: 100%; min-width: 0; }
 
 /* header */
 header.top {
@@ -654,6 +654,7 @@ header.top {
         <div class="field"><label for="fb-kind" data-i18n="fbKind">What's it about?</label>
           <select id="fb-kind"><option value="idea" data-i18n="fbIdea">Idea or feature request</option><option value="bug" data-i18n="fbBug">Something's broken</option><option value="result" data-i18n="fbResult">Wrong or unfair result</option><option value="coverage" data-i18n="fbCoverage">Missing company, industry or area</option><option value="data" data-i18n="fbData">Data is wrong or out of date</option><option value="other" data-i18n="fbOther">Other</option></select></div>
         <div class="field"><label for="fb-text" data-i18n="fbText">Your feedback</label><textarea id="fb-text" maxlength="2000" data-i18n-ph="fbPh" placeholder="Tell us what would make this more useful."></textarea></div>
+        <div class="field" id="fb-email-f" hidden><label for="fb-email" data-i18n="fbEmail">Your email (optional, only if you want a reply)</label><input id="fb-email" type="email" maxlength="200" autocomplete="email"></div>
         <p class="fine" id="fb-note" data-i18n="fbNote">Feedback is sent only when you click Send feedback. It goes only to the app's owner and is used to improve future versions. Please don't include personal details.</p>
         <p id="fb-msg" aria-live="polite"></p>
         <div class="actions"><button class="primary" id="fb-send" type="submit" data-i18n="fbSend">Send feedback</button></div>
@@ -706,7 +707,7 @@ header.top {
     <div class="gcard" style="--gc:#1a8f5c"><h3 data-i18n="g1h">Free, while it's being tested</h3><p data-i18n-html="g1p">Stale Posting Index is free and provided as is. Feedback is sent only when you click <strong>Send feedback</strong>; it goes only to the app's owner and is used to improve future versions. Feedback is open until December 3, 2026. You can also email karentinoco13@gmail.com.</p></div>
     <div class="gcard" style="--gc:#6a46cf"><h3 data-i18n="g2h">No guaranteed results</h3><p data-i18n="g2p">Stale Posting Index and its developer make no warranty of any outcome. Rankings, labels and fraud scores are automatic signals based on the data provided, and are only as good as that data. They are not facts about any company. A long-open or reposted job can have legitimate reasons, so always check with the employer.</p></div>
     <div class="gcard" style="--gc:#c97a10"><h3 data-i18n="g6h">Know the catch: not live data yet</h3><p data-i18n="g6p">The app doesn't pull jobs from the web on its own yet, and coverage is partial. Rankings use only postings people add, uploaded files and community reports, so a company that's missing isn't proof it hires fairly. Help make it better: tell us what's missing with Send feedback.</p></div>
-    <div class="gcard" style="--gc:#2f62d0"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads, analytics or tracking. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
+    <div class="gcard" style="--gc:#2f62d0"><h3 data-i18n="g3h">Private by design.</h3><p data-i18n="g3p1">Everything you enter stays in your own browser. Your postings and checked emails are never sent anywhere, never stored on a server, and nothing is tracked. You can delete them at any time.</p><p data-i18n="g3p2">Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules inside the app. There are no ads or tracking cookies. Visits are counted with GoatCounter, which uses no cookies and does not collect personal data. The only things saved outside your browser are feedback you choose to send and community reports, flags and comments you choose to post. Other users see reports, flags and comments, without your name.</p></div>
     <div class="gcard" style="--gc:#cf4a2a"><h3 data-i18n="g4h">Deleting is permanent; your data is your responsibility</h3><p data-i18n="g4p1">Delete all my data permanently removes everything you entered. This can't be undone.</p><p data-i18n-html="g4p2">You're responsible for your data. Stale Posting Index and its developer aren't responsible for lost or deleted data, to the fullest extent the law allows. Keep your own copy of what matters. In <strong>Add postings</strong>, the <strong>My postings</strong> tab has a <strong>Copy all postings as CSV</strong> button.</p></div>
     <div class="gcard" style="--gc:#3d8a36"><h3 data-i18n="g5h">Licence</h3><p data-i18n-html="g5p">© 2026 Karen Tinoco. Licensed under PolyForm Noncommercial 1.0.0: free to view, run, and adapt for non-commercial use. Commercial use by permission only. <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener">License</a></p></div>
     <div class="gate-links"><button class="linkbtn" id="gate-terms" data-i18n="gateReadTerms">Read the full Terms of use</button><button class="linkbtn" id="gate-privacy" data-i18n="gateReadPrivacy">Read the Privacy &amp; security notice</button></div>
@@ -812,13 +813,15 @@ header.top {
   <h3>Private by design</h3>
   <p>The App doesn't ask for your name, email or account details. The postings you add, the emails you check, your settings and your acceptance of the terms are saved only in your own browser's storage on this device. They are never sent to us, never stored on a server, and other people who open the App can't see them.</p>
   <h3>No AI, ads or tracking</h3>
-  <p>Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules that run inside the App. There are no ads, analytics or tracking.</p>
+  <p>Your data is never sent to Claude or any other AI service. Rankings and fraud checks are produced by fixed rules that run inside the App. There are no ads or tracking cookies.</p>
+  <h3>Visit counts</h3>
+  <p>Visits are counted with GoatCounter, which uses no cookies and does not collect personal data.</p>
   <h3>Feedback, the one exception</h3>
-  <p>If you click Send feedback, your message, the topic you picked, the time and an anonymous ID for your account are stored with the App on claude.ai so the owner can read them. Feedback is open until December 3, 2026. "Delete all my data" also deletes feedback you sent.</p>
+  <p>If you click Send feedback, your message, the topic you picked, your email if you chose to give one, the page address and the time are delivered privately to the app's developer and stored in the developer's Google account. In the claude.ai version, your message, topic, the time and an anonymous ID for your account are also stored with the App so the owner can read them there. Feedback is open until December 3, 2026. "Delete all my data" deletes feedback stored with the App; to delete feedback delivered to the developer, ask through Share feedback.</p>
   <h3>Community reports</h3>
   <p>Reports, flags and comments you post in Community reports are stored with the App on claude.ai, together with an anonymous ID for your account, and everyone who can open the App can read them. They show as "member" plus the last 4 characters of that ID, never your name. Don't include personal information. You can remove your own reports and comments at any time, and "Delete all my data" removes all of them along with your flags. The owner can remove any report or comment.</p>
   <h3>Outside services</h3>
-  <p>The page is hosted on claude.ai, which may keep standard access logs under Anthropic's privacy policy. Fonts load from Google Fonts, which may receive your IP address and browser details under Google's privacy policy. Links to job postings open the employer's own site, which has its own policies.</p>
+  <p>The page is hosted on claude.ai, which may keep standard access logs under Anthropic's privacy policy. Fonts load from Google Fonts, which may receive your IP address and browser details under Google's privacy policy. Visit counts go to GoatCounter (goatcounter.com). Links to job postings open the employer's own site, which has its own policies.</p>
   <h3>Security tips</h3>
   <ul>
     <li>Data in browser storage can be read by anyone who uses this browser profile. Use your own device or profile.</li>
@@ -841,13 +844,15 @@ header.top {
   <h3>Privada por diseño</h3>
   <p>La App no te pide nombre, correo ni datos de cuenta. Las ofertas que agregas, los correos que revisas, tus ajustes y tu aceptación de los términos se guardan solo en el almacenamiento de tu propio navegador en este dispositivo. Nunca se nos envían, nunca se guardan en un servidor, y otras personas que abran la App no pueden verlos.</p>
   <h3>Sin IA, anuncios ni rastreo</h3>
-  <p>Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios, analítica ni rastreo.</p>
+  <p>Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios ni cookies de rastreo.</p>
+  <h3>Conteo de visitas</h3>
+  <p>Las visitas se cuentan con GoatCounter, que no usa cookies ni recopila datos personales.</p>
   <h3>Comentarios, la única excepción</h3>
-  <p>Si haces clic en Enviar comentarios, tu mensaje, el tema elegido, la hora y un ID anónimo de tu cuenta se guardan con la App en claude.ai para que la dueña pueda leerlos. Los comentarios están abiertos hasta el 3 de diciembre de 2026. "Borrar todos mis datos" también borra los comentarios que enviaste.</p>
+  <p>Si haces clic en Enviar comentarios, tu mensaje, el tema elegido, tu correo si decidiste darlo, la dirección de la página y la hora se entregan de forma privada a la desarrolladora de la App y se guardan en su cuenta de Google. En la versión de claude.ai, tu mensaje, el tema, la hora y un ID anónimo de tu cuenta también se guardan con la App para que la dueña pueda leerlos ahí. Los comentarios están abiertos hasta el 3 de diciembre de 2026. "Borrar todos mis datos" borra los comentarios guardados con la App; para borrar los que se entregaron a la desarrolladora, pídelo con Enviar comentarios.</p>
   <h3>Reportes de la comunidad</h3>
   <p>Los reportes, marcas y comentarios que publicas en Reportes de la comunidad se guardan con la App en claude.ai, junto con un ID anónimo de tu cuenta, y todas las personas que pueden abrir la App pueden leerlos. Aparecen como "miembro" más los últimos 4 caracteres de ese ID, nunca tu nombre. No incluyas datos personales. Puedes quitar tus reportes y comentarios cuando quieras, y "Borrar todos mis datos" los elimina todos junto con tus marcas. La dueña puede eliminar cualquier reporte o comentario.</p>
   <h3>Servicios externos</h3>
-  <p>La página está alojada en claude.ai, que puede guardar registros de acceso estándar según la política de privacidad de Anthropic. Las fuentes se cargan desde Google Fonts, que puede recibir tu dirección IP y datos del navegador según la política de privacidad de Google. Los enlaces a ofertas abren el sitio del empleador, que tiene sus propias políticas.</p>
+  <p>La página está alojada en claude.ai, que puede guardar registros de acceso estándar según la política de privacidad de Anthropic. Las fuentes se cargan desde Google Fonts, que puede recibir tu dirección IP y datos del navegador según la política de privacidad de Google. El conteo de visitas va a GoatCounter (goatcounter.com). Los enlaces a ofertas abren el sitio del empleador, que tiene sus propias políticas.</p>
   <h3>Consejos de seguridad</h3>
   <ul>
     <li>Cualquier persona que use este perfil del navegador puede leer los datos guardados. Usa tu propio dispositivo o perfil.</li>
@@ -910,7 +915,7 @@ header.top {
     fraudP: "¿Recibiste un correo o mensaje de un reclutador que no te convence? Pégalo aquí con su línea <strong>From</strong> (De). El revisor busca señales comunes de estafa laboral, como un correo gratuito para una gran empresa, pedidos de dinero o datos bancarios, o entrevistas por apps de chat. Luego ordena todos los correos revisados, del más probable fraude al menos. Los correos se quedan en este navegador.",
     frCompany: "Empresa que dice representar", frText: "Correo o mensaje", frCheck: "Revisar este correo", frListH: "Todo lo que revisaste, del mayor riesgo al menor",
     fbH: "Enviar comentarios", fbKind: "¿Sobre qué es?", fbIdea: "Idea o función nueva", fbBug: "Algo no funciona", fbResult: "Resultado incorrecto o injusto", fbOther: "Otro",
-    fbText: "Tus comentarios", fbPh: "Cuéntanos qué la haría más útil.", fbNote: "Los comentarios se envían solo cuando haces clic en Enviar comentarios. Van solo a la dueña de la App y se usan para mejorar futuras versiones. No incluyas datos personales.",
+    fbText: "Tus comentarios", fbPh: "Cuéntanos qué la haría más útil.", fbEmail: "Tu correo (opcional, solo si quieres respuesta)", fbNote: "Los comentarios se envían solo cuando haces clic en Enviar comentarios. Van solo a la dueña de la App y se usan para mejorar futuras versiones. No incluyas datos personales.",
     fbSend: "Enviar comentarios", inboxH: "Bandeja de comentarios", inboxP: "Solo tú, la dueña, ves esto. Lo más reciente primero.",
     aboutEyebrow: "Sobre este proyecto",
     aboutP: "Creada para que quienes buscan empleo distingan una vacante real de una oferta que nunca se cierra, y para que los equipos de contratación vean dónde está estancado el mercado de talento tecnológico. Las ofertas vienen de lo que agregas o del recopilador opcional, que revisa a diario sitios de empleo de tecnología como Apple, Microsoft, NVIDIA, Amazon, Blue Origin y Tesla, y exporta un CSV para la pestaña Agregar ofertas.",
@@ -923,7 +928,7 @@ header.top {
     g1h: "Gratis, mientras está en pruebas", g1p: "Stale Posting Index es gratuita y se ofrece tal cual. Los comentarios se envían solo cuando haces clic en <strong>Enviar comentarios</strong>; van solo a la dueña de la App y se usan para mejorar futuras versiones. Los comentarios están abiertos hasta el 3 de diciembre de 2026. También puedes escribir a karentinoco13@gmail.com.",
     g2h: "Sin resultados garantizados", g2p: "Stale Posting Index y su desarrolladora no garantizan ningún resultado. Los rankings, etiquetas y puntuaciones de fraude son señales automáticas basadas en los datos ingresados, y solo son tan buenos como esos datos. No son hechos sobre ninguna empresa. Una oferta abierta mucho tiempo o republicada puede tener razones legítimas; verifica siempre con el empleador.",
     g3h: "Privada por diseño.", g3p1: "Todo lo que ingresas se queda en tu propio navegador. Tus ofertas y correos revisados nunca se envían a ningún lado, nunca se guardan en un servidor y no se rastrea nada. Puedes borrarlos cuando quieras.",
-    g3p2: "Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios, analítica ni rastreo. Lo único que se guarda fuera de tu navegador son los comentarios que decidas enviar y los reportes, marcas y comentarios de la comunidad que decidas publicar. Otras personas ven los reportes, marcas y comentarios, sin tu nombre.",
+    g3p2: "Tus datos nunca se envían a Claude ni a ningún otro servicio de IA. Los rankings y las revisiones de fraude se generan con reglas fijas dentro de la App. No hay anuncios ni cookies de rastreo. Las visitas se cuentan con GoatCounter, que no usa cookies ni recopila datos personales. Lo único que se guarda fuera de tu navegador son los comentarios que decidas enviar y los reportes, marcas y comentarios de la comunidad que decidas publicar. Otras personas ven los reportes, marcas y comentarios, sin tu nombre.",
     g4h: "Borrar es permanente; tus datos son tu responsabilidad", g4p1: "Borrar todos mis datos elimina para siempre todo lo que ingresaste. No se puede deshacer.",
     g4p2: "Eres responsable de tus datos. Stale Posting Index y su desarrolladora no son responsables por datos perdidos o borrados, en la medida máxima que permita la ley. Guarda tu propia copia de lo importante. En <strong>Agregar ofertas</strong>, la pestaña <strong>Mis ofertas</strong> tiene un botón <strong>Copiar todas las ofertas como CSV</strong>.",
     g5h: "Licencia", g5p: "© 2026 Karen Tinoco. Licencia PolyForm Noncommercial 1.0.0: libre para ver, ejecutar y adaptar con fines no comerciales. El uso comercial requiere permiso. <a href=\"https://polyformproject.org/licenses/noncommercial/1.0.0/\" target=\"_blank\" rel=\"noopener\">Licencia</a>",
@@ -1537,21 +1542,31 @@ header.top {
   const FB_CLOSE = Date.UTC(2026, 11, 4); // closes at the end of Dec 3, 2026 (UTC)
   const fbOpen = () => Date.now() < FB_CLOSE;
   const fb = { db: null, user: null, state: "pending" };
+  const FEEDBACK_ENDPOINT = '';  // Google Apps Script web app URL; set by owner
+  async function sendFeedbackToOwner(payload) { // payload = { app, page, topic, message, replyTo (only if typed), submitted }
+    if (!FEEDBACK_ENDPOINT) return false;
+    const body = JSON.stringify(payload);
+    try { const r = await fetch(FEEDBACK_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body }); return r.ok; }
+    catch (e) { try { await fetch(FEEDBACK_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body }); return true; } catch (e2) { return false; } }
+  }
+  const fbCanSend = () => fb.state === "ready" || !!FEEDBACK_ENDPOINT;
   function fbUI() {
     const open = fbOpen(); const left = Math.max(1, Math.floor((FB_CLOSE - Date.now()) / DAY));
     $("fb-window").textContent = open ? t("fbOpen", { n: left, s: left === 1 ? "" : "s" }) : t("fbClosed");
     $("fb-text").disabled = !open; $("fb-kind").disabled = !open;
-    $("fb-send").disabled = !open || fb.state !== "ready";
+    $("fb-send").disabled = !open || !fbCanSend();
     if (!open) $("fb-send").textContent = t("fbBtnClosed");
     const m = $("fb-msg");
-    if (open && fb.state !== "ready" && !m.dataset.sticky) { m.className = "fine"; m.textContent = fb.state === "pending" ? t("fbConnecting") : t("fbPublic"); }
+    if (open && !fbCanSend() && !m.dataset.sticky) { m.className = "fine"; m.textContent = fb.state === "pending" ? t("fbConnecting") : t("fbPublic"); }
     if (!open && !m.dataset.sticky) { m.className = "fine"; m.textContent = t("fbClosedMail"); }
     // public visitors can't send in-app: keep the text box usable so they can write and copy their message
     if (open) { $("fb-text").disabled = false; $("fb-kind").disabled = false; }
-    $("mailbox").classList.toggle("urgent", fb.state === "none" || !open);
-    $("fb-send").hidden = open && fb.state === "none";
-    $("fb-note").hidden = fb.state === "none" || !open;
-    if (open && fb.state === "ready" && !m.dataset.sticky) m.textContent = "";
+    $("fb-email-f").hidden = !FEEDBACK_ENDPOINT; $("fb-email").disabled = !open;
+    const noRoute = fb.state === "none" && !FEEDBACK_ENDPOINT;
+    $("mailbox").classList.toggle("urgent", noRoute || !open);
+    $("fb-send").hidden = open && noRoute;
+    $("fb-note").hidden = noRoute || !open;
+    if (open && fbCanSend() && !m.dataset.sticky) m.textContent = "";
   }
   // email route: copy address / copy message / mailto with the message prefilled
   const fbMessage = () => { const k = $("fb-kind"); const kind = k.options[k.selectedIndex] ? k.options[k.selectedIndex].text : ""; const txt = $("fb-text").value.trim(); return txt ? "[" + kind + "]\n" + txt + "\n\n(Stale Posting Index · " + state.lang.toUpperCase() + ")" : ""; };
@@ -1586,17 +1601,29 @@ header.top {
     const m = $("fb-msg"); const text = $("fb-text").value.trim(); m.dataset.sticky = "1";
     if (!fbOpen()) { m.className = "err"; m.textContent = t("fbClosed"); fbUI(); return; }
     if (text.length < 3) { m.className = "err"; m.textContent = t("fbShort"); return; }
-    if (fb.state !== "ready") return;
+    if (!fbCanSend()) return;
     $("fb-send").disabled = true; m.className = "fine"; m.textContent = t("fbSending");
-    try {
+    const k = $("fb-kind"), replyTo = $("fb-email").value.trim().slice(0, 200), at = new Date().toISOString();
+    const payload = { app: "Stale Posting Index", page: location.href, topic: k.options[k.selectedIndex] ? k.options[k.selectedIndex].text : k.value, message: text.slice(0, 2000) };
+    if (replyTo) payload.replyTo = replyTo;
+    payload.submitted = at;
+    const saveDb = async () => {
+      if (fb.state !== "ready") return false;
       const id = await fb.user.id(); const ref = fb.db.doc("feedback/" + id);
       const snap = await ref.get(); const prev = snap.exists ? (snap.data().messages || []) : [];
-      const messages = prev.concat({ kind: $("fb-kind").value, text: text.slice(0, 2000), lang: state.lang, at: new Date().toISOString() }).slice(-10);
-      await ref.set({ messages, updatedAt: new Date().toISOString() });
-      $("fb-text").value = ""; m.className = "ok"; m.textContent = t("fbThanks"); toast(t("fbSent"));
-    } catch (err) {
+      const messages = prev.concat({ kind: k.value, text: text.slice(0, 2000), lang: state.lang, at }).slice(-10);
+      await ref.set({ messages, updatedAt: at });
+      return true;
+    };
+    // sent to the owner when FEEDBACK_ENDPOINT is set, and saved with the App on claude.ai; either one is enough
+    const [r1, r2] = await Promise.allSettled([sendFeedbackToOwner(payload), saveDb()]);
+    if (r1.value === true || r2.value === true) {
+      $("fb-text").value = ""; $("fb-email").value = ""; m.className = "ok"; m.textContent = t("fbThanks"); toast(t("fbSent"));
+    } else {
+      const err = r2.reason;
       m.className = "err"; m.textContent = err && err.code === "invalid_argument" ? t("fbNoAccess") : err && err.code === "quota_exceeded" ? t("fbFull") : t("fbFail");
-    } finally { $("fb-send").disabled = !fbOpen() || fb.state !== "ready"; }
+    }
+    $("fb-send").disabled = !fbOpen() || !fbCanSend();
   });
   const KIND = { idea: "fbIdea", bug: "fbBug", result: "fbResult", coverage: "fbCoverage", data: "fbData", other: "fbOther" };
   const FB_PH = {
@@ -1674,5 +1701,6 @@ header.top {
 })();
 </script>
 
+<script data-goatcounter="https://karentinoco13.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
